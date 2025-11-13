@@ -218,6 +218,10 @@ Where:
 - $\text{Share}_{c,t} = \dfrac{Y_{c,t}}{\sum_{c'} Y_{c',t}}$
 - This is a measure for the national share of innovation in disease-class $c$ at time $t$
 
+Feedback: 
+
+- What are the incentives to innovate 
+
 ## RQ3: Market Size and Pricing Pressure
 $$
 \begin{aligned}
@@ -240,6 +244,10 @@ $$
 \gamma_\ell: \text{price-pressure effects}
 \end{aligned}
 $$
+
+Feedback:
+
+- Perhaps change expansion variable with some variable capturing proportion of population affected by MEdicaid between 0 and 1. 0 in 2013 and 1 if all states adopted. 
 
 ## Policy evaluation
 
@@ -264,6 +272,8 @@ $$
 | Patents by disease / drug class | USPTO.gov |
 | Clinical trials by condition | ClinicalTrials.gov |
 | Drug approvals | Drugs@FDA database |
+
+Feedback: try to find firm level data
 
 ## Data sources: RQ2
 
