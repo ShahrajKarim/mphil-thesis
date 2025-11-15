@@ -1,0 +1,296 @@
+---
+title: "MPhil Thesis: Initial Ideas"
+author: "Mohammad-Shah Karim"
+date: "12 Nov 2025"
+
+bibliography: ../references/initial_ideas.bib
+
+execute:
+  dir: project
+
+
+format:
+  revealjs:
+    css: styles.css
+    toc: true
+    toc-depth: 1
+    slideNumber: true
+    auto: true
+    scrollable: true
+    embed-resources: true
+    self-contained-math: true
+---
+
+# Introduction
+
+## What is the Affordable Care Act (ACA)?
+
+- Most comprehensive US health reform since Medicare and Medicaid.
+- Expanded access to health insurance and reduced financial barriers to care.
+- Motivated by high uninsured rates and substantial gaps in Medicaid eligibility across states.
+- Introduced subsidised insurance marketplaces for individuals without employer or public coverage.
+- Imposed consumer protection rules on insurers including bans on pre-existing condition exclusion and mandating coverage of essentials.
+- Intended to improve coverage stability for low-income individuals.
+
+## What changed in Medicaid?
+
+**Before the ACA:**
+
+- Eligibility required low income and belonging to a specific category (e.g., pregnant, disabled, parent of dependent child).
+- Income limits varied by state and were often below the Federal Poverty Level. (e.g., Texas threshold was 17% of the FPL)
+- Most low-income adults without dependent children were not eligible.
+
+**After the ACA:**
+
+- Eligibility based primarily on income.
+- Threshold set at approximately 138% of the Federal Poverty Level.
+
+
+## Medicaid eligibility
+
+| Feature | Before ACA | After ACA |
+|---|---|---|
+| Basis for eligibility | Low income and categorical requirement (pregnant, disabled, parent etc.) | Income-based |
+| Income threshold | Varied by state, often below 100% FPL | ~138% FPL |
+| Coverage for low-income adults without children | Generally not eligible | Eligible if income ≤138% FPL |
+| State variation | Significant variation | Reduced variation due to optional expansion |
+| Benefit structure | Medicaid covered prescription drugs but rules differed by state | Coverage aligned with essential health benefit standards |
+
+## How was the policy rolled out {#policy-rollout}
+
+- **2010:** ACA enacted
+- **2012:** Medicaid expansion becomes state-optional
+- **2014:** States begin to adopt expansion
+
+```{r}
+#| echo: false
+#| include: false
+
+library(here)
+
+source(here("scripts", "rollout_map.r"))
+
+```
+
+```{r}
+#| echo: false
+#| results: asis
+
+library(here)
+library(htmltools)
+
+includeHTML(here("figures", "rollout_map.html"))
+```
+
+Data sourced from: [KFF](https://www.kff.org/affordable-care-act/state-indicator/state-activity-around-expanding-medicaid-under-the-affordable-care-act/?currentTimeframe=0&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D)
+
+# Literature Review
+## What has the current literature investigated?
+
+| Topic | Findings | Papers |
+|---|---|---|
+| Insurance coverage & disparities | Large coverage gains concentrated in expansion states; racial/ethnic coverage gaps narrowed. | [@courtemanche2020impact; @frean2017premium; @miller2019four] |
+| Access to care | Increased affordability; decreased cost barriers; longer waits and delays | [@miller2017health] |
+| Health outcomes | Improvements in self-reported health; reduced adult mortality in expansion states. | [@miller2021medicaid; @miller2017health] |
+| Financial outcomes | Declines in medical debt and fewer bankruptcies; improved credit scores. | [@brevoort2017medicaid; @HU201899] |
+| Labour market | No significant changes in labour market outcomes; disincentives for labour supply; no change in physician hours. | [@duggan2019effects; @dague2017effect; @neprash2021effect] |
+
+## Unexplored area?
+
+Pharmaceutical innovation induced by the Medicaid expansion !
+
+Only one paper investigates this: @NBERw28755
+
+1. Do the ACA-induced market size expansion for pharmaceuticals cause an increase in pharmaceutical innovation?
+
+2. Is there any evidence that firms shifted R&D effort toward conditions more affected by Medicaid expansion?
+
+Findings: 
+
+1. No clear change in clinical trial activity
+    - For conditions above the median Medicaid market share (ex-ante demand)
+    - For top quartile of conditions which faced coverage increases (ex-post demand)
+
+2. Overall: innovation outcomes did not respond to increases in Medicaid covered market size
+
+## What are the gaps?
+
+| Gap | Issue in Paper | Proposed Solution |
+|---|---|---|
+| Short time window | Data up to 2016 | Extend analysis through 2025 |
+| No analysis of firm behaviour reallocation | Paper focuses on innovation volume, not whether firms shifted R&D across therapeutic areas | Investigate if firms pivot towards profitable drug classes |
+| Medicaid rebate system | Does not study interaction of rebate system and innovation incentives | Separate effects of medicaid monopsony power and increased demand on innovation |
+
+## Medicaid and Prescription Drugs
+
+**Rebates:**  
+
+  - Brand drugs: ≥ 23.1 % rebate on average manufacturer price (AMP) or best price 
+  - Generics: ≥ 13 % of AMP  
+  - Inflation rebate: added if prices rise faster than inflation  
+
+**Preferred Drug Lists:**
+
+- States designate PDLs with negotiated rebates, with some firms adopting a uniform PDL to increase bargaining power.
+
+**Supplemental Rebate Pools:**  
+
+- States join multi-state alliances to collectively negotiate deeper rebates.
+
+## Research Questions:
+
+**Aim:** Examine how insurance expansion and pricing rules affect pharmaceutical innovation to guide the design of effective policy frameworks.
+
+1.	Does the Medicaid expansion under the ACA affect pharmaceutical innovation over the long run?
+
+2.	Do pharmaceutical firms reallocate R&D effort across therapeutic areas following Medicaid expansion?
+
+3.	How do Medicaid pricing rules influence incentives to innovate?
+
+# Models
+
+## Modelling Choices
+
+Potential models:
+
+- DiD
+- Event studies
+- Synthetic control
+- Callaway and Sant'Anna / Abraham and Sun
+
+Possible outcome variables:
+
+- **RQ1:** Effect on innovation quantity
+- **RQ2:** Effect on share of innovation devoted to Medicaid-exposed disease
+
+## Modelling count data
+
+Different distributional assumptions can be made to model the number of patents, clinical trials and drug approvals.
+
+**This needs to be investigated thoroughly.**
+
+Potential censoring issues:
+
+- Censored Poisson
+- Poisson thinned
+- Pogit
+
+Overdispersion:
+
+- Negative binomial model
+
+Review [learn-bayes](https://github.com/fditraglia/learn-bayes)
+
+## RQ1: Response to Market Size
+
+**Event-study:**
+
+$$
+\begin{aligned}
+Y_{c,t}
+= \alpha_c + \delta_t
++ \sum_{k \neq 2013} \beta_k \left[ \mathbf{1}\{t = k\} \times \text{MedicaidShare}_c \right]
++ \varepsilon_{c,t}
+\end{aligned}
+$$
+
+where:
+
+- $Y_{c,t}$: innovation outcome for therapeutic class $c$ in year $t$  
+  *(patents, clinical trials, FDA approvals)*
+- $\text{MedicaidShare}_c$: pre-ACA Medicaid utilisation share for class $c$
+- $\alpha_c, \delta_t$: disease-class and year fixed effects
+
+
+
+## RQ2: Reallocation Across Therapeutic Areas
+$$
+\begin{aligned}
+\text{Share}_{c,t}
+&= \alpha_c + \delta_t
++ \theta \left( \text{PostExpansion}_t \times \text{MedicaidShare}_c \right)
++ \varepsilon_{c,t}
+\end{aligned}
+$$
+
+Where:
+
+- $\text{Share}_{c,t} = \dfrac{Y_{c,t}}{\sum_{c'} Y_{c',t}}$
+- This is a measure for the national share of innovation in disease-class $c$ at time $t$
+
+## RQ3: Market Size and Pricing Pressure
+$$
+\begin{aligned}
+Y_{c,t}
+&= \alpha_c + \delta_t + \sum_{\ell = TBD}^{L} \beta_{\ell}
+\left( \text{Expansion}_{t-\ell} \times \text{MedicaidShare}_c \right) \\
+&\quad + \sum_{\ell = TBD}^{L} \gamma_{\ell}
+\left( PriceRestrict_{t-\ell} \times \text{MedicaidShare}_c \right) + \varepsilon_{c,t}
+\end{aligned}
+$$
+
+Where:
+
+- $Y_{c,t}$: innovation outcome (patents, trials, approvals) for class $c$ in year $t$
+- $\text{Expansion}_{t-\ell}$: Medicaid expansion exposure $\ell$ years prior
+- $\text{PriceRestrict}_{t - \ell} = f( \text{UniformPDL}_{t-\ell}, \text{RebatePool}_{t-\ell}, \ \text{MMS}_{t-\ell} )$
+$$
+\begin{aligned}
+\beta_\ell: \text{market-size effects}, \qquad
+\gamma_\ell: \text{price-pressure effects}
+\end{aligned}
+$$
+
+## Policy evaluation
+
+- Reduced form allows us to identify direction and magnitude of market-size and pricing effects
+
+- But this could paper could provide insight towards the spillover effects on pharmaceutical innovation and assist with optimal policy design
+
+- Introduce a structural model
+
+- Perhaps this is ambitious
+
+# Data
+
+## Data sources: RQ1
+
+**Effect of Medicaid expansion on innovation**
+
+| Required Data | Source |
+|---|---|
+| Medicaid expansion timing | KFF |
+| Medicaid utilisation share by drug class | CMS State Drug Utilisation Data |
+| Patents by disease / drug class | USPTO.gov |
+| Clinical trials by condition | ClinicalTrials.gov |
+| Drug approvals | Drugs@FDA database |
+
+## Data sources: RQ2
+
+**Do firms reallocate R&D across therapeutic areas?**
+
+| Required Data | Source |
+|---|---|
+| Medicaid expansion timing | KFF |
+| Baseline Medicaid utilisation share by drug class | CMS State Drug Utilisation Data |
+| Drug class disease mapping | RxClass |
+| Clinical trials by disease area | ClinicalTrials.gov |
+| Patent filings by therapeutic focus | USPTO.gov |
+
+## Data sources: RQ3
+
+**How do Medicaid pricing rules influence innovation?**
+
+| Required Data | Source |
+|---|---|
+| Medicaid expansion timing | KFF |
+| Uniform PDL adoption dates | KFF |
+| Rebate-pool membership & timing | KFF |
+| Medicaid utilisation share by drug class | CMS State Drug Utilisation Data |
+
+# Bibliography
+
+## References
+
+::: {#refs}
+:::
