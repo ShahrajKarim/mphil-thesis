@@ -220,7 +220,13 @@ Where:
 
 Feedback: 
 
-- What are the incentives to innovate 
+- What are the incentives to innovate?
+- Beyond the reduced form (i.e. profit seeking behaviour), what is it that results in innovation?
+- What is it specific about the context that makes innovation profitable?
+- Perhaps consider the different mechanisms at play 
+- Used to think of innovation as "there is a disease that has a treatment, is there still some incentive to innovate for these disease classes?" 
+- As long as we can make it clear. 
+- Is the market expanding for new or old products
 
 ## RQ3: Market Size and Pricing Pressure
 $$
@@ -259,6 +265,17 @@ Feedback:
 
 - Perhaps this is ambitious
 
+Feedback:
+
+- Does the policy maker feel like there's sufficient competition in the market?
+- How did the Medicaid expansion affect market concentration?
+- If I did end up on a PDL how did it affect concentration for a given disease class?
+- How do you get on the list?
+    - try to understand how the PDL list is made.
+    - Then we can understand how one gets on the list.
+- Do we see innovation harmed / increasing for those that get on the list vs one that does not get on the list?
+- How can we then design these things smartly so incentives aren't dampened.
+
 # Data
 
 ## Data sources: RQ1
@@ -274,6 +291,9 @@ Feedback:
 | Drug approvals | Drugs@FDA database |
 
 Feedback: try to find firm level data
+- We would like to try and link innovation outcome to the firm that is on / or off the list.
+- Try to look for data as well on firms / prescriptions that are not on the drug list. Perhaps prescriptions state-wide for non Medicaid users.
+- In long-run try to build a framework where I have two players who face this shock and compete on getting on the list.
 
 ## Data sources: RQ2
 
