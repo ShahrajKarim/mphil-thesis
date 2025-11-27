@@ -1,0 +1,177 @@
+---
+title: "MPhil Thesis: MT Week 7"
+author: "Mohammad-Shah Karim"
+date: "25 Nov 2025"
+
+bibliography: ../references/MT_week7.bib
+
+execute:
+  dir: project
+
+
+format:
+  revealjs:
+    css: styles.css
+    toc: true
+    toc-depth: 1
+    slideNumber: true
+    auto: true
+    scrollable: true
+    embed-resources: true
+    self-contained-math: true
+---
+
+# Competition within the Pharmaceutical Industry
+
+## Empirical Findings
+
+| Paper | Findings |
+|--|-------------|
+| @regan2008generic | After initial generic entry, multiple generics enter and branded–generic price gaps widen. Strong post-patent price competition, with substantial price declines. Observes Market segmentation between price-sensitive and less price-sensitive users. |
+| @grabowski2007generic | More profitable products attract more generic entrants and have shorter effective exclusivity. Generic competition has become more intense, with many markets seeing rapid erosion of branded share. |
+| @kyle2006role | Entry of new drugs into national markets depends on market size and existing competition. Firms are likelier to launch in larger, more profitable markets even when there are incumbents. |
+| @OECD2018Pharma | Even during periods of patent exclusivity, on-patent drugs face competition from other products approved for the same indication. Launches of “follow-on” drugs within a therapeutic area create ongoing competitive pressure on prices and market shares. |
+
+## Within Class competition
+
+Drugs within the same therapeutic class face strong competitive pressure, as payers view them as close substitutes and actively reallocate utilisation across on-patent alternatives.
+
+
+| Mechanism | Source |
+|-------------|----|
+| Clinically similar drugs constrain each other’s pricing and market share. | @OECD2018Pharma |
+| New entrants with small improvements erode incumbent market power. | @OECD2018Pharma |
+| Physicians switch within class based on factors such as efficacy, side-effects, guidelines, dosing. | @OECD2018Pharma |
+
+## Pipeline competition
+
+Firms invest in R&D to enter profitable disease areas or to displace incumbents with improved drugs.
+
+| Mechanism | Source |
+|-------------|----|
+| Entry decisions depend on expected profits and existing competitors | @acemoglu2004market, @dubois2015market |
+| Follow-on entry is driven by racing behaviour: multiple firms begin development before the first-in-class drug is approved, aiming to introduce improved variants and capture future market share. | @dimasi2004economics |
+| Follow-on drugs intensify competition by weakening the first-mover’s market power and giving payers alternative options to negotiate lower prices. | @OECD2018Pharma |
+
+# Medicaid's Preferred Drug List
+
+## Key facts
+
+**Rebates:**  
+
+  - Brand drugs: ≥ 23.1 % rebate on average manufacturer price (AMP) or best price 
+  - Generics: ≥ 13 % of AMP  
+  - Inflation rebate: added if prices rise faster than inflation  
+
+**Preferred Drug Lists:**
+
+- States designate PDLs with negotiated rebates, with some firms adopting a uniform PDL to increase bargaining power.
+
+**Supplemental Rebate Pools:**  
+
+- States join multi-state alliances to collectively negotiate deeper rebates.
+
+## How does a drug get on the list
+
+A drug becomes preferred when it is clinically acceptable **and** offers the lowest net cost among substitutes.
+
+1. P&T committee evaluates safety, efficacy and literature on drug.
+
+2. States compare net price among clinically equivalent drugs, with price determining which eligible drugs become most preferred.
+
+```{mermaid}
+flowchart LR
+
+A["Clinical Review<br/> (P&T Committee)"] -->|Clinically acceptable| B["Economic Evaluation<br/> (Rebate Negotiation)"]
+A -->|Clinically inappropriate| X["Ineligible<br/> (Cannot be preferred)"]
+
+B --> C{"Net cost comparison<br/> among clinically equivalent drugs"}
+
+C -->|Lowest net cost| D["Preferred Drug"]
+C -->|Higher net cost| E["Non-preferred Drug<br/> (Authorisation required for use)"]
+```
+
+
+States can list multiple preferred drugs when they are not clinically equivalent.
+
+## Staying on the PDL
+
+1. Remaining clinically appropriate
+  - No concerns relating to being unsafe or outdates
+  - No concerns suggesting it's less effective than other drugs
+
+2. Remaining cost competitive
+  - The drug must remain as one of the lowest net-cost options among clinically appropriate drugs
+  - If a competitor offers a deeper rebate or utilisatioin costs change unfavourably then a drug may be taken off the PDL.
+
+## Do R&D incentives exist for firms on the PDL?
+
+**Preferred status is not guaranteed.**  
+
+Firms can only use R&D to increase the clinical value of their drug:
+
+- Show superior outcomes / fewer side-effects
+
+- Improve adherence or reduced downstream costs
+  - e.g. once-daily extended-release instead of twice-daily
+- Produce better formulations
+  - e.g. pen injector instead of vial administration
+- Target specific patient subgroups
+  - e.g. better outcomes in patients with renal impairment
+
+However, a firm **cannot** innovate their way into a lower production cost
+
+## R&D incentives for non-PDL firms
+
+Non-preferred status limits utilisation, firms innovate to escape the prior-authorisation barrier and win preferred placement.
+
+Firms with no existing products have strong incentives to enter a profitable therapeutic class.
+
+**Competition methods:**
+
+- Enter with a drug with lower costs of production allowing for a larger rebate than incumbents.
+- Develop a drug with better efficacy, or improved dosing.
+- Create a drug beneficial for patients not well-served by existing preferred products.
+
+# Proposed plan 
+
+## Current Progress on Data
+
+- ✅ Medicaid state drug utilisation data
+- ✅ Patent data
+- ✅ Clinical trials
+- ✅ FDA approvals
+
+- ❌ Exploration of the data
+- ❌ Link to firms between datasets
+
+## Plan for upcoming weeks
+
+- Investigate the data and build a full dataset for analysis
+- Patent and Clinical trials data is not granular. Considers general therapeutic area.
+- If dataset is prepared then conduct initial regressions. 
+- Map ideas onto a game theoretic approach and build a toy model (over Christmas)
+  - Perhaps discuss early ideas with other MPhil students
+  - Once stylised facts are ready then discuss with industrial economists.
+
+## Mechanism design
+
+- 2-player game (could maybe expand to an N-player game)
+
+- Two players: $\{i, j\}$
+  - $\theta_{i} = \text{incumbent PDL}$
+  - $\theta_{j} \in \{\text{incumbent not on PDL}, \text{potential entrant}\}$
+
+Features of the game:
+
+- Constrained by a fixed level of investment that is type dependent
+- Invest between clinical quality ($q_k$) and cost-saving mechanism ($s_k$) (and rebate intensity, $r_k$)
+- Separate demand into two segments: medicaid, non medicaid
+- Drug must meet clinical threshold and then state selects slowest net-cost option
+
+# Bibliography
+
+## References
+
+::: {#refs}
+:::
