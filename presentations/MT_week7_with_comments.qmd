@@ -133,6 +133,12 @@ Firms with no existing products have strong incentives to enter a profitable the
 - Develop a drug with better efficacy, or improved dosing.
 - Create a drug beneficial for patients not well-served by existing preferred products.
 
+Feedback:
+
+- Model as having a small market size in MEdicaid prior to expansion, but then after expansion there's a large discrete jump that affects firms incentives to innovate.
+
+- Regression might also want to measure what the effect is for getting on the list. Perhaps do this by comparing firms that make it on the list vs firms that passed first stage P&T segment, but didn't pass price-screening.
+
 # Proposed plan 
 
 ## Current Progress on Data
