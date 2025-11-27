@@ -47,3 +47,9 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# R environment setup
+.here
+.Rprofile
+.Rprofile.bak
+tempCoderunnerFile.r
