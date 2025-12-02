@@ -1,12 +1,6 @@
 # scripts/patent_data.r
 
-# ================================================================
-# patent_data.r
-# Full pipeline to build:
-#   - Patent × CPC × firm × disease mapping
-#   - Innovation panel: year × disease_area × firm
-# ================================================================
-
+# libraries
 library(vroom)
 library(dplyr)
 library(stringr)
@@ -14,9 +8,8 @@ library(tidyr)
 library(readr)
 library(lubridate)
 
-# ----------------------------
-# 1. File paths
-# ----------------------------
+# File paths for patent data
+
 dir <- "raw_data/patents/"
 
 path_patent <- paste0(dir, "g_patent.tsv")
@@ -24,12 +17,12 @@ path_cpc <- paste0(dir, "g_cpc_current.tsv")
 path_assignee <- paste0(dir, "g_assignee_disambiguated.tsv")
 path_title <- paste0(dir, "g_cpc_title.tsv")
 path_tech_field <- paste0(dir, "g_wipo_technology.tsv")
-# path_abstract <- paste0(dir, "g_patent_abstract.tsv")
+
+# path_abstract <- paste0(dir, "g_patent_abstract.tsv") # (use abstracts using NLP if required)
 
 
-# ----------------------------
-# 2. Load base patent data
-# ----------------------------
+# Load base patent data
+
 patent <- vroom(
   path_patent,
   col_select = c(
@@ -39,9 +32,8 @@ patent <- vroom(
   )
 )
 
-# ----------------------------
-# 3. Load CPC classifications
-# ----------------------------
+# Load CPC classifications
+
 cpc <- vroom(
   path_cpc,
   col_select = c(
@@ -52,9 +44,8 @@ cpc <- vroom(
 ) |>
   mutate(patent_id = as.character(patent_id))
 
-# ----------------------------
-# 4. Load assignee data
-# ----------------------------
+# Load assignee data
+
 assignee <- vroom(
   path_assignee,
   col_select = c(
@@ -65,9 +56,8 @@ assignee <- vroom(
   )
 )
 
-# ----------------------------
-# 5. Load cpc_class data
-# ----------------------------
+# Load cpc_class data
+
 titles <- vroom(
   path_title,
   col_select = c(
@@ -78,11 +68,7 @@ titles <- vroom(
   )
 )
 
-# ----------------------------
-# 6. Load tech field data
-# ----------------------------
-
-pharma_fields <- c("Pharmaceuticals")
+# Load tech field data
 
 tech_field <- vroom(
   path_tech_field,
@@ -91,25 +77,18 @@ tech_field <- vroom(
     wipo_field_title,
   )
 ) |>
-  filter(wipo_field_title %in% pharma_fields) |>
+  filter(wipo_field_title == "Pharmaceuticals") |>
   mutate(patent_id = as.character(patent_id))
 
-# ================================================================
-# 7. Make a clean dataset based on these pharma fields
-# ================================================================
+# Make a clean dataset based on these pharma fields
 
 pharma_patents_full <- tech_field |>
   left_join(cpc, by = "patent_id", relationship = "many-to-many") |>
   left_join(titles, by = c("cpc_subclass", "cpc_group")) |>
   left_join(assignee, by = "patent_id", relationship = "many-to-many") |>
   left_join(patent, by = "patent_id") |>
-  mutate(
-    patent_year = year(patent_date),
-    firm = case_when(
-      assignee_type == 2 ~ disambig_assignee_organization,
-      TRUE ~ NA_character_
-    )
-  )
+  mutate(patent_year = year(patent_date)) |>
+  rename(firm = disambig_assignee_organization)
 
 # Filter for only A61P CPC subclass (therapeutic activity of drugs)
 # https://www.uspto.gov/web/patents/classification/cpc/html/cpc-A61P.html
@@ -117,8 +96,17 @@ pharma_patents_full <- tech_field |>
 pharma_patents_full <- pharma_patents_full %>%
   filter(cpc_subclass == "A61P")
 
-# ================================================================
-# 8. Find a method to clean CPC group titles! - TBC 
-# ================================================================
+# Remove variables which are same across all rows
+pharma_patents_full <- pharma_patents_full |>
+select(
+  -cpc_subclass,
+  -cpc_class,
+  -wipo_field_title  
+)
 
+# save the full pharma patents data
+write_csv(
+  pharma_patents_full,
+  file = paste0("processed_data/patents/", "pharma_patents_full.csv")
+)
 
