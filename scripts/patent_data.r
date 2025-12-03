@@ -7,6 +7,7 @@ library(stringr)
 library(tidyr)
 library(readr)
 library(lubridate)
+library(readxl)
 
 # File paths for patent data
 
@@ -110,3 +111,52 @@ write_csv(
   file = paste0("processed_data/patents/", "pharma_patents_full.csv")
 )
 
+# Create a broad category mapping for CPC groups
+
+pharma_patents_full <- pharma_patents_full %>%
+  mutate(
+    therapeutic_class = case_when(
+      str_detect(cpc_group, "^A61P1")  ~ "Gastrointestinal",
+      str_detect(cpc_group, "^A61P3")  ~ "Metabolic",
+      str_detect(cpc_group, "^A61P5")  ~ "Endocrine",
+      str_detect(cpc_group, "^A61P7")  ~ "Blood",
+      str_detect(cpc_group, "^A61P9")  ~ "Cardiovascular",
+      str_detect(cpc_group, "^A61P11") ~ "Respiratory",
+      str_detect(cpc_group, "^A61P13") ~ "Urinary",
+      str_detect(cpc_group, "^A61P15") ~ "Genital/Sexual",
+      str_detect(cpc_group, "^A61P17") ~ "Dermatology",
+      str_detect(cpc_group, "^A61P19") ~ "Skeletal",
+      str_detect(cpc_group, "^A61P21") ~ "Muscular/Neuromuscular",
+      str_detect(cpc_group, "^A61P23") ~ "Anaesthetics",
+      str_detect(cpc_group, "^A61P25") ~ "CNS/Neurology",
+      str_detect(cpc_group, "^A61P27") ~ "Ophthalmic/Otological",
+      str_detect(cpc_group, "^A61P29") ~ "Anti-inflammatory/Analgesics",
+      str_detect(cpc_group, "^A61P31") ~ "Anti-infectives",
+      str_detect(cpc_group, "^A61P33") ~ "Anti-parasitics",
+      str_detect(cpc_group, "^A61P35") ~ "Anti-neoplastics",
+      str_detect(cpc_group, "^A61P37") ~ "Allergy/Immune disorders",
+      str_detect(cpc_group, "^A61P39") ~ "Protective/Detoxification",
+      str_detect(cpc_group, "^A61P41") ~ "Surgical",
+      str_detect(cpc_group, "^A61P43") ~ "Other",
+    )
+  )
+
+# Create a sub-level category mapping within therapeutic categories
+# First load mapping file and then join together
+
+cpc_mappings <- read_xlsx("aux_data/cpc_groups.xlsx") |>
+  select(
+    cpc_group,
+    sub_class
+  ) |>
+  mutate(sub_class = ifelse(sub_class == "-", NA, sub_class))
+
+pharma_patents_full <- pharma_patents_full |>
+  left_join(cpc_mappings, by = "cpc_group")
+
+# save the cleaned pharmaceutical patents data
+
+write_csv(
+  pharma_patents_full,
+  file = paste0("processed_data/patents/", "pharma_patents_clean.csv")
+)
