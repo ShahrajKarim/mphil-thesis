@@ -112,6 +112,7 @@ write_csv(
 )
 
 # Create a broad category mapping for CPC groups
+# Source: https://www.uspto.gov/web/patents/classification/cpc/pdf/cpc-scheme-A61P.pdf
 
 pharma_patents_full <- pharma_patents_full %>%
   mutate(
