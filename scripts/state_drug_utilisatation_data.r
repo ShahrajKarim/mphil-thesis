@@ -109,7 +109,66 @@ saveRDS(
   file = "processed_data/state_drug_utilisation_data/SDUD_full.rds"
 )
 
-# Load NDC directory file
+# --- Now create a firm-level mapping using NDC directory --- # 
+
+# Load the ndctext data files
+
+ndc_dir <- "raw_data/FDA/ndctext/"
+
+product <- read_delim(paste0(ndc_dir, "product.txt"), delim = "\t", escape_double = FALSE) |>
+  clean_names() |>
+  select(
+    product_id = productid,
+    labeler_name = labelername
+  )
+
+package <- read_delim(paste0(ndc_dir, "package.txt"), delim = "\t", escape_double = FALSE) |>
+  clean_names() |>
+  select(
+    product_id = productid,
+    product_ndc = productndc,
+    package_ndc = ndcpackagecode
+  )
+
+full_ndc <- left_join(package, product, by = "product_id") |>
+  mutate(
+    parts = strsplit(package_ndc, "-"),
+    labeler_raw  = map_chr(parts, 1),
+    product_raw  = map_chr(parts, 2),
+    package_raw  = map_chr(parts, 3),
+    labeler_code_pad = str_pad(labeler_raw, width = 5, pad = "0"),
+    product_code_pad = str_pad(product_raw, width = 4, pad = "0"),
+    package_code_pad = str_pad(package_raw, width = 2, pad = "0"),
+    package_ndc_clean = paste0(labeler_code_pad, product_code_pad, package_code_pad)
+  ) |>
+  select(
+    labeler_code_pad,
+    labeler_name
+  ) |>
+  distinct(labeler_code_pad, .keep_all = TRUE)
+
+# Merge with SDUD data by labeler code
+
+sdud_full <- sdud_full |>
+  left_join(ndc, by = c("labeler_code" = "labeler_code_pad"))
+
+# Merge diagnostics
+
+sdud_full <- sdud_full |>
+  mutate(ndc_matched = !is.na(labeler_name))
+
+message("Total rows: ", nrow(sdud_full)) # 42031131
+message("Matched rows: ", sum(sdud_full$ndc_matched)) # 40003656
+message("Unmatched rows: ", sum(!sdud_full$ndc_matched)) # 2027475
+message("Match rate: ", round(mean(sdud_full$ndc_matched) * 100, 2), "%") # 95.18%
+
+
+
+
+
+# ---- Draft Code below (to delete) ---- #
+
+# ---- Load NDC directory file --- #
 
 ndc_raw <- fromJSON("raw_data/FDA/drug-ndc-0001-of-0001.json", flatten = TRUE)
 
@@ -162,8 +221,7 @@ unmatched_ndcs <- sdud_full |>
 
 
 
-
-# Try to use ndctext data
+# --- Try to use ndctext data --- #
 
 ndc_dir <- "raw_data/FDA/ndctext/"
 
