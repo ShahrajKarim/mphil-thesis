@@ -140,7 +140,9 @@ full_ndc <- left_join(package, product, by = "product_id") |>
     product_code_pad = str_pad(product_raw, width = 4, pad = "0"),
     package_code_pad = str_pad(package_raw, width = 2, pad = "0"),
     package_ndc_clean = paste0(labeler_code_pad, product_code_pad, package_code_pad)
-  ) |>
+  )
+
+firm_mapping <- full_ndc |>
   select(
     labeler_code_pad,
     labeler_name
@@ -150,7 +152,7 @@ full_ndc <- left_join(package, product, by = "product_id") |>
 # Merge with SDUD data by labeler code
 
 sdud_full <- sdud_full |>
-  left_join(ndc, by = c("labeler_code" = "labeler_code_pad"))
+  left_join(firm_mapping, by = c("labeler_code" = "labeler_code_pad"))
 
 # Merge diagnostics
 
