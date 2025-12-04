@@ -8,6 +8,7 @@ library(tibble)
 library(dplyr)
 library(readr)
 library(janitor)
+library(tidyr)
 
 # Query Medicaid API for State Drug Utilization Data (SDUD) datasets
 
@@ -92,11 +93,11 @@ for (i in 2005:2024) {
 
     if (i == 2005) {
 
-      df_full <- df
+      sdud_full <- df
 
     } else {
       
-      df_full <- bind_rows(df_full, df)
+      sdud_full <- bind_rows(sdud_full, df)
 
     }
 
@@ -104,6 +105,56 @@ for (i in 2005:2024) {
 
 # Save the cleaned full dataset
 saveRDS(
-  df_full,
+  sdud_full,
   file = "processed_data/state_drug_utilisation_data/SDUD_full.rds"
 )
+
+# Load NDC directory file
+
+ndc_raw <- fromJSON("raw_data/FDA/drug-ndc-0001-of-0001.json", flatten = TRUE)
+
+ndc <- ndc_raw$results |>
+  as_tibble() |>
+ select(
+    -marketing_start_date,
+    -marketing_end_date
+  ) |>
+  unnest(packaging) |>
+  filter(nchar(package_ndc) >= 9) |>
+  mutate(
+    parts = strsplit(package_ndc, "-"),
+    labeler  = str_pad(map_chr(parts, 1), width = 5, pad = "0"),
+    product  = str_pad(map_chr(parts, 2), width = 4, pad = "0"),
+    package  = str_pad(map_chr(parts, 3), width = 2, pad = "0"),
+    ndc_clean = paste0(labeler, product, package)
+  ) |>
+  distinct(ndc_clean, .keep_all = TRUE) |>
+  select(
+    ndc_clean,
+    generic_name,
+    labeler_name,
+    brand_name
+  )
+
+# Merge NDC directory with SDUD data
+
+sdud_full <- readRDS("processed_data/state_drug_utilisation_data/SDUD_full.rds")
+
+sdud_full <- sdud_full |>
+  left_join(ndc, by = c("ndc" = "ndc_clean"))
+
+# Merge diagnostics
+sdud_full <- sdud_full |>
+  mutate(ndc_matched = !is.na(generic_name))
+
+message("Total rows: ", nrow(sdud_full))
+message("Matched rows: ", sum(sdud_full$ndc_matched))
+message("Unmatched rows: ", sum(!sdud_full$ndc_matched))
+message("Match rate: ", round(mean(sdud_full$ndc_matched) * 100, 2), "%")
+
+# Optional: save unmatched NDCs
+unmatched_ndcs <- sdud_full |>
+  filter(!ndc_matched) |>
+  distinct(ndc)
+
+write_csv(unmatched_ndcs, "processed_data/unmatched_ndcs.csv")
