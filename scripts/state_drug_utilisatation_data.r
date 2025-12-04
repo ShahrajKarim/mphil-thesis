@@ -126,11 +126,12 @@ ndc <- ndc_raw$results |>
     labeler  = str_pad(map_chr(parts, 1), width = 5, pad = "0"),
     product  = str_pad(map_chr(parts, 2), width = 4, pad = "0"),
     package  = str_pad(map_chr(parts, 3), width = 2, pad = "0"),
+    ndc_product = paste0(labeler, product),
     ndc_clean = paste0(labeler, product, package)
   ) |>
-  distinct(ndc_clean, .keep_all = TRUE) |>
+  distinct(ndc_product, .keep_all = TRUE) |> # eitheer clean or product - depends on what works better
   select(
-    ndc_clean,
+    ndc_product,
     generic_name,
     labeler_name,
     brand_name
@@ -141,11 +142,12 @@ ndc <- ndc_raw$results |>
 sdud_full <- readRDS("processed_data/state_drug_utilisation_data/SDUD_full.rds")
 
 sdud_full <- sdud_full |>
-  left_join(ndc, by = c("ndc" = "ndc_clean"))
+  mutate(ndc_product = paste0(labeler_code, product_code)) |>
+  left_join(ndc, by = "ndc_product")
 
 # Merge diagnostics
 sdud_full <- sdud_full |>
-  mutate(ndc_matched = !is.na(generic_name))
+  mutate(ndc_matched = !is.na(labeler_name))
 
 message("Total rows: ", nrow(sdud_full))
 message("Matched rows: ", sum(sdud_full$ndc_matched))
@@ -157,4 +159,65 @@ unmatched_ndcs <- sdud_full |>
   filter(!ndc_matched) |>
   distinct(ndc)
 
-write_csv(unmatched_ndcs, "processed_data/unmatched_ndcs.csv")
+
+
+
+
+# Try to use ndctext data
+
+ndc_dir <- "raw_data/FDA/ndctext/"
+
+product <- read_delim(paste0(ndc_dir, "product.txt"), delim = "\t", escape_double = FALSE) |>
+  clean_names() |>
+  select(
+    product_id = productid,
+    labeler_name = labelername
+  )
+
+package <- read_delim(paste0(ndc_dir, "package.txt"), delim = "\t", escape_double = FALSE) |>
+  clean_names() |>
+  select(
+    product_id = productid,
+    product_ndc = productndc,
+    package_ndc = ndcpackagecode
+  )
+
+full_ndc <- left_join(package, product, by = "product_id") |>
+  mutate(
+    parts = strsplit(package_ndc, "-"),
+    labeler_raw  = map_chr(parts, 1),
+    product_raw  = map_chr(parts, 2),
+    package_raw  = map_chr(parts, 3),
+    labeler_code_pad = str_pad(labeler_raw, width = 5, pad = "0"),
+    product_code_pad = str_pad(product_raw, width = 4, pad = "0"),
+    package_code_pad = str_pad(package_raw, width = 2, pad = "0"),
+    package_ndc_clean = paste0(labeler_code_pad, product_code_pad, package_code_pad)
+  ) |>
+  select(
+    package_ndc_clean,
+    labeler_name
+  ) |>
+  distinct(package_ndc_clean, .keep_all = TRUE)
+
+sdud_full <- sdud_full |>
+  mutate(
+    package_ndc_clean = ndc
+  ) |>
+  left_join(full_ndc, by = "package_ndc_clean")
+
+# Merge diagnostics
+sdud_full <- sdud_full |>
+  mutate(ndc_matched = !is.na(labeler_name))
+
+message("Total rows: ", nrow(sdud_full)) # 42031131
+message("Matched rows: ", sum(sdud_full$ndc_matched)) # 24179643
+message("Unmatched rows: ", sum(!sdud_full$ndc_matched)) # 17851488
+message("Match rate: ", round(mean(sdud_full$ndc_matched) * 100, 2), "%") # 57.53%
+
+
+missing <- sdud_full |>
+  filter(!ndc_matched) |>
+  distinct(package_ndc_clean) |>
+  pull()
+
+head(missing, 20)
