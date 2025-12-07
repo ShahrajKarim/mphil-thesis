@@ -9,6 +9,10 @@ library(dplyr)
 library(readr)
 library(janitor)
 library(tidyr)
+library(stringr)
+library(igraph)
+library(text2vec)
+library(Matrix)
 
 # Query Medicaid API for State Drug Utilization Data (SDUD) datasets
 
@@ -91,15 +95,15 @@ for (i in 2005:2024) {
       -suppression_used,
     )
 
-    if (i == 2005) {
+  if (i == 2005) {
 
-      sdud_full <- df
+    sdud_full <- df
 
-    } else {
-      
-      sdud_full <- bind_rows(sdud_full, df)
+  } else {
 
-    }
+    sdud_full <- bind_rows(sdud_full, df)
+
+  }
 
 }
 
@@ -147,7 +151,60 @@ firm_mapping <- full_ndc |>
     labeler_code_pad,
     labeler_name
   ) |>
-  distinct(labeler_code_pad, .keep_all = TRUE)
+  distinct(labeler_code_pad, .keep_all = TRUE) |>
+  filter(!is.na(labeler_name))
+
+firm_mapping <- firm_mapping |>
+  mutate(
+    name_clean = labeler_name |>
+      iconv(from = "", to = "UTF-8", sub = "") |>
+      tolower() |>
+      str_replace_all("[[:punct:]]", " ") |>
+      str_squish()
+  )
+
+# Create clusters of similar firm names
+
+token_list <- space_tokenizer(firm_mapping$name_clean)
+
+token_iterator <- itoken(token_list)
+
+token_vocab <- create_vocabulary(token_iterator)
+token_vectorizer <- vocab_vectorizer(token_vocab)
+
+tfidf_model <- TfIdf$new(sublinear_tf = TRUE)
+
+dtm_counts <- create_dtm(token_iterator, token_vectorizer)
+tfidf_matrix <- tfidf_model$fit_transform(dtm_counts)
+
+cosine_sim_matrix <- sim2(tfidf_matrix, tfidf_matrix, method = "cosine")
+
+threshold <- 0.85
+
+adjacency_matrix <- cosine_sim_matrix > threshold
+diag(adjacency_matrix) <- FALSE
+
+similarity_graph <- graph_from_adjacency_matrix(
+                                                adjacency_matrix,
+                                                mode = "undirected")
+
+clusters <- components(similarity_graph)
+
+firm_mapping$cluster_id <- clusters$membership
+
+cleaned_names <- firm_mapping |>
+  group_by(cluster_id) |>
+  summarise(firm = labeler_name[1])
+
+firm_mapping <- firm_mapping |>
+  left_join(cleaned_names, by = "cluster_id") |>
+  select( -name_clean, -cluster_id, -labeler_name)
+
+# Save firm mapping
+write_csv(
+  firm_mapping,
+  file = "aux_data/ndc_firm_mapping.csv"
+)
 
 # Merge with SDUD data by labeler code
 
@@ -157,12 +214,22 @@ sdud_full <- sdud_full |>
 # Merge diagnostics
 
 sdud_full <- sdud_full |>
-  mutate(ndc_matched = !is.na(labeler_name))
+  mutate(ndc_matched = !is.na(firm))
 
-message("Total rows: ", nrow(sdud_full)) # 42031131
-message("Matched rows: ", sum(sdud_full$ndc_matched)) # 40003656
-message("Unmatched rows: ", sum(!sdud_full$ndc_matched)) # 2027475
+message("Total rows: ", nrow(sdud_full)) # 42,031,131
+message("Matched rows: ", sum(sdud_full$ndc_matched)) # 40,003,656
+message("Unmatched rows: ", sum(!sdud_full$ndc_matched)) # 2,027,475
 message("Match rate: ", round(mean(sdud_full$ndc_matched) * 100, 2), "%") # 95.18%
+
+sdud_full <- sdud_full |>
+  select(-ndc_matched)
+
+# Save the final SDUD data with firm mapping
+
+saveRDS(
+  sdud_full,
+  file = "processed_data/state_drug_utilisation_data/SDUD_firm_mapped.rds"
+)
 
 
 
