@@ -116,17 +116,14 @@ active_ingredients <- fda_drugs |>
   mutate(active_ing_split = trimws(active_ing_split)) |>
   filter(active_ing_split != "")
 
+# --- RXCLASS ATC MAPPING --- #
 
-# -- Draft work for ATC mapping: RxClass API version (cached) -- #
-
-#====================== RXCLASS ATC MAPPING (CACHED) ======================#
-
-# 1. Extract unique ingredients
+# Extract unique ingredients
 unique_ings <- active_ingredients$active_ing_split |>
   toupper() |>
   unique()
 
-# 2. RxClass lookup function
+# RxClass lookup function
 
 rxclass_lookup <- function(drug_name) {
   url <- paste0(
@@ -150,7 +147,7 @@ rxclass_lookup <- function(drug_name) {
   rx_info <- info$rxclass
   if (is.null(rx_info)) return(NULL)
 
-  # ---- Key fix: turn rx_info into a proper tibble safely ----
+  # turn rx_info into a proper tibble safely
   rx_info <- tryCatch(as_tibble(rx_info), error = function(e) NULL)
   if (is.null(rx_info)) return(NULL)
 
@@ -176,7 +173,7 @@ rxclass_lookup <- function(drug_name) {
   return(atc)
 }
 
-# 3. Caching setup
+# Caching setup
 cache_file <- "rxclass_cache.qs"
 if (file.exists(cache_file)) {
   rxclass_cache <- qs::qread(cache_file)
@@ -184,8 +181,8 @@ if (file.exists(cache_file)) {
   rxclass_cache <- list()
 }
 
-# 4. Batch API processing
-# --- Rebuild rxclass_results (fixing ATC extraction bug) ---
+# Batch API processing
+# Rebuild rxclass_results (fixing ATC extraction bug) 
 
 rxclass_results <- list()
 
@@ -217,7 +214,6 @@ for (ing in unique_ings) {
     next
   }
 
-  # FIXED: correct path and no "source" filtering
   df <- tryCatch(
     as.data.frame(json$rxclassDrugInfoList$rxclassDrugInfo$rxclass),
     error = function(e) NULL
@@ -231,7 +227,7 @@ for (ing in unique_ings) {
 
 qs::qsave(rxclass_cache, "rxclass_cache.qs")
 
-# 5. Build ATC mapping table (robust version)
+# Build ATC mapping table
 rxclass_atc_map <- bind_rows(
   lapply(names(rxclass_results), function(nm) {
 
@@ -250,7 +246,7 @@ rxclass_atc_map <- bind_rows(
     needed <- c("classId", "className", "classType")
     if (!all(needed %in% names(df))) return(NULL)
 
-    # THE FIX: ATC1-4 instead of ATC
+    # Use ATC1-4 instead of ATC
     df <- df[df$classType == "ATC1-4", ]
     if (nrow(df) == 0) return(NULL)
 
@@ -265,12 +261,12 @@ names(rxclass_atc_map)[names(rxclass_atc_map) == "className"] <- "ATC_NAME"
 
 rxclass_atc_map <- distinct(rxclass_atc_map)
 
-# 6. Join ATC back to FDA data + derive ATC levels
+# Join ATC back to FDA data + derive ATC levels
 active_ingredients_atc <- active_ingredients |>
   mutate(ingredient_norm = toupper(active_ing_split)) |>
   left_join(rxclass_atc_map, by = "ingredient_norm")
 
-# --- Derive ATC hierarchy levels ---
+# Derive ATC hierarchy levels 
 active_ingredients_atc <- active_ingredients_atc |>
   mutate(
     ATC1 = ifelse(!is.na(ATC_CODE), substr(ATC_CODE, 1, 1), NA),
@@ -278,7 +274,7 @@ active_ingredients_atc <- active_ingredients_atc |>
     ATC3 = ifelse(!is.na(ATC_CODE), substr(ATC_CODE, 1, 4), NA)
   )
 
-# --- Collapse to application-level mapping ---
+# Collapse to application-level mapping
 fda_with_atc <- active_ingredients_atc |>
   group_by(appl_no) |>
   summarise(
@@ -293,7 +289,7 @@ fda_with_atc <- active_ingredients_atc |>
     atc_matched = atc_codes != "" & !is.na(atc_codes)
   )
 
-# Diagnostics
+# Merge diagnostics
 message("Total rows: ", nrow(fda_with_atc)) # 50,368
 message("Matched rows: ", sum(fda_with_atc$atc_matched)) # 48,143
 message("Unmatched rows: ", sum(!fda_with_atc$atc_matched)) # 2,225
@@ -304,7 +300,7 @@ message("Match rate: ", round(mean(fda_with_atc$atc_matched) * 100, 2), "%") # 9
 
 write.csv(fda_with_atc, "processed_data/fda_approvals/fda_approvals_cleaned.csv", row.names = FALSE)
 
-# --- Conduct ATC mapping ---
+# Conduct ATC mapping
 
 atc_map <- read.csv("aux_data/atc_level_mapping.csv")
 
@@ -336,159 +332,3 @@ fda_atc_expanded <- fda_atc_expanded |>
 # Save final FDA approvals with ATC mapping
 
 write.csv(fda_atc_expanded, "processed_data/fda_approvals/fda_approvals_atc_mapped.csv", row.names = FALSE)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# -- Draft work for ATC mapping -- #
-
-# --- Load RxNorm data --- #
-
-rxnorm_path <- "raw_data/RxNorm/rrf"
-
-
-## ----------------------------- RXNCONSO --------------------------------- ##
-# RXNCONSO: drug names + ATC vocabulary
-conso_col_names <- c(
-  "RXCUI","LAT","TS","LUI","STT","SUI","ISPREF","RXAUI","SAUI",
-  "SCUI","SDUI","SAB","TTY","CODE","STR","SRL","SUPPRESS","CVF","EMPTY"
-)
-
-rxnconso <- read_delim(
-  file.path(rxnorm_path, "RXNCONSO.RRF"),
-  delim = "|",
-  col_names = conso_col_names,
-  col_types = cols(.default = "c"),
-  escape_double = FALSE,
-  trim_ws = FALSE
-) |>
-  select(-EMPTY)
-
-## ----------------------------- RXNREL (PIN → IN) ------------------------- ##
-rel_col_names <- c(
-  "RXCUI1","RXAUI1","STYPE1",
-  "REL","RELA",
-  "RXCUI2","RXAUI2","STYPE2",
-  "RELB","RUI","SRUI","SRUI2",
-  "SUPPRESS","CVF","EMPTY"
-)
-
-rxnrel <- read_delim(
-  file.path(rxnorm_path, "RXNREL.RRF"),
-  delim = "|",
-  col_names = rel_col_names,
-  col_types = cols(.default = "c"),
-  escape_double = FALSE,
-  trim_ws = FALSE
-) |>
-  select(-EMPTY)
-
-pin_to_in <- rxnrel |>
-  filter(RELA == "ingredient_of") |>
-  select(
-    RXCUI_PIN = RXCUI1,
-    RXCUI_IN  = RXCUI2
-  ) |>
-  distinct()
-
-rxnconso_all <- rxnconso |>
-  filter(SAB == "RXNORM") |>
-  mutate(str_upper = toupper(STR)) |>
-  select(RXCUI, STR, TTY, str_upper)
-
-rxn_mapped <- rxnconso_all |>
-  left_join(pin_to_in, by = c("RXCUI" = "RXCUI_PIN")) |>
-  mutate(
-    RXCUI_FINAL = ifelse(!is.na(RXCUI_IN), RXCUI_IN, RXCUI)
-  )
-
-rxnorm_ingredients_final <- rxn_mapped |>
-  filter(TTY %in% c("IN", "PIN", "MIN", "PN")) |>
-  mutate(ingredient_norm = str_upper) |>
-  select(ingredient_norm, RXCUI_FINAL) |>
-  distinct()
-
-
-## ----------------------------- RXNSAT ------------------------------------ ##
-# RXNSAT: ATC codes + ATC hierarchy levels
-sat_col_names <- c(
-  "RXCUI","LUI","SUI","RXAUI","STYPE","CODE","ATUI","SATUI",
-  "SAB","ATN","ATV","SUPPRESS","CVF","EMPTY_COL"
-)
-
-rxnsat <- read_delim(
-  file.path(rxnorm_path, "RXNSAT.RRF"),
-  delim = "|",
-  col_names = sat_col_names,
-  col_types = cols(.default = "c"),
-  escape_double = FALSE,
-  trim_ws = FALSE
-)
-
-# ✔ Correct ATC extraction logic for *your* RxNorm version:
-#   - SAB == "ATC_LEVEL"   → rows that include ATC codes
-#   - CODE contains ATC_CODE (e.g. "R05CB05")
-#   - ATV holds ATC_LEVEL (1–5) → not useful for mapping
-
-ingredient_atc <- rxnsat |>
-  filter(SAB == "ATC_LEVEL") |>
-  filter(nchar(CODE) >= 5) |>            # ATC codes are 5–7 chars
-  select(
-    RXCUI,
-    ATC_CODE = CODE
-  ) |>
-  distinct()
-
-# ---------------------- Map FDA Ingredients → ATC ------------------------- #
-
-active_ingredients_mapped <- active_ingredients |>
-  mutate(ingredient_norm = toupper(active_ing_split)) |>
-  left_join(
-    rxnorm_ingredients_final,
-    by = "ingredient_norm",
-    relationship = "many-to-one"
-  ) |>
-  left_join(
-    ingredient_atc,
-    by = c("RXCUI_FINAL" = "RXCUI"),
-    relationship = "many-to-many"
-  )
-
-fda_with_atc <- active_ingredients_mapped |>
-  group_by(appl_no) |>
-  summarise(
-    atc_codes = paste(sort(unique(na.omit(ATC_CODE))), collapse = "; "),
-    .groups = "drop"
-  ) |>
-  left_join(fda_drugs, by = "appl_no")
-
-
-# Merge diagnostics
-fda_with_atc <- fda_with_atc |>
-  mutate(
-    atc_matched = atc_codes != "" & !is.na(atc_codes)
-  )
-
-message("Total rows: ", nrow(fda_with_atc)) # 50368
-message("Matched rows: ", sum(fda_with_atc$atc_matched)) # 25026
-message("Unmatched rows: ", sum(!fda_with_atc$atc_matched)) # 25342
-message("Match rate: ", round(mean(fda_with_atc$atc_matched) * 100, 2), "%") # 49.69%
