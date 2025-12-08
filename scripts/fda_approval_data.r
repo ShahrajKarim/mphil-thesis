@@ -235,6 +235,6 @@ fda_with_atc <- fda_with_atc |>
   )
 
 message("Total rows: ", nrow(fda_with_atc)) # 50368
-message("Matched rows: ", sum(fda_with_atc$atc_matched)) # 23877
-message("Unmatched rows: ", sum(!fda_with_atc$atc_matched)) # 26491
-message("Match rate: ", round(mean(fda_with_atc$atc_matched) * 100, 2), "%") # 47.41%
+message("Matched rows: ", sum(fda_with_atc$atc_matched)) # 25026
+message("Unmatched rows: ", sum(!fda_with_atc$atc_matched)) # 25342
+message("Match rate: ", round(mean(fda_with_atc$atc_matched) * 100, 2), "%") # 49.69%
