@@ -167,7 +167,7 @@ rxclass_lookup <- function(drug_name) {
   # Filter ATC
   atc <- rx_info |>
     filter(!is.na(source), source == "ATC") |>
-    select(classId, className)
+    select(classId, className) # nolint: object_usage_linter.
 
   if (nrow(atc) == 0) return(NULL)
   return(atc)
