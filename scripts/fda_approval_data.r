@@ -12,7 +12,7 @@
 
 # 3. Therapeutic classification:
 #    - Use RxClass API (cached) to map ingredients to ATC classes.
-#    - Derive ATC Level 1–3 categories from ATC codes.
+#    - Derive ATC Level 1–2 categories from ATC codes.
 #
 # 4. Final approvals dataset:
 #    - Collapse ingredient-level ATC results to the application level.
@@ -332,3 +332,125 @@ fda_atc_expanded <- fda_atc_expanded |>
 # Save final FDA approvals with ATC mapping
 
 write.csv(fda_atc_expanded, "processed_data/fda_approvals/fda_approvals_atc_mapped.csv", row.names = FALSE)
+
+# --- Firm - NDC MAPPING --- #
+
+fda_atc_expanded <- read.csv("processed_data/fda_approvals/fda_approvals_atc_mapped.csv")
+
+# Extract firm names if date >= 2005-01-01
+fda_firms <- fda_atc_expanded |>
+  filter(as.Date(first_approval_date) >= as.Date("2005-01-01")) |>
+  distinct(sponsor_name) |>
+  rename(firm = sponsor_name)
+
+# Import NDC firm mapping
+ndc_firms <- read_csv("aux_data/ndc_firm_mapping.csv")
+
+# Clean FDA firm names
+fda_firms <- fda_firms |>
+  mutate(
+    firm_clean = firm |> 
+      toupper() |>
+      gsub("[^A-Z0-9 ]", " ", x = _) |>
+      gsub("\\b(CORP|CORPORATION|INC|CO|COMPANY|LLC|LTD|LP|PLC|AG|SA|PHARMA|PHARMACEUTICALS)\\b", "", x = _) |>
+      gsub("\\s+", " ", x = _) |>
+      trimws()
+  )
+
+# Clean NDC firm names
+ndc_firms <- ndc_firms |>
+  mutate(
+    firm_utf8 = iconv(firm, from = "", to = "UTF-8", sub = ""),   # drop invalid bytes
+    firm_clean = firm_utf8 |>
+      toupper() |>
+      gsub("[^A-Z0-9 ]", " ", x = _) |>
+      gsub("\\b(CORP|CORPORATION|INC|CO|COMPANY|LLC|LTD|LP|PLC|AG|SA|PHARMA|PHARMACEUTICALS)\\b", "", x = _) |>
+      gsub("\\s+", " ", x = _) |>
+      trimws()
+  ) |>
+  filter(!is.na(firm_clean), firm_clean != "") |>
+  arrange(firm_clean) |>
+  group_by(firm_clean) |>
+  summarise(
+    labeler_code = first(labeler_code_pad),
+    .groups = "drop"
+  )
+
+# Exact cleaned match
+stage1 <- fda_firms |>
+  left_join(ndc_firms, by = "firm_clean", suffix = c("_fda", "_ndc"))
+
+# Identify unmatched firms
+unmatched <- stage1 |>
+  filter(is.na(labeler_code)) |>
+  mutate(
+    root = str_match(firm_clean, "\\b([A-Z0-9]{4,})\\b")[, 2],
+    root = ifelse(
+      is.na(root),
+      str_extract(firm_clean, "^[A-Z0-9]+"),
+      root
+    )
+  ) |>
+  select(-labeler_code)
+
+# Build NDC firm root table - first word with > 3 chars
+
+ndc_roots <- ndc_firms |>
+  mutate(
+    root = str_match(firm_clean, "\\b([A-Z0-9]{4,})\\b")[, 2],
+    root = ifelse(is.na(root),
+                  str_extract(firm_clean, "^[A-Z0-9]+"),
+                  root)
+  ) |>
+  filter(!is.na(root)) |>
+
+  # Pick the most frequent labeler per root
+  # Some misidentification will occur but numbers are small
+  group_by(root, labeler_code) |>
+  summarise(n = n(), .groups = "drop") |>
+  group_by(root) |>
+  slice_max(n, with_ties = FALSE) |>  # ensures exactly ONE labeler per root
+  ungroup() |>
+  select(root, labeler_code)
+
+# Merge unmatched with root-based mapping
+fallback <- unmatched |>
+  left_join(ndc_roots, by = "root")
+
+# Combine exact matches with fallbacks and non-matches
+firm_matches <- stage1 |>
+  filter(!is.na(labeler_code)) |>
+  bind_rows(
+    fallback
+  ) |>
+  select(firm, labeler_code)
+
+# Merge diagnostics
+message("Total rows: ", nrow(firm_matches)) # 1,465
+message("Matched rows: ", sum(!is.na(firm_matches$labeler_code))) # 1015
+message("Unmatched rows: ", sum(is.na(firm_matches$labeler_code))) # 450
+message("Match rate: ", round(mean(!is.na(firm_matches$labeler_code)) * 100, 2), "%") # 69.28%
+
+# Save firm - NDC mapping
+
+write.csv(
+  firm_matches,
+  file = "aux_data/ndc_fda_firm_mapping.csv",
+  row.names = FALSE
+)
+
+# Merge firm mapping with FDA data
+
+fda_atc_expanded <- fda_atc_expanded |>
+  left_join(firm_matches, by = c("sponsor_name" = "firm")) |>
+  filter(as.Date(first_approval_date) >= as.Date("2005-01-01"))
+
+message("Match rate: ", round(mean(!is.na(fda_atc_expanded$labeler_code)) * 100, 2), "%") # 82.26%
+
+# Save final FDA approvals with firm mapping
+
+write.csv(
+  fda_atc_expanded,
+  "processed_data/fda_approvals/fda_approvals_atc_firm_mapped.csv",
+  row.names = FALSE
+)
