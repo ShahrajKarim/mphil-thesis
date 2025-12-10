@@ -447,6 +447,15 @@ fda_atc_expanded <- fda_atc_expanded |>
 
 message("Match rate: ", round(mean(!is.na(fda_atc_expanded$labeler_code)) * 100, 2), "%") # 82.26%
 
+
+# Generate Year & Quarter variables
+
+fda_atc_expanded <- fda_atc_expanded |>
+  mutate(
+    approval_year    = year(first_approval_date),
+    approval_quarter = quarter(first_approval_date)
+  )
+
 # Save final FDA approvals with firm mapping
 
 write.csv(
