@@ -577,6 +577,12 @@ map_ndc_to_atc_full <- function(ndc_vec) {
 
 ndc_atc_mapping <- map_ndc_to_atc_full(ndc_list)
 
+write.csv(
+  ndc_atc_mapping,
+  file = "aux_data/ndc_atc_mapping.csv",
+  row.names = FALSE
+)
+
 # Now merge the mapping with the SDUD data
 
 SDUD_firm_mapped <- SDUD_firm_mapped |>
