@@ -26,10 +26,12 @@ library(janitor)
 library(stringr)
 library(tidyr)
 library(httr)
+library(httr2)
 library(jsonlite)
 library(purrr)
 library(qs)
 library(lubridate)
+library(rxnorm)
 
 # --- Load FDA approval data --- #
 
@@ -461,5 +463,216 @@ fda_atc_expanded <- fda_atc_expanded |>
 write.csv(
   fda_atc_expanded,
   "processed_data/fda_approvals/fda_approvals_atc_firm_mapped.csv",
+  row.names = FALSE
+)
+
+# --- SDUD MAPPING for FDA data --- #
+
+SDUD_firm_mapped <- readRDS("processed_data/state_drug_utilisation_data/SDUD_firm_mapped.rds")
+
+ndc_list <- SDUD_firm_mapped |> 
+  distinct(ndc) |> 
+  pull(ndc)
+
+# Define function mapping NDC to RXCUI
+
+rxnorm_ndc_to_rxcui <- function(ndc_vec) {
+
+  ndc_vec <- ndc_vec |> unique()
+
+  safely_get <- safely(function(ndc) {
+    url <- paste0("https://rxnav.nlm.nih.gov/REST/ndcstatus.json?ndc=", ndc)
+    resp <- request(url) |> req_perform()
+    json <- resp_body_json(resp)
+
+    rxcui <- json$ndcStatus$rxcui
+    if (is.null(rxcui) || rxcui == "") return(NA)
+    return(rxcui)
+  })
+
+  results <- map_chr(ndc_vec, ~ safely_get(.x)$result %||% NA)
+
+  tibble(
+    ndc = ndc_vec,
+    rxcui = results
+  )
+}
+
+# Define function mapping RXCUI to ATC
+
+rxcui_to_atc <- function(rxcui_df) {
+
+  valid_rxcui <- rxcui_df |> 
+    filter(!is.na(rxcui)) |>
+    distinct(rxcui) |>
+    pull(rxcui)
+
+  atc_mapping <- map_dfr(valid_rxcui, function(rxcui_id) {
+
+    # Call the API for the single CUI
+    atc_codes <- get_atc(rxcui_id)
+
+    # If result is NA (no ATC found)
+    if (all(is.na(atc_codes))) {
+      return(tibble(rxcui = rxcui_id, atc = NA_character_))
+    }
+
+    # Convert the vector result into a two-column tibble: CUI and ATC
+    return(tibble(
+      rxcui = rxcui_id,
+      atc = atc_codes
+    ))
+  }) |>
+    group_by(rxcui) |>
+    summarise(
+      atc = paste(unique(atc[!is.na(atc)]), collapse = "; "),
+      .groups = 'drop'
+    ) |>
+    mutate(atc = ifelse(atc == "", NA_character_, atc))
+
+  return(atc_mapping)
+}
+
+# Define function to generate ATC levels 1 and 2
+
+generate_atc_levels <- function(atc_mapped_df) {
+
+  atc_level_df <- atc_mapped_df |>
+    filter(!is.na(atc), atc != "Unclassified") |>
+    separate_rows(atc, sep = ";\\s*") |>
+    mutate(
+      ATC_Level1 = case_when(
+        nchar(atc) >= 1 ~ stringr::str_sub(atc, 1, 1),
+        TRUE ~ NA_character_
+      )
+    ) |>
+    mutate(
+      ATC_Level2 = case_when(
+        nchar(atc) >= 3 ~ stringr::str_sub(atc, 1, 3),
+        TRUE ~ NA_character_
+      )
+    ) |>
+    select(rxcui, atc, ATC_Level1, ATC_Level2) |>
+    distinct()
+
+  return(atc_level_df)
+
+}
+
+# Define function that combines the three steps together
+
+map_ndc_to_atc_full <- function(ndc_vec) {
+
+  step1_df <- rxnorm_ndc_to_rxcui(ndc_vec)
+
+  step2_df <- rxcui_to_atc(step1_df)
+
+  step3_df <- generate_atc_levels(step2_df)
+
+  final_mapping <- step1_df |>
+    left_join(step3_df, by = "rxcui", relationship = "many-to-many")
+
+  return(final_mapping)
+}
+
+ndc_atc_mapping <- map_ndc_to_atc_full(ndc_list)
+
+# Now merge the mapping with the SDUD data
+
+SDUD_firm_mapped <- SDUD_firm_mapped |>
+  left_join(ndc_atc_mapping, by = "ndc") |>
+  select(- rxcui, atc)
+
+# Collapse FDA approvals to firm-year-quarter-ATC level
+
+fda_atc_expanded <- read.csv("processed_data/fda_approvals/fda_approvals_atc_firm_mapped.csv")
+
+fda_approvals_panel <- fda_atc_expanded |>
+  group_by(
+    sponsor_name,
+    labeler_code,
+    approval_year,
+    approval_quarter,
+    atc_level1,
+    atc_level2
+  ) |>
+  summarise(
+    n_approvals = n(),
+    .groups = "drop"
+  )
+
+# Collapse SDUD data to firm-year-quarter-ATC level
+
+SDUD_firm_ATC <- SDUD_firm_mapped |>
+  group_by(
+    state,
+    firm,
+    labeler_code,
+    year,
+    quarter,
+    ATC_Level1,
+    ATC_Level2
+  ) |>
+  summarise(
+    prescriptions = sum(number_of_prescriptions, na.rm = TRUE),
+    medicaid_reimbursed = sum(medicaid_amount_reimbursed, na.rm = TRUE),
+    non_medicaid_reimbursed = sum(non_medicaid_amount_reimbursed, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# SDUD ATC level 1 aggregate indicators
+
+SDUD_ATC1 <- SDUD_firm_ATC |>
+  group_by(year, quarter, ATC_Level1) |>
+  summarise(
+    ATC1_prescriptions = sum(prescriptions, na.rm = TRUE),
+    ATC1_medicaid_reimbursed = sum(medicaid_reimbursed, na.rm = TRUE),
+    ATC1_non_medicaid_reimbursed = sum(non_medicaid_reimbursed, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# SDUD ATC level 2 aggregate indicators
+
+SDUD_ATC2 <- SDUD_firm_ATC |>
+  group_by(year, quarter, ATC_Level2) |>
+  summarise(
+    ATC2_prescriptions = sum(prescriptions, na.rm = TRUE),
+    ATC2_medicaid_reimbursed = sum(medicaid_reimbursed, na.rm = TRUE),
+    ATC2_non_medicaid_reimbursed = sum(non_medicaid_reimbursed, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Merge SDUD datasets to obtain resulting SDUD master file
+
+SDUD_master <- SDUD_firm_ATC |>
+  left_join(
+    SDUD_ATC1,
+    by = c("year", "quarter", "ATC_Level1")
+  ) |>
+  left_join(
+    SDUD_ATC2,
+    by = c("year", "quarter", "ATC_Level2")
+  )
+
+
+# Merge FDA approvals panel with SDUD data
+
+fda_sdud_merged <- fda_approvals_panel |>
+  left_join(
+    SDUD_master,
+    by = c(
+      "labeler_code" = "labeler_code",
+      "approval_year" = "year",
+      "approval_quarter" = "quarter",
+      "atc_level1" = "ATC_Level1",
+      "atc_level2" = "ATC_Level2"
+    )
+  )
+
+# Save final merged dataset
+
+write.csv(
+  fda_sdud_merged,
+  "processed_data/fda_approvals/fda_sdud_merged.csv",
   row.names = FALSE
 )
