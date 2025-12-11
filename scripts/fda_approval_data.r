@@ -586,12 +586,44 @@ write.csv(
 # Now merge the mapping with the SDUD data
 
 SDUD_firm_mapped <- SDUD_firm_mapped |>
-  left_join(ndc_atc_mapping, by = "ndc") |>
-  select(- rxcui, atc)
+  left_join(ndc_atc_mapping, by = "ndc", relationship = "many-to-many") |>
+  select(- rxcui)
 
-# Collapse FDA approvals to firm-year-quarter-ATC level
+# Merge diagnostics
 
-fda_atc_expanded <- read.csv("processed_data/fda_approvals/fda_approvals_atc_firm_mapped.csv")
+message("Total rows: ", nrow(SDUD_firm_mapped)) # 42373338
+message("Matched rows: ", sum(!is.na(SDUD_firm_mapped$atc))) # 40722005
+message("Unmatched rows: ", sum(is.na(SDUD_firm_mapped$atc))) # 1651333
+message("Match rate: ", round(mean(!is.na(SDUD_firm_mapped$atc)) * 100, 2), "%") # 96.10%
+
+SDUD_firm_mapped <- SDUD_firm_mapped |>
+  filter(!is.na(atc))
+
+# Load in FDA approvals data with firm mapping
+
+fda_atc_expanded <- read_csv(
+  "processed_data/fda_approvals/fda_approvals_atc_firm_mapped.csv",
+  col_types = cols(
+    labeler_code = col_character()
+  )
+)
+
+# Final name cleaning for FDA firms
+
+sponsor_final <- fda_atc_expanded |>
+  group_by(labeler_code) |>
+  summarise(
+    sponsor_canonical = first(sponsor_name),
+    .groups = "drop"
+  ) |>
+  select(labeler_code, sponsor_canonical) |>
+  rename(sponsor_name = sponsor_canonical)
+
+fda_atc_expanded <- fda_atc_expanded |>
+  select(-sponsor_name) |>
+  left_join(sponsor_final, by = "labeler_code")
+
+# Collapse FDA data to firm-year-quarter-ATC level
 
 fda_approvals_panel <- fda_atc_expanded |>
   group_by(
