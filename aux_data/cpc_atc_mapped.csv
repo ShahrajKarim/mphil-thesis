@@ -1,0 +1,172 @@
+cpc_group,cpc_group_title,sub_class,ATC1
+A61P1/00,Drugs for disorders of the alimentary tract or the digestive system,-,A
+A61P1/02,"Drugs for disorders of the alimentary tract or the digestive system-Stomatological preparations, e.g. drugs for caries, aphtae, periodontitis",Stomatological preparations,A
+A61P1/04,"Drugs for disorders of the alimentary tract or the digestive system-for ulcers, gastritis or reflux esophagitis, e.g. antacids, inhibitors of acid secretion, mucosal protectants","ulcers, gastritis or reflux esophagitis",A
+A61P1/06,"Drugs for disorders of the alimentary tract or the digestive system-Anti-spasmodics, e.g. drugs for colics, esophagic dyskinesia",Anti-spasmodics,A
+A61P1/08,"Drugs for disorders of the alimentary tract or the digestive system-for nausea, cinetosis or vertigo; Antiemetics","nausea, cinetosis or vertigo",A
+A61P1/10,Drugs for disorders of the alimentary tract or the digestive system-Laxatives,Laxatives,A
+A61P1/12,Drugs for disorders of the alimentary tract or the digestive system-Antidiarrhoeals,Antidiarrhoeals,A
+A61P1/14,"Drugs for disorders of the alimentary tract or the digestive system-Prodigestives, e.g. acids, enzymes, appetite stimulants, antidyspeptics, tonics, antiflatulents",Prodigestives,A
+A61P1/16,"Drugs for disorders of the alimentary tract or the digestive system-for liver or gallbladder disorders, e.g. hepatoprotective agents, cholagogues, litholytics",liver or gallbladder,A
+A61P1/18,"Drugs for disorders of the alimentary tract or the digestive system-for pancreatic disorders, e.g. pancreatic enzymes",pancreas,A
+A61P11/00,Drugs for disorders of the respiratory system,-,R
+A61P11/02,"Drugs for disorders of the respiratory system-Nasal agents, e.g. decongestants",nasal,R
+A61P11/04,Drugs for disorders of the respiratory system-for throat disorders,throat,R
+A61P11/06,Drugs for disorders of the respiratory system-Antiasthmatics,antiasthamtics,R
+A61P11/08,Drugs for disorders of the respiratory system-Bronchodilators,bronchodilators,R
+A61P11/10,Drugs for disorders of the respiratory system-Expectorants,expecorants,R
+A61P11/12,Drugs for disorders of the respiratory system-Mucolytics,mucolytics,R
+A61P11/14,Drugs for disorders of the respiratory system-Antitussive agents,antitussive agents,R
+A61P11/16,Drugs for disorders of the respiratory system-Central respiratory analeptics,central respiratory analeptics,R
+A61P13/00,Drugs for disorders of the urinary system,-,G
+A61P13/02,"Drugs for disorders of the urinary system-of urine or of the urinary tract, e.g. urine acidifiers",urine or urinary tract,G
+A61P13/04,Drugs for disorders of the urinary system-for urolithiasis,urolithiasis,G
+A61P13/06,Drugs for disorders of the urinary system-Anti-spasmodics,Anti-spasmodics,G
+A61P13/08,Drugs for disorders of the urinary system-of the prostate,prostate,G
+A61P13/10,Drugs for disorders of the urinary system-of the bladder,bladder,G
+A61P13/12,Drugs for disorders of the urinary system-of the kidneys,kidney,G
+A61P15/00,Drugs for genital or sexual disorders ; Contraceptives,-,G
+A61P15/02,Drugs for genital or sexual disorders ; Contraceptives-for disorders of the vagina,vaginal disorders,G
+A61P15/04,Drugs for genital or sexual disorders ; Contraceptives-for inducing labour or abortion; Uterotonics,inducing labour/abortion,G
+A61P15/06,Drugs for genital or sexual disorders ; Contraceptives-Antiabortive agents; Labour repressants,antiabortive,G
+A61P15/08,"Drugs for genital or sexual disorders ; Contraceptives-for gonadal disorders or for enhancing fertility, e.g. inducers of ovulation or of spermatogenesis",gonadal or fertility,G
+A61P15/10,Drugs for genital or sexual disorders ; Contraceptives-for impotence,impotence,G
+A61P15/12,Drugs for genital or sexual disorders ; Contraceptives-for climacteric disorders,climacteric,G
+A61P15/14,"Drugs for genital or sexual disorders ; Contraceptives-for lactation disorders, e.g. galactorrhoea",lactation,G
+A61P15/16,Drugs for genital or sexual disorders ; Contraceptives-Masculine contraceptives,male contraceptives,G
+A61P15/18,Drugs for genital or sexual disorders ; Contraceptives-Feminine contraceptives,female contraceptives,G
+A61P17/00,Drugs for dermatological disorders,-,D
+A61P17/02,"Drugs for dermatological disorders-for treating wounds, ulcers, burns, scars, keloids, or the like",treating wounds,D
+A61P17/04,Drugs for dermatological disorders-Antipruritics,Antipruritics,D
+A61P17/06,Drugs for dermatological disorders-Antipsoriatics,Antipsoriatics,D
+A61P17/08,Drugs for dermatological disorders-Antiseborrheics,Antiseborrheics,D
+A61P17/10,Drugs for dermatological disorders-Anti-acne agents,Anti-acne,D
+A61P17/12,"Drugs for dermatological disorders-Keratolytics, e.g. wart or anti-corn preparations",Keratolytics,D
+A61P17/14,Drugs for dermatological disorders-for baldness or alopecia,baldness,D
+A61P17/16,"Drugs for dermatological disorders-Emollients or protectives, e.g. against radiation",Emollients,D
+A61P17/18,"Drugs for dermatological disorders-Antioxidants, e.g. antiradicals",Antioxidants,D
+A61P19/00,Drugs for skeletal disorders,-,M
+A61P19/02,"Drugs for skeletal disorders-for joint disorders, e.g. arthritis, arthrosis",joints,M
+A61P19/04,Drugs for skeletal disorders-for non-specific disorders of the connective tissue,connective tissue,M
+A61P19/06,"Drugs for skeletal disorders-Antigout agents, e.g. antihyperuricemic or uricosuric agents",antigout agents,M
+A61P19/08,"Drugs for skeletal disorders-for bone diseases, e.g. rachitism, Paget's disease",bone diseases,M
+A61P19/10,"Drugs for skeletal disorders-for bone diseases, e.g. rachitism, Paget's disease-for osteoporosis",osteoporosis,M
+A61P21/00,Drugs for disorders of the muscular or neuromuscular system,-,M
+A61P21/02,"Drugs for disorders of the muscular or neuromuscular system-Muscle relaxants, e.g. for tetanus or cramps",muscle relaxants,M
+A61P21/04,Drugs for disorders of the muscular or neuromuscular system-for myasthenia gravis,myasthenia gravis,M
+A61P21/06,Drugs for disorders of the muscular or neuromuscular system-Anabolic agents,anabolic agents,M
+A61P23/00,Anaesthetics,-,N
+A61P23/02,Anaesthetics-Local anaesthetics,local anaesthetics,N
+A61P25/00,Drugs for disorders of the nervous system,-,N
+A61P25/02,Drugs for disorders of the nervous system-for peripheral neuropathies,peripheral neuropathies,N
+A61P25/04,"Drugs for disorders of the nervous system-Centrally acting analgesics, e.g. opioids",Centrally acting analgesics,N
+A61P25/06,Drugs for disorders of the nervous system-Antimigraine agents,Antimigraine agents,N
+A61P25/08,Drugs for disorders of the nervous system-Antiepileptics; Anticonvulsants,Antiepileptics; Anticonvulsants,N
+A61P25/10,Drugs for disorders of the nervous system-Antiepileptics; Anticonvulsants-for petit-mal,petit-mal,N
+A61P25/12,Drugs for disorders of the nervous system-Antiepileptics; Anticonvulsants-for grand-mal,grand-mal,N
+A61P25/14,"Drugs for disorders of the nervous system-for treating abnormal movements, e.g. chorea, dyskinesia",abnormal movements,N
+A61P25/16,"Drugs for disorders of the nervous system-for treating abnormal movements, e.g. chorea, dyskinesia-Anti-Parkinson drugs",Anti-Parkinson drugs,N
+A61P25/18,"Drugs for disorders of the nervous system-Antipsychotics, i.e. neuroleptics; Drugs for mania or schizophrenia",Antipsychotics,N
+A61P25/20,Drugs for disorders of the nervous system-Hypnotics; Sedatives,Hypnotics; Sedatives,N
+A61P25/22,Drugs for disorders of the nervous system-Anxiolytics,Anxiolytics,N
+A61P25/24,Drugs for disorders of the nervous system-Antidepressants,Antidepressants,N
+A61P25/26,"Drugs for disorders of the nervous system-Psychostimulants, e.g. nicotine, cocaine",Psychostimulants,N
+A61P25/28,"Drugs for disorders of the nervous system-for treating neurodegenerative disorders of the central nervous system, e.g. nootropic agents, cognition enhancers, drugs for treating Alzheimer's disease or other forms of dementia",neurodegenerative disorders,N
+A61P25/30,Drugs for disorders of the nervous system-for treating abuse or dependence,abuse or dependence,N
+A61P25/32,Drugs for disorders of the nervous system-for treating abuse or dependence-Alcohol-abuse,alcohol abuse,N
+A61P25/34,Drugs for disorders of the nervous system-for treating abuse or dependence-Tobacco-abuse,tobacco abuse,N
+A61P25/36,Drugs for disorders of the nervous system-for treating abuse or dependence-Opioid-abuse,opioid abuse,N
+A61P27/00,Drugs for disorders of the senses,-,S
+A61P27/02,Drugs for disorders of the senses-Ophthalmic agents,Ophthalmic agents,S
+A61P27/04,Drugs for disorders of the senses-Ophthalmic agents-Artificial tears; Irrigation solutions,Artificial tears; Irrigation solutions,S
+A61P27/06,Drugs for disorders of the senses-Ophthalmic agents-Antiglaucoma agents or miotics,Antiglaucoma agents or miotics,S
+A61P27/08,Drugs for disorders of the senses-Ophthalmic agents-Mydriatics or cycloplegics,Mydriatics or cycloplegics,S
+A61P27/10,"Drugs for disorders of the senses-Ophthalmic agents-for accommodation disorders, e.g. myopia",accommodation disorders,S
+A61P27/12,Drugs for disorders of the senses-Ophthalmic agents-for cataracts,cataracts,S
+A61P27/14,Drugs for disorders of the senses-Ophthalmic agents-Decongestants or antiallergics,Decongestants or antiallergics,S
+A61P27/16,Drugs for disorders of the senses-Otologicals,Otologicals,S
+A61P29/00,"Non-central analgesic, antipyretic or antiinflammatory agents, e.g. antirheumatic agents; Non-steroidal antiinflammatory drugs [NSAID]",-,M
+A61P29/02,"Non-central analgesic, antipyretic or antiinflammatory agents, e.g. antirheumatic agents; Non-steroidal antiinflammatory drugs [NSAID]-without antiinflammatory effect",without antiinflammatory effect,M
+A61P3/00,Drugs for disorders of the metabolism,-,A
+A61P3/02,"Drugs for disorders of the metabolism -Nutrients, e.g. vitamins, minerals",Nutrients,A
+A61P3/04,Drugs for disorders of the metabolism -Anorexiants; Antiobesity agents,Anorexiants,A
+A61P3/06,Drugs for disorders of the metabolism -Antihyperlipidemics,Antihyperlipidemics,A
+A61P3/08,Drugs for disorders of the metabolism -for glucose homeostasis,glucose homeostasis,A
+A61P3/10,"Drugs for disorders of the metabolism -for glucose homeostasis -for hyperglycaemia, e.g. antidiabetics",hyperglycaemia,A
+A61P3/12,Drugs for disorders of the metabolism -for electrolyte homeostasis,electrolyte homeostasis,A
+A61P3/14,Drugs for disorders of the metabolism -for electrolyte homeostasis-for calcium homeostasis,calcium homeostasis,A
+A61P31/00,"Antiinfectives, i.e. antibiotics, antiseptics, chemotherapeutics",-,J
+A61P31/02,"Antiinfectives, i.e. antibiotics, antiseptics, chemotherapeutics-Local antiseptics",Local antiseptics,J
+A61P31/04,"Antiinfectives, i.e. antibiotics, antiseptics, chemotherapeutics-Antibacterial agents",Antibacterial agents,J
+A61P31/06,"Antiinfectives, i.e. antibiotics, antiseptics, chemotherapeutics-Antibacterial agents-for tuberculosis",tuberculosis,J
+A61P31/08,"Antiinfectives, i.e. antibiotics, antiseptics, chemotherapeutics-Antibacterial agents-for leprosy",leprosy,J
+A61P31/10,"Antiinfectives, i.e. antibiotics, antiseptics, chemotherapeutics-Antimycotics",Antimycotics,J
+A61P31/12,"Antiinfectives, i.e. antibiotics, antiseptics, chemotherapeutics-Antivirals",Antivirals,J
+A61P31/14,"Antiinfectives, i.e. antibiotics, antiseptics, chemotherapeutics-Antivirals-for RNA viruses",RNA viruses,J
+A61P31/16,"Antiinfectives, i.e. antibiotics, antiseptics, chemotherapeutics-Antivirals-for RNA viruses-for influenza or rhinoviruses",influenza or rhinoviruses,J
+A61P31/18,"Antiinfectives, i.e. antibiotics, antiseptics, chemotherapeutics-Antivirals-for RNA viruses-for HIV",HIV,J
+A61P31/20,"Antiinfectives, i.e. antibiotics, antiseptics, chemotherapeutics-Antivirals-for DNA viruses",DNA viruses,J
+A61P31/22,"Antiinfectives, i.e. antibiotics, antiseptics, chemotherapeutics-Antivirals-for DNA viruses-for herpes viruses",herpes viruses,J
+A61P33/00,Antiparasitic agents,-,P
+A61P33/02,"Antiparasitic agents-Antiprotozoals, e.g. for leishmaniasis, trichomoniasis, toxoplasmosis",Antiprotozoals,P
+A61P33/04,"Antiparasitic agents-Antiprotozoals, e.g. for leishmaniasis, trichomoniasis, toxoplasmosis-Amoebicides",Amoebicides,P
+A61P33/06,"Antiparasitic agents-Antiprotozoals, e.g. for leishmaniasis, trichomoniasis, toxoplasmosis-Antimalarials",Antimalarials,P
+A61P33/08,"Antiparasitic agents-Antiprotozoals, e.g. for leishmaniasis, trichomoniasis, toxoplasmosis-for Pneumocystis carinii",Pneumocystis carinii,P
+A61P33/10,Antiparasitic agents-Anthelmintics,Anthelmintics,P
+A61P33/12,Antiparasitic agents-Anthelmintics-Schistosomicides,Schistosomicides,P
+A61P33/14,"Antiparasitic agents-Ectoparasiticides, e.g. scabicides",Ectoparasiticides,P
+A61P35/00,Antineoplastic agents,-,L
+A61P35/02,Antineoplastic agents-specific for leukemia,leukemia,L
+A61P35/04,Antineoplastic agents-specific for metastasis,metastasis,L
+A61P37/00,Drugs for immunological or allergic disorders,-,L
+A61P37/02,Drugs for immunological or allergic disorders-Immunomodulators,Immunomodulators,L
+A61P37/04,Drugs for immunological or allergic disorders-Immunomodulators-Immunostimulants,Immunostimulants,L
+A61P37/06,"Drugs for immunological or allergic disorders-Immunomodulators-Immunosuppressants, e.g. drugs for graft rejection",Immunosuppressants,L
+A61P37/08,Drugs for immunological or allergic disorders-Antiallergic agents,Antiallergic agents,L
+A61P39/00,General protective or antinoxious agents,-,V
+A61P39/02,General protective or antinoxious agents-Antidotes,Antidotes,V
+A61P39/04,General protective or antinoxious agents-Chelating agents,Chelating agents,V
+A61P39/06,General protective or antinoxious agents-Free radical scavengers or antioxidants,Free radical scavengers or antioxidants,V
+A61P41/00,"Drugs used in surgical methods, e.g. surgery adjuvants for preventing adhesion or for vitreum substitution",-,V
+A61P43/00,"Drugs for specific purposes, not provided for in groups A61P1/00-A61P41/00",-,V
+A61P5/00,Drugs for disorders of the endocrine system,-,H
+A61P5/02,"Drugs for disorders of the endocrine system-of the hypothalamic hormones, e.g. TRH, GnRH, CRH, GRH, somatostatin",hypothalamic hormones,H
+A61P5/04,"Drugs for disorders of the endocrine system-of the hypothalamic hormones, e.g. TRH, GnRH, CRH, GRH, somatostatin-for decreasing, blocking or antagonising the activity of the hypothalamic hormones","decreasing, blocking or antagonising the activity of the hypothalamic hormones",H
+A61P5/06,"Drugs for disorders of the endocrine system-of the anterior pituitary hormones, e.g. TSH, ACTH, FSH, LH, PRL, GH",anterior pituitary hormones,H
+A61P5/08,"Drugs for disorders of the endocrine system-of the anterior pituitary hormones, e.g. TSH, ACTH, FSH, LH, PRL, GH-for decreasing, blocking or antagonising the activity of the anterior pituitary hormones","decreasing, blocking or antagonising the activity of the anterior pituitary hormones",H
+A61P5/10,"Drugs for disorders of the endocrine system-of the posterior pituitary hormones, e.g. oxytocin, ADH",posterior pituitary hormones,H
+A61P5/12,"Drugs for disorders of the endocrine system-of the posterior pituitary hormones, e.g. oxytocin, ADH-for decreasing, blocking or antagonising the activity of the posterior pituitary hormones","decreasing, blocking or antagonising the activity of the posterior pituitary hormones",H
+A61P5/14,"Drugs for disorders of the endocrine system-of the thyroid hormones, e.g. T3, T4",thyroid hormones,H
+A61P5/16,"Drugs for disorders of the endocrine system-of the thyroid hormones, e.g. T3, T4-for decreasing, blocking or antagonising the activity of the thyroid hormones","decreasing, blocking or antagonising the activity of the thyroid hormones",H
+A61P5/18,Drugs for disorders of the endocrine system-of the parathyroid hormones,parathyroid hormones,H
+A61P5/20,"Drugs for disorders of the endocrine system-of the parathyroid hormones-for decreasing, blocking or antagonising the activity of PTH","decreasing, blocking or antagonising the activity of PTH",H
+A61P5/22,"Drugs for disorders of the endocrine system-of the parathyroid hormones-for decreasing, blocking or antagonising the activity of calcitonin","decreasing, blocking or antagonising the activity of calcitonin",H
+A61P5/24,Drugs for disorders of the endocrine system-of the sex hormones,sex hormones,H
+A61P5/26,Drugs for disorders of the endocrine system-of the sex hormones-Androgens,Androgens,H
+A61P5/28,Drugs for disorders of the endocrine system-of the sex hormones-Antiandrogens,Antiandrogens,H
+A61P5/30,Drugs for disorders of the endocrine system-of the sex hormones-Oestrogens,Oestrogens,H
+A61P5/32,Drugs for disorders of the endocrine system-of the sex hormones-Antioestrogens,Antioestrogens,H
+A61P5/34,Drugs for disorders of the endocrine system-of the sex hormones-Gestagens,Gestagens,H
+A61P5/36,Drugs for disorders of the endocrine system-of the sex hormones-Antigestagens,Antigestagens,H
+A61P5/38,Drugs for disorders of the endocrine system-of the suprarenal hormones,suprarenal hormones,H
+A61P5/40,"Drugs for disorders of the endocrine system-of the suprarenal hormones-Mineralocorticosteroids, e.g. aldosterone; Drugs increasing or potentiating the activity of mineralocorticosteroids",Mineralocorticosteroids,H
+A61P5/42,"Drugs for disorders of the endocrine system-of the suprarenal hormones-for decreasing, blocking or antagonising the activity of mineralocorticosteroids","decreasing, blocking or antagonising the activity of mineralocorticosteroids",H
+A61P5/44,Drugs for disorders of the endocrine system-of the suprarenal hormones-Glucocorticosteroids; Drugs increasing or potentiating the activity of glucocorticosteroids,Glucocorticosteroids; Drugs increasing or potentiating the activity of glucocorticosteroids,H
+A61P5/46,"Drugs for disorders of the endocrine system-of the suprarenal hormones-for decreasing, blocking or antagonising the activity of glucocorticosteroids","decreasing, blocking or antagonising the activity of glucocorticosteroids",H
+A61P5/48,Drugs for disorders of the endocrine system-of the pancreatic hormones,pancreatic hormones,H
+A61P5/50,Drugs for disorders of the endocrine system-of the pancreatic hormones-for increasing or potentiating the activity of insulin,increasing or potentiating the activity of insulin,H
+A61P7/00,Drugs for disorders of the blood or the extracellular fluid,-,B
+A61P7/02,Drugs for disorders of the blood or the extracellular fluid-Antithrombotic agents; Anticoagulants; Platelet aggregation inhibitors,Antithrombotic agents; Anticoagulants; Platelet aggregation inhibitors,B
+A61P7/04,Drugs for disorders of the blood or the extracellular fluid-Antihaemorrhagics; Procoagulants; Haemostatic agents; Antifibrinolytic agents,Antihaemorrhagics; Procoagulants; Haemostatic agents; Antifibrinolytic agents,B
+A61P7/06,Drugs for disorders of the blood or the extracellular fluid-Antianaemics,Antianaemics,B
+A61P7/08,"Drugs for disorders of the blood or the extracellular fluid-Plasma substitutes; Perfusion solutions; Dialytics or haemodialytics; Drugs for electrolytic or acid-base disorders, e.g. hypovolemic shock",Plasma substitutes; Perfusion solutions; Dialytics or haemodialytics; Drugs for electrolytic or acid-base disorders,B
+A61P7/10,Drugs for disorders of the blood or the extracellular fluid-Antioedematous agents; Diuretics,Antioedematous agents; Diuretics,B
+A61P7/12,"Drugs for disorders of the blood or the extracellular fluid-Antidiuretics, e.g. drugs for diabetes insipidus",Antidiuretics,B
+A61P9/00,Drugs for disorders of the cardiovascular system,-,C
+A61P9/02,"Drugs for disorders of the cardiovascular system-Non-specific cardiovascular stimulants, e.g. drugs for syncope, antihypotensives",Non-specific cardiovascular stimulants,C
+A61P9/04,"Drugs for disorders of the cardiovascular system-Inotropic agents, i.e. stimulants of cardiac contraction; Drugs for heart failure",Inotropic agents; heart failure,C
+A61P9/06,Drugs for disorders of the cardiovascular system-Antiarrhythmics,Antiarrhythmics,C
+A61P9/08,Drugs for disorders of the cardiovascular system-Vasodilators for multiple indications,Vasodilators,C
+A61P9/10,"Drugs for disorders of the cardiovascular system-for treating ischaemic or atherosclerotic diseases, e.g. antianginal drugs, coronary vasodilators, drugs for myocardial infarction, retinopathy, cerebrovascula insufficiency, renal arteriosclerosis",ischaemic or atherosclerotic diseases,C
+A61P9/12,Drugs for disorders of the cardiovascular system-Antihypertensives,Antihypertensives,C
+A61P9/14,Drugs for disorders of the cardiovascular system-Vasoprotectives; Antihaemorrhoidals; Drugs for varicose therapy; Capillary stabilisers,Vasoprotectives; Antihaemorrhoidals; Drugs for varicose therapy; Capillary stabilisers,C
