@@ -1,15 +1,15 @@
 # scripts/clinical_trials_data.r
 
 # libraries
+library(tidyverse)
 library(readr)
 library(dplyr)
 library(tidyr)
 library(janitor)
 library(stringr)
 library(purrr)
-library(jsonlite)
-library(httr)
-library(qs)
+library(DBI)
+library(RSQLite)
 
 # Read Clinical Trials data
 ctg_raw <- read_csv("raw_data/clinical_trials/ctg-studies.csv",
@@ -103,6 +103,309 @@ write.csv(ctg_cleaned, "processed_data/clinical_trials/clinical_trials_drug_clea
 ctg_cleaned <- read.csv(
   "processed_data/clinical_trials/clinical_trials_drug_cleaned.csv"
 )
+
+
+# --- Clean Drug-NCT & Condition-NCT dataframes --- #
+
+ctg_cleaned <- read.csv(
+  "processed_data/clinical_trials/clinical_trials_drug_cleaned.csv"
+)
+
+final_drug_agg <- ctg_cleaned |>
+  select(nct_number, interventions) |>
+
+  separate_rows(interventions, sep = "\\|") |>
+  mutate(interventions = str_trim(interventions)) |>
+  filter(!is.na(interventions), interventions != "") |>
+  filter(str_detect(interventions, "^(DRUG|BIOLOGICAL):")) |>
+  mutate(
+    clean_drug_name = interventions |>
+      # Remove "DRUG: " or "BIOLOGICAL: " prefix
+      str_replace_all("^(DRUG|BIOLOGICAL):\\s*", "") |> 
+      # Remove dosage, parenthetical info, and trailing non-name characters
+      str_replace_all("\\s*\\(.*|\\s*\\;.*|\\s*\\[.*|\\s*\\<.*|\\s*\\>.*", "") |>
+      str_trim()
+  ) |>
+  filter(
+    !str_detect(clean_drug_name, regex("Placebo|Saline|Vehicle|Control|Observation", ignore_case = TRUE)),
+    nchar(clean_drug_name) > 0
+  ) |>
+  group_by(nct_number) |>
+  summarise(
+    clean_drug_names = paste(unique(clean_drug_name), collapse = "; "),
+    .groups = 'drop'
+  ) |>
+  separate_rows(clean_drug_names, sep = ";") |>
+  mutate(clean_drug_names = trimws(clean_drug_names))
+
+conditions <- ctg_cleaned |>
+  select(nct_number, conditions) |>
+  separate_rows(conditions, sep = "\\|") |>
+  mutate(conditions = str_squish(conditions)) |>
+  filter(!is.na(conditions), conditions != "")
+
+unique_conditions <- conditions |>
+  select(conditions) |>
+  distinct()
+
+# --- RSQL UMLS Mapping --- #
+
+DB_FILE <- "aux_data/umls.db"
+
+classify_conditions_from_db <- function(conditions_df, db_file) {
+    
+    con <- dbConnect(RSQLite::SQLite(), db_file)
+    
+    dbWriteTable(con, "RAW_CONDITIONS", conditions_df, overwrite = TRUE)
+
+    message("Executing complex SQL join against UMLS Metathesaurus for classification...")
+    
+    # --- UPDATED SQL QUERY ---
+    sql_query <- "
+    SELECT
+      T1.nct_number,
+      T1.conditions,
+      T4.STY AS final_condition_ta,
+      -- NEW: Pull TTY and SAB to aid in R-side granular mapping
+      T2.TTY AS source_term_type,
+      T2.SAB AS source_vocabulary
+    FROM RAW_CONDITIONS AS T1
+    
+    -- Join raw condition to the UMLS concept table
+    INNER JOIN MRCONSO AS T2
+      ON T2.STR LIKE '%' || T1.conditions || '%' 
+
+    -- Join concept to Semantic Type table
+    INNER JOIN MRSTY AS T4
+      ON T2.CUI = T4.CUI
+      
+    -- Filter for high-quality sources and term types
+    WHERE
+      T2.SAB IN ('MSH', 'SNOMEDCT_US', 'ICD10CM', 'ICD9CM') 
+      AND T2.TTY IN ('PT', 'HT', 'SY')
+    
+    -- Group to select the best match
+    GROUP BY
+      T1.nct_number, T1.conditions;
+    "
+    
+    classified_results <- dbGetQuery(con, sql_query)
+    
+    dbRemoveTable(con, "RAW_CONDITIONS")
+    dbDisconnect(con)
+    return(classified_results)
+}
+
+# --- Execute Classification ---
+classified_data <- classify_conditions_from_db(conditions, DB_FILE)
+
+# Aggregate the final TA back to the trial level (NCT)
+final_condition_ta_agg <- classified_data |>
+  group_by(nct_number) |>
+  summarise(
+    final_condition_ta = paste(unique(final_condition_ta), collapse = "; "),
+    .groups = 'drop'
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# --- API draft - new method --- #
+
+nct_ids <- ctg_cleaned$nct_number |> unique()
+
+nct_ids <- nct_ids[1:100]
+
+fetch_nih_therapeutic_areas <- function(nct_id) {
+  
+  url <- paste0(
+    "https://clinicaltrials.gov/api/v2/studies/",
+    nct_id
+  )
+  
+  # ... (HTTP GET and status check logic remains here, skipping for brevity) ...
+  res <- tryCatch(httr::GET(url), error = function(e) NULL) 
+  if (is.null(res) || res$status_code != 200) return(NULL)
+  
+  raw_content <- content(res, "text", encoding = "UTF-8")
+  json <- tryCatch(
+    jsonlite::fromJSON(raw_content, simplifyVector = FALSE),
+    error = function(e) NULL
+  )
+  if (is.null(json)) return(NULL)
+  
+  # --- CRITICAL FIX: Check the 'derivedSection' FIRST for MeSH data ---
+  
+  study_data <- json[["protocolSection"]]
+  derived_data <- json[["derivedSection"]] # New key section to check
+  
+  # 1. ATTEMPT 1: Get MeSH terms from the DERIVED section (most reliable)
+  if (!is.null(derived_data)) {
+    path_to_branch <- derived_data[["conditionBrowse"]][["conditionBrowseBranch"]]
+    
+    if (!is.null(path_to_branch)) {
+      df <- tryCatch(
+        dplyr::bind_rows(path_to_branch) |> 
+          dplyr::select(branchAbbrev, branchName) |> 
+          dplyr::rename(code = branchAbbrev, name = branchName),
+        error = function(e) NULL
+      )
+      if (!is.null(df) && nrow(df) > 0) {
+        cat("\nSUCCESS: Data extracted from MeSH (Derived Section).")
+        df$nct_id <- nct_id
+        return(df)
+      }
+    }
+  }
+  
+  # 2. ATTEMPT 2: Fallback to Primary Study Conditions (from protocolSection)
+  
+  # Conditions are in 'conditions' under 'conditionsModule'
+  if (!is.null(study_data)) {
+    path_to_conditions <- study_data[["conditionsModule"]][["conditions"]]
+    
+    if (!is.null(path_to_conditions)) {
+      # Convert the list of conditions into a dataframe
+      df_conditions <- data.frame(
+        code = NA_character_, 
+        name = unlist(path_to_conditions),
+        nct_id = nct_id
+      )
+      cat("\nSUCCESS: Data extracted from Fallback Conditions (protocolSection).")
+      return(df_conditions)
+    }
+  }
+  
+  cat("\nERROR: No MeSH or Conditions data found for this trial.")
+  return(NULL)
+}
+
+cache_file_nih <- "ctgov_therapeutic_area_cache.qs"
+
+if (file.exists(cache_file_nih)) {
+  nih_cache <- qs::qread(cache_file_nih)
+} else {
+  nih_cache <- list()
+}
+
+
+nih_results <- list()
+
+for (nct in nct_ids) {
+  
+  # If cached, reuse
+  if (!is.null(nih_cache[[nct]])) {
+    nih_results[[nct]] <- nih_cache[[nct]]
+    next
+  }
+  
+  df <- fetch_nih_therapeutic_areas(nct)
+  
+  Sys.sleep(0.15)  # avoid rate-limiting
+  
+  nih_results[[nct]] <- df
+  nih_cache[[nct]] <- df
+  
+  cat("Processed:", nct, "\n")
+}
+
+qs::qsave(nih_cache, cache_file_nih)
+
+nih_raw <- bind_rows(nih_results, .id = "nct_number")
+
+# Only keep rows that have successfully extracted data
+nih_therapeutic <- nih_raw %>%
+  filter(!is.na(BranchAbbrev)) %>% 
+  group_by(nct_number) %>%
+  summarise(
+    # Use the MeSH code (BranchAbbrev) as the main grouping variable
+    nih_mesh_codes = paste(unique(BranchAbbrev), collapse = "; "),
+    nih_mesh_names = paste(unique(BranchName), collapse = "; "),
+    .groups = "drop"
+  )
+
+# Join the NIH/MeSH therapeutic areas back to your cleaned data
+ctg_with_ta <- ctg_cleaned %>%
+  left_join(nih_therapeutic, by = "nct_number")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # --- RxClass API Mapping (Draft) -- #
 
