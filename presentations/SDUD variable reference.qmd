@@ -1,0 +1,246 @@
+---
+title: "Medicaid State Drug Utilisation Data Variable Reference"
+author: "Mohammad-Shah Karim"
+date: today
+
+execute:
+  dir: project
+
+format:
+  pdf:
+    toc: true
+    toc-depth: 2
+---
+
+\newpage
+
+```{r libraries, warning = FALSE, include = FALSE, message = FALSE}
+
+library(dplyr)
+library(readr)
+library(here)
+
+SDUD_sample <- read_csv(here("raw_data/state_drug_utilisation_data/SDUD_2022.csv")) |>
+  slice_sample(prop = 0.05)
+
+```
+
+## Utilization type
+
+`Utilization Type` tells us which part of the Medicaid programme a prescription belongs to, and therefore how the claim was processed and how rebates are handled.
+
+
+SDUD uses three codes:
+
+- **FFSU** (Fee-For-Service Utilization): This represents the traditional way Medicaid pays for prescriptions.
+- **MCOU** (Managed Care Organization Utilization): The state works through Managed Care Organizations (MCOs) such as private health plans.
+- BBU: This is a technical reporting category used for calculating or adjusting rebate obligations. States submit baseline figures so CMS can compute supplemental rebates, compare utilisation over time, or handle special rebate formulas.
+
+| Code | What it represents | Real claims? | Who pays? | Subject to rebates? | Notes |
+|---|-----|---|------|-----|----------------|
+|**FFSU**|Traditional Medicaid claims|Yes|State Medicaid|Yes|State pays pharmacy directly|
+|**MCOU**|Managed care claims|Yes|Managed Care Organization|Yes (post-2010)|State invoices rebates based on MCO reports|
+|**BBU**|Baseline rebate utilisation|No|N/A|Yes (technical)|Used only for rebate accounting|
+
+```{r utilization type}
+
+SDUD_sample |> select(`Utilization Type`)
+
+```
+
+
+\newpage
+## State
+
+**Format:** 2-letter USPS code 
+
+```{r State}
+
+SDUD_sample |> select(State)
+
+```
+
+\newpage
+## NDC
+
+NDC stands for National Drug Code.
+
+This is an 11-digit code that uniquely identifies a specific manufactured drug product and package combination — not the underlying therapeutic ingredient. The same drug (e.g., ibuprofen 200mg) will have many NDCs if produced by different firms or sold in different package sizes.
+
+Breakdown:  
+- Labeler Code (5 digits)  
+- Product Code (4 digits)  
+- Package Size (2 digits)  
+
+```{r NDC}
+
+SDUD_sample |> select(NDC)
+
+```
+
+\newpage
+## Labeler Code
+
+- Identifies the company that manufactures or distributes the drug (first 5 digits)
+- This code is assigned by the FDA.
+- Different firms will always have different labeler codes.
+
+```{r Labeler Code}
+
+SDUD_sample |> select(`Labeler Code`)
+
+```
+
+\newpage
+## Product Code
+
+- Identifies the specific drug formulation sold by that company. (middle 6th to 9th digits of NDC)
+- This includes features like strength (e.g., 10mg vs 20mg), dosage form (tablet, capsule, syrup), and sometimes the intended route of administration.
+- Within a given manufacturer, the product code is the same for the same drug formulation (same strength, dosage form, and ingredients). However, different manufacturers producing the same drug will each have their own product codes, since the product code is assigned within the labeler’s NDC block.
+
+```{r Product Code}
+
+SDUD_sample |> select(`Product Code`)
+
+```
+
+\newpage
+## Package Size
+
+- Package presentation (last 2 digits).
+- Identifies the package configuration of the drug product.
+- For example, a bottle of 100 tablets vs a bottle of 30 tablets will have different package codes, even if everything else about the drug is identical.
+
+```{r Package Size}
+
+SDUD_sample |> select(`Package Size`)
+
+```
+
+\newpage
+## Year & Quarter
+
+- Calendar year of utilization.
+- Quarter of utilization
+
+```{r Year-Quarter}
+
+SDUD_sample |> select(Year, Quarter)
+
+```
+
+\newpage
+## Suppression Used
+
+Indicates whether CMS applied suppression for privacy.
+
+```{r Suppression Used}
+
+SDUD_sample |> select(`Suppression Used`)
+
+```
+
+\newpage
+## Product Name
+
+This is the state-reported name of the drug associated with the NDC.
+
+It is usually either the:
+
+- Generic name (e.g., amoxicillin, metformin)
+- Brand name (e.g., Lipitor, Humira),
+
+```{r Product Name}
+
+SDUD_sample |> select(`Product Name`)
+
+```
+
+\newpage
+## Units Reimbursed
+
+This reports the number of drug units that Medicaid paid for during the quarter.
+
+- A unit is whatever measurement the pharmacy uses to bill Medicaid for that specific product.
+	- Tablets or capsules: 1 unit = 1 pill
+	- Liquids: 1 unit = 1 millilitre (mL)
+	- Injectables: 1 unit may be 1 vial, 1 syringe, or 1 mL (depending on how the drug is billed)
+	- Inhalers / patches / topicals: 1 unit = 1 package, applicator, patch, etc.
+
+```{r Units Reimbursed}
+
+SDUD_sample |> select(`Units Reimbursed`)
+
+```
+
+\newpage
+## Number of Prescriptions
+
+Reports the count of prescription claims that Medicaid paid for a given NDC in that state and quarter.
+
+Each time a pharmacy dispenses a medication and submits a claim to Medicaid, that counts as one prescription, regardless of:
+	- How many units were dispensed (e.g., 30 tablets vs 90 tablets),
+	- Whether it is a refill,
+	- The package size,
+	- The total amount paid.
+
+This is therefore a measure of the frequency of dispensing, as opposed to the total quantity.
+
+```{r Number of Prescriptions}
+
+SDUD_sample |> select(`Number of Prescriptions`)
+
+```
+
+\newpage
+## Total Amount Reimbursed
+
+This the total dollar amount Medicaid paid for that drug (NDC) in that state and quarter.
+
+- It includes all payment sources involved in the claim, not just Medicaid alone.
+- Pharmacies (not manufacturers) are the ones that receive reimbursement from Medicaid.
+
+```{r Total Amount Reimbursed}
+
+SDUD_sample |> select(`Total Amount Reimbursed`)
+
+```
+
+\newpage
+## Medicaid Amount Reimbursed
+
+This is the portion of the Total Amount Reimbursed that was paid directly by the Medicaid programme to pharmacies for dispensing that drug (NDC) in that quarter.
+
+- It reflects Medicaid’s share of the pharmacy reimbursement, before rebates.
+
+
+```{r Medicaid Amount Reimbursed}
+
+SDUD_sample |> select(`Medicaid Amount Reimbursed`)
+
+```
+
+\newpage
+## Non Medicaid Amount Reimbursed
+
+This is the portion of the Total Amount Reimbursed that was paid by sources other than Medicaid when the prescription was filled. This could include:
+
+- 	Private insurance (coordination of benefits)
+-	Medicare Part D
+-	Patient copayments
+-	Other third-party liability
+-	Other insurance recoveries
+
+Example:
+
+|Amount Type|Party Paying|SDUD Field|Value|
+|-----------|------------|----------|-----|
+|Total prescription cost|Pharmacy receives|**Total Amount Reimbursed**|$80|
+|Medicaid portion|Medicaid|**Medicaid Amount Reimbursed**|$70|
+|Non-Medicaid portion|Patient (copay)|**Non Medicaid Amount Reimbursed**|$10|
+
+```{r Non Medicaid Amount Reimbursed}
+
+SDUD_sample |> select(`Non Medicaid Amount Reimbursed`)
+
+```

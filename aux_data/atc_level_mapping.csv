@@ -1,0 +1,90 @@
+ATC1_CODE,ATC2_CODE,ATC1_NAME,ATC2_NAME
+A,A01,Alimentary tract and metabolism,Stomatological preparations
+A,A02,Alimentary tract and metabolism,Drugs for acid related disorders
+A,A03,Alimentary tract and metabolism,Drugs for functional gastrointestinal disorders
+A,A04,Alimentary tract and metabolism,Antiemetics and antinauseants
+A,A05,Alimentary tract and metabolism,Bile and liver therapy
+A,A06,Alimentary tract and metabolism,Drugs for constipation
+A,A07,Alimentary tract and metabolism,"Antidiarrheals, intestinal antiinflammatory/antiinfective agents"
+A,A08,Alimentary tract and metabolism,Antiobesity preparations
+A,A09,Alimentary tract and metabolism,"Digestives, incl. enzymes"
+A,A10,Alimentary tract and metabolism,Drugs used in diabetes
+A,A11,Alimentary tract and metabolism,Vitamins
+A,A12,Alimentary tract and metabolism,Mineral supplements
+A,A13,Alimentary tract and metabolism,Tonics
+A,A14,Alimentary tract and metabolism,Anabolic agents
+A,A15,Alimentary tract and metabolism,Appetite stimulants
+A,A16,Alimentary tract and metabolism,Other alimentary tract and metabolism products
+B,B01,Blood and blood forming organs,Antithrombotic agents
+B,B02,Blood and blood forming organs,Antihemorrhagics
+B,B03,Blood and blood forming organs,Antianemic preparations
+B,B05,Blood and blood forming organs,Plasma substitutes and perfusion solutions
+B,B06,Blood and blood forming organs,Other hematological agents
+C,C01,Cardiovascular system,Cardiac therapy
+C,C02,Cardiovascular system,Antihypertensives
+C,C03,Cardiovascular system,Diuretics
+C,C04,Cardiovascular system,Peripheral vasodilators
+C,C05,Cardiovascular system,Vasoprotectives
+C,C07,Cardiovascular system,Beta blocking agents
+C,C08,Cardiovascular system,Calcium channel blockers
+C,C09,Cardiovascular system,Agents acting on the renin-angiotensin system
+C,C10,Cardiovascular system,Lipid modifying agents
+D,D01,Dermatologicals,Antifungals for dermatological use
+D,D02,Dermatologicals,Emollients and protectives
+D,D03,Dermatologicals,Preparations for treatment of wounds and ulcers
+D,D04,Dermatologicals,Antipruritics
+D,D05,Dermatologicals,Antipsoriatics
+D,D06,Dermatologicals,Antibiotics and chemotherapeutics for dermatological use
+D,D07,Dermatologicals,"Corticosteroids, dermatological preparations"
+D,D08,Dermatologicals,Antiseptics and disinfectants
+D,D09,Dermatologicals,Medicated dressings
+D,D10,Dermatologicals,Anti-acne preparations
+D,D11,Dermatologicals,Other dermatological preparations
+G,G01,Genito-urinary system and sex hormones,Gynecological antiinfectives and antiseptics
+G,G02,Genito-urinary system and sex hormones,Other gynecologicals
+G,G03,Genito-urinary system and sex hormones,Sex hormones and modulators
+G,G04,Genito-urinary system and sex hormones,Urologicals
+H,H01,Systemic hormonal preparations,Pituitary and hypothalamic hormones
+H,H02,Systemic hormonal preparations,Corticosteroids for systemic use
+H,H03,Systemic hormonal preparations,Thyroid therapy
+H,H04,Systemic hormonal preparations,Pancreatic hormones
+H,H05,Systemic hormonal preparations,Calcium homeostasis drugs
+J,J01,Antiinfectives for systemic use,Antibacterials for systemic use
+J,J02,Antiinfectives for systemic use,Antimycotics for systemic use
+J,J04,Antiinfectives for systemic use,Antimycobacterials
+J,J05,Antiinfectives for systemic use,Antivirals for systemic use
+J,J06,Antiinfectives for systemic use,Immune sera and immunoglobulins
+J,J07,Antiinfectives for systemic use,Vaccines
+L,L01,Antineoplastic and immunomodulating agents,Antineoplastic agents
+L,L02,Antineoplastic and immunomodulating agents,Endocrine therapy
+L,L03,Antineoplastic and immunomodulating agents,Immunostimulants
+L,L04,Antineoplastic and immunomodulating agents,Immunosuppressants
+M,M01,Musculo-skeletal system,Anti-inflammatory and antirheumatic products
+M,M02,Musculo-skeletal system,Topical products for joint and muscular pain
+M,M03,Musculo-skeletal system,Muscle relaxants
+M,M04,Musculo-skeletal system,Anti-gout preparations
+M,M05,Musculo-skeletal system,Drugs for bone diseases
+M,M09,Musculo-skeletal system,Other musculo-skeletal drugs
+N,N01,Nervous system,Anesthetics
+N,N02,Nervous system,Analgesics
+N,N03,Nervous system,Antiepileptics
+N,N04,Nervous system,Anti-parkinson drugs
+N,N05,Nervous system,Psycholeptics
+N,N06,Nervous system,Psychoanaleptics
+N,N07,Nervous system,Other nervous system drugs
+P,P01,Antiparasitic products,Antiprotozoals
+P,P02,Antiparasitic products,Anthelmintics
+P,P03,Antiparasitic products,Ectoparasiticides
+R,R01,Respiratory system,Nasal preparations
+R,R02,Respiratory system,Throat preparations
+R,R03,Respiratory system,Drugs for obstructive airway diseases
+R,R05,Respiratory system,Cough and cold preparations
+R,R06,Respiratory system,Antihistamines for systemic use
+R,R07,Respiratory system,Other respiratory system products
+S,S01,Sensory organs,Ophthalmologicals
+S,S02,Sensory organs,Oto-rhino-laryngologicals
+S,S03,Sensory organs,Ear and eye preparations
+V,V01,Various,Allergens
+V,V03,Various,All other therapeutic products
+V,V04,Various,Diagnostic agents
+V,V06,Various,Dietary foods

@@ -53,3 +53,16 @@ rsconnect/
 .Rprofile
 .Rprofile.bak
 tempCoderunnerFile.r
+
+#DS_store
+.DS_Store
+
+#SQL db
+*.db
+
+# Folders
+**/processed_data/
+**/literature/
+**/raw_data/
+**/rollout_map_files
+**/umls_database_files/
