@@ -86,3 +86,11 @@ tx_formulary_drug <- tx_formulary_drug |>
     pt_stage_pass,
     remain_in_list
   )
+
+# save cleaned data
+
+write.csv(
+  tx_formulary_drug,
+  "processed_data/PDL/texas_PDL_data.csv",
+  row.names = FALSE
+)
