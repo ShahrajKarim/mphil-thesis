@@ -82,7 +82,7 @@ fda_national <- fda_approvals |>
     non_medicaid_reimbursed_total = sum(non_medicaid_reimbursed, na.rm = TRUE)
   ) |>
   ungroup() |>
-  mutate(firm = ifelse(is.na(firm), sponsor_name, firm))
+  mutate(firm = ifelse(is.na(firm), sponsor_name, firm)) |>
   distinct(
     approval_year,
     approval_quarter,
@@ -319,13 +319,78 @@ patent_rq1_models <- modelsummary(
              stars = c(`*` = 0.05, `**` = 0.01, `***` = 0.001)
              )
 
-# Plotting functions for parallel trends test:
+# Plotting FDA approvals:
 
-iplot(
+fda_feols_exante <- iplot(
+  fda_rq1_feols_exante,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "FEOLS FDA approvals ex-ante exposure"
+  )
+
+fda_feols_expost <- iplot(
+  fda_rq1_feols_expost,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "FEOLS FDA approvals ex-post exposure"
+  )
+
+fda_nb_exante <- iplot(
+  fda_rq1_nb_exante,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "NB FDA approvals ex-ante exposure"
+  )
+
+fda_nb_expost <- iplot(
+  fda_rq1_nb_expost,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "NB FDA approvals ex-post exposure"
+  )
+
+# Plotting patents:
+
+patents_feols_exante <- iplot(
+  patent_rq1_feols_exante,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "FEOLS patents ex-ante exposure"
+  )
+
+patents_feols_expost <- iplot(
+  patent_rq1_feols_expost,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "FEOLS patents ex-post exposure"
+  )
+
+patents_nb_exante <- iplot(
   patent_rq1_nb_exante,
   ci.level = 0.95,
   ref.line = 0,
   xlab = "Year",
   ylab = "Coefficient (relative to 2013)",
-  main = "Event study: patents × ex-ante exposure"
-)
+  main = "NB patents ex-ante exposure"
+  )
+
+patents_nb_expost <- iplot(
+  patent_rq1_nb_expost,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "NB patents ex-post exposure"
+  )
