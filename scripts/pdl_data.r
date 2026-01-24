@@ -87,10 +87,39 @@ tx_formulary_drug <- tx_formulary_drug |>
     remain_in_list
   )
 
-# save cleaned data
+# Save cleaned data
 
 write.csv(
   tx_formulary_drug,
   "processed_data/PDL/texas_PDL_data.csv",
   row.names = FALSE
+)
+
+# Remove ndc to remove duplication of variable in merge
+
+tx_formulary_drug <- tx_formulary_drug |>
+  select(-ndc)
+
+# Import SDUD data cleaned
+
+SDUD_firm_mapped <- readRDS(
+  file = "processed_data/state_drug_utilisation_data/SDUD_firm_mapped.rds"
+)
+
+# Merge PDL data with SDUD data
+
+SDUD_PDL <- SDUD_firm_mapped |>
+  mutate(package_code = substr(ndc, 10, 11)) |>
+  left_join(
+    tx_formulary_drug,
+    by = c("labeler_code" = "labeler_ndc",
+           "product_code" = "product_ndc",
+           "package_code" = "package_ndc")
+  )
+
+# Save merged data
+
+saveRDS(
+  SDUD_PDL,
+  file = "processed_data/state_drug_utilisation_data/SDUD_firm_PDL.rds"
 )
