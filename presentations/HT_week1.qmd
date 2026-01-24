@@ -1,0 +1,264 @@
+---
+title: "MPhil Thesis: HT Week 1"
+author: "Mohammad-Shah Karim"
+date: "26 Jan 2025"
+
+execute:
+  dir: project
+
+format:
+  revealjs:
+    css: styles.css
+    toc: true
+    toc-depth: 1
+    slideNumber: true
+    auto: true
+    scrollable: true
+    embed-resources: true
+    self-contained-math: true
+---
+
+```{r}
+library(here)
+
+source(here("exploration/HT_week1_RQ1.r"))
+
+```
+
+# Recap
+
+- FDA and Patent data sorted
+- Regressions ran for two research questions
+    - Effect of ACA on innovation overall
+    - Effect of ACA on innovation portfolio
+- Failure of parallel trends
+- No PDL data
+- No price restriction data
+- No theoretical model
+
+# Tidying issues from Michaelmas
+
+## Failure of parallel trends
+
+- Fixed patent calculatioins
+- Parallel trends for all FEOLS specifications
+- Violation of parallel trends under NB patent specifications
+
+# The Preferred Drug list
+
+# A quick reintroduction
+
+- Each state has their own PDL
+- Some states form a pool to negotiate better prices
+
+The problem:
+
+- Some PDLs are in pdf format e.g. California
+- Some PDLs only show the most recent list e.g. New York
+
+Proposed solution:
+
+- Use Texas Drug Vendor data files
+
+## The General PDL Mechanism revisited
+
+A drug becomes preferred when it is clinically acceptable **and** offers the lowest net cost among substitutes.
+
+1. P&T committee evaluates safety, efficacy and literature on drug.
+
+2. States compare net price among clinically equivalent drugs, with price determining which eligible drugs become most preferred.
+
+```{mermaid}
+flowchart LR
+
+A["Clinical Review<br/> (P&T Committee)"] -->|Clinically acceptable| B["Economic Evaluation<br/> (Rebate Negotiation)"]
+A -->|Clinically inappropriate| X["Ineligible<br/> (Cannot be preferred)"]
+
+B --> C{"Net cost comparison<br/> among clinically equivalent drugs"}
+
+C -->|Lowest net cost| D["Preferred Drug"]
+C -->|Higher net cost| E["Non-preferred Drug<br/> (Authorisation required for use)"]
+```
+
+States can list multiple preferred drugs when they are not clinically equivalent.
+
+# Is the mechanism the same in Texas?
+
+Yes but no!
+
+- Both stage 1 and stage 2 must be passed.
+- But stage 1 and stage 2 are **not** sequential - they occur simultaenously
+
+This dataset now gives us four scenarios that can be used accordingly:
+
+| Pass efficacy / safety test | Pass cost test | Group
+| --- | --- | ----------- |
+| ❌ | ❌ | N/A | 
+| ❌ | ✅ | Control to measure impact of being cheap on innovation |
+| ✅ | ❌ | Control to measure impact of having efficacy on innovation |
+| ✅ | ✅ | Treated group |
+
+# Research Questions
+
+## RQ1: Overall innovation response to Market size
+
+$$
+\begin{aligned}
+Y_{c,t,f}
+= \alpha_{c, f} + \delta_t
++ \sum_{k \neq 2013}^{2025} \beta_k \left[ \mathbf{1}\{t = k\} \times \text{MedicaidShare}_c \right]
++ \varepsilon_{c,t,f}
+\end{aligned}
+$$
+
+- Changed disease-FE to disease $\times$ firm FE
+- Firms have different innovation volumes so firm FE makes sense.
+- Some therapeutic areas have different innovation volumes.
+
+## Pre-discussion
+
+- Violation of parallel trends for negative binomial model patents model
+
+- Conclusion still consistent with last time
+  - No effect on FDA approvals (late stage innovation)
+  - Reduction in patents
+
+## RQ1: FDA coefficients
+
+```{r}
+fda_rq1_models
+```
+
+## RQ1: FDA plots
+
+```{r}
+
+iplot(
+  fda_rq1_feols_exante,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "FEOLS FDA approvals ex-ante exposure"
+  )
+
+iplot(
+  fda_rq1_feols_expost,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "FEOLS FDA approvals ex-post exposure"
+  )
+
+iplot(
+  fda_rq1_nb_exante,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "NB FDA approvals ex-ante exposure"
+  )
+
+iplot(
+  fda_rq1_nb_expost,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "NB FDA approvals ex-post exposure"
+  )
+```
+
+## RQ1: Patent coefficients
+
+```{r}
+patent_rq1_models
+```
+
+## RQ1: Patent plots
+
+```{r}
+
+iplot(
+  patent_rq1_feols_exante,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "FEOLS patents ex-ante exposure"
+  )
+
+iplot(
+  patent_rq1_feols_expost,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "FEOLS patents ex-post exposure"
+  )
+
+iplot(
+  patent_rq1_nb_exante,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "NB patents ex-ante exposure"
+  )
+
+iplot(
+  patent_rq1_nb_expost,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "NB patents ex-post exposure"
+  )
+
+```
+
+## RQ2: Market Size and Pricing Pressure
+
+$$
+\begin{aligned}
+Y_{c,t,f}
+&= \alpha_{c,f} + \delta_t + \sum_{l \neq 2013}^{2025} \beta_{l}
+\left( \text{Expansion}_{l} \times \text{MedicaidShare}_c \right) \\
+&\quad + \sum_{j \neq 2013}^{2025} \gamma_{\ell}
+\left( \text{Expansion}_{j} \times \text{PDL_Exposure}_{c,f} \right) + \varepsilon_{c,t,f}
+\end{aligned}
+$$
+
+Where:
+
+$$
+\text{PDL_Exposure}_{c,f}
+=
+\frac{
+\text{Number of drugs on PDL}_{c,f}
+}{
+\text{Number of drugs}_{c,f}
+}
+$$
+
+- $\beta$ measures market size effects
+- $\gamma$ measures the effect of firms more exposed to the PDL pricing pressure
+
+- Measuring price effects is unrealistic and therefore measuring the effect of being on the market itself is worhtwhl
+
+## Results plot for RQ2
+
+
+## RQ3: Innovation portfolio
+
+
+
+
+
+
+
+
+
+# The theoretical model (WIP)
+
