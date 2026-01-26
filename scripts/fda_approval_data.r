@@ -782,7 +782,15 @@ SDUD_PDL <- SDUD_PDL |>
     prescriptions = sum(number_of_prescriptions, na.rm = TRUE),
     medicaid_reimbursed = sum(medicaid_amount_reimbursed, na.rm = TRUE),
     non_medicaid_reimbursed = sum(non_medicaid_amount_reimbursed, na.rm = TRUE),
+    price_stage_pass = first(price_stage_pass_prop),
+    pt_stage_pass = first(pt_stage_pass_prop),
+    in_pdl = first(in_pdl_prop),
     .groups = "drop"
+  ) |>
+  mutate(
+    price_stage_pass = ifelse(is.na(price_stage_pass), 0, price_stage_pass),
+    pt_stage_pass = ifelse(is.na(pt_stage_pass), 0, pt_stage_pass),
+    in_pdl = ifelse(is.na(in_pdl), 0, in_pdl)
   )
 
 SDUD_ATC1 <- SDUD_PDL |>
@@ -812,7 +820,8 @@ fda_sdud_pdl_merged <- fda_approvals_panel |>
       "approval_quarter" = "quarter",
       "atc_level1" = "ATC_Level1"
     )
-  )
+  ) |>
+  mutate(across(where(is.numeric), ~ replace_na(.x, 0)))
 
 # Save final merged dataset
 
