@@ -371,17 +371,18 @@ Share of innovation variable is polluted by averaging changes in share of innova
 
 $$
 \begin{aligned}
+\begin{aligned}
 Y_{f,c,t}
 &= \alpha_f + \lambda_c + \delta_t \\
 &\quad + \sum_{c \in \mathcal{C}}
-\sum_{\ell \neq 2013}
-\beta_{c,\ell}
+\beta_c
 \Big(
-\mathbb{1}\{t=\ell\}
+\mathbb{1}\{t \geq 2014\}
 \times \text{MedicaidShare}_c
 \times \mathbb{1}\{\text{ATC} = c\}
 \Big)
-+ \varepsilon_{f,c,t}
++ \varepsilon_{f,c,t}.
+\end{aligned}
 \end{aligned}
 $$
 
