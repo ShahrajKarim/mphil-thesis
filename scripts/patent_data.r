@@ -498,26 +498,53 @@ select(
   left_join(ndc_atc_mapping, by = "ndc", relationship = "many-to-many") |>
   select(- rxcui, -ATC_Level2) |>
   mutate(
+    in_pdl = ifelse(price_stage_pass == 1 & pt_stage_pass == 1, 1, 0)
+  ) 
+  
+# Generate Medicaid exposure
+
+PDL_exposure <- SDUD_PDL |>
+  select(labeler_code, year, price_stage_pass, pt_stage_pass, in_pdl, ATC_Level1) |>
+  filter(year >= 2010 & year <= 2014) |>
+  mutate(
     price_stage_pass = ifelse(is.na(price_stage_pass), 0, price_stage_pass),
     pt_stage_pass = ifelse(is.na(pt_stage_pass), 0, pt_stage_pass),
-    remain_in_list = ifelse(is.na(remain_in_list), 0, remain_in_list),
-    in_pdl = ifelse(price_stage_pass == 1 & pt_stage_pass == 1, 1, 0)
+    in_pdl = ifelse(is.na(in_pdl), 0, in_pdl)
+  ) |>
+  group_by(labeler_code, ATC_Level1) |>
+  summarise(
+    pt_stage_pass_prop = mean(pt_stage_pass),
+    price_stage_pass_prop = mean(price_stage_pass),
+    in_pdl_prop = mean(in_pdl),
+    .groups = "drop"
+  )
+
+# Collapse SDUD-PDL data to firm-year-quarter-ATC level
+
+SDUD_PDL <- SDUD_PDL |>
+  left_join(
+    PDL_exposure,
+    by = c("labeler_code", "ATC_Level1")
   ) |>
   group_by(
-    firm,
     labeler_code,
     year,
     quarter,
-    ATC_Level1
+    ATC_Level1,
   ) |>
   summarise(
     prescriptions = sum(number_of_prescriptions, na.rm = TRUE),
     medicaid_reimbursed = sum(medicaid_amount_reimbursed, na.rm = TRUE),
     non_medicaid_reimbursed = sum(non_medicaid_amount_reimbursed, na.rm = TRUE),
-    price_stage_pass = max(price_stage_pass, na.rm = TRUE),
-    pt_stage_pass = max(pt_stage_pass, na.rm = TRUE),
-    in_pdl = max(in_pdl, na.rm = TRUE),
+    price_stage_pass = first(price_stage_pass_prop),
+    pt_stage_pass = first(pt_stage_pass_prop),
+    in_pdl = first(in_pdl_prop),
     .groups = "drop"
+  ) |>
+  mutate(
+    price_stage_pass = ifelse(is.na(price_stage_pass), 0, price_stage_pass),
+    pt_stage_pass = ifelse(is.na(pt_stage_pass), 0, pt_stage_pass),
+    in_pdl = ifelse(is.na(in_pdl), 0, in_pdl)
   )
 
 SDUD_ATC1 <- SDUD_PDL |>
@@ -533,8 +560,7 @@ SDUD_PDL <- SDUD_PDL |>
   left_join(
     SDUD_ATC1,
     by = c("year", "quarter", "ATC_Level1")
-  ) |>
-  select(-firm)
+  )
 
 # Merge with collapsed patents data
 
@@ -548,7 +574,8 @@ patent_sdud_pdl_merged <- pharma_patents_collapsed |>
       "ATC1" = "ATC_Level1"
     ),
     relationship = "many-to-many"
-  )
+  ) |>
+  mutate(across(where(is.numeric), ~ replace_na(.x, 0)))
 
 # Save final merged dataset
 
