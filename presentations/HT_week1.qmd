@@ -1,0 +1,549 @@
+---
+title: "MPhil Thesis: HT Week 1"
+author: "Mohammad-Shah Karim"
+date: "26 Jan 2025"
+
+execute:
+  dir: project
+
+format:
+  revealjs:
+    css: styles.css
+    toc: true
+    toc-depth: 1
+    slideNumber: true
+    auto: true
+    scrollable: true
+    embed-resources: true
+    self-contained-math: true
+---
+
+```{r}
+library(here)
+
+source(here("exploration/HT_week1_RQ1.r"))
+
+```
+
+# Recap
+
+- FDA and Patent data sorted
+- Regressions ran for two research questions
+    - Effect of ACA on innovation overall
+    - Effect of ACA on innovation portfolio
+- Failure of parallel trends
+- No PDL data
+- No price restriction data
+- No theoretical model
+
+# Tidying issues from Michaelmas
+
+## Failure of parallel trends
+
+- Fixed patent calculatioins
+- Parallel trends for all FEOLS specifications
+- Violation of parallel trends under NB patent specifications
+
+# The Preferred Drug list
+
+# A quick reintroduction
+
+- Each state has their own PDL
+- Some states form a pool to negotiate better prices
+
+The problem:
+
+- Some PDLs are in pdf format e.g. California
+- Some PDLs only show the most recent list e.g. New York
+
+Proposed solution:
+
+- Use Texas Drug Vendor data files
+
+## The General PDL Mechanism revisited
+
+A drug becomes preferred when it is clinically acceptable **and** offers the lowest net cost among substitutes.
+
+1. P&T committee evaluates safety, efficacy and literature on drug.
+
+2. States compare net price among clinically equivalent drugs, with price determining which eligible drugs become most preferred.
+
+```{mermaid}
+flowchart LR
+
+A["Clinical Review<br/> (P&T Committee)"] -->|Clinically acceptable| B["Economic Evaluation<br/> (Rebate Negotiation)"]
+A -->|Clinically inappropriate| X["Ineligible<br/> (Cannot be preferred)"]
+
+B --> C{"Net cost comparison<br/> among clinically equivalent drugs"}
+
+C -->|Lowest net cost| D["Preferred Drug"]
+C -->|Higher net cost| E["Non-preferred Drug<br/> (Authorisation required for use)"]
+```
+
+States can list multiple preferred drugs when they are not clinically equivalent.
+
+# Is the mechanism the same in Texas?
+
+Yes but no!
+
+- Both stage 1 and stage 2 must be passed.
+- But stage 1 and stage 2 are **not** sequential - they occur simultaenously
+
+This dataset now gives us four scenarios that can be used accordingly:
+
+| Pass efficacy / safety test | Pass cost test | Group
+| --- | --- | ----------- |
+| ❌ | ❌ | N/A | 
+| ❌ | ✅ | Control to measure impact of being cheap on innovation |
+| ✅ | ❌ | Control to measure impact of having efficacy on innovation |
+| ✅ | ✅ | Treated group |
+
+# Research Questions
+
+## RQ1: Overall innovation response to Market size
+
+$$
+\begin{aligned}
+Y_{f,c,t}
+= \alpha_{f, c} + \delta_t
++ \sum_{k \neq 2013}^{2025} \beta_k \left[ \mathbf{1}\{t = k\} \times \text{MedicaidShare}_c \right]
++ \varepsilon_{f,c,t}
+\end{aligned}
+$$
+
+- Changed disease-FE to disease $\times$ firm FE
+- Firms have different innovation volumes so firm FE makes sense.
+- Some therapeutic areas have different innovation volumes.
+
+## Pre-discussion
+
+- Violation of parallel trends for negative binomial model patents model
+
+- Conclusion still consistent with last time
+  - No effect on FDA approvals (late stage innovation)
+  - Reduction in patents
+
+## RQ1: FDA coefficients
+
+```{r}
+fda_rq1_models
+```
+
+## RQ1: FDA plots
+
+```{r}
+
+iplot(
+  fda_rq1_feols_exante,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "FEOLS FDA approvals ex-ante exposure"
+  )
+
+iplot(
+  fda_rq1_feols_expost,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "FEOLS FDA approvals ex-post exposure"
+  )
+
+iplot(
+  fda_rq1_nb_exante,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "NB FDA approvals ex-ante exposure"
+  )
+
+iplot(
+  fda_rq1_nb_expost,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "NB FDA approvals ex-post exposure"
+  )
+```
+
+## RQ1: Patent coefficients
+
+```{r}
+patent_rq1_models
+```
+
+## RQ1: Patent plots
+
+```{r}
+
+iplot(
+  patent_rq1_feols_exante,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "FEOLS patents ex-ante exposure"
+  )
+
+iplot(
+  patent_rq1_feols_expost,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "FEOLS patents ex-post exposure"
+  )
+
+iplot(
+  patent_rq1_nb_exante,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "NB patents ex-ante exposure"
+  )
+
+iplot(
+  patent_rq1_nb_expost,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "NB patents ex-post exposure"
+  )
+
+```
+
+## RQ2: Market Size and Pricing Pressure
+
+$$
+\begin{aligned}
+Y_{f,c,t}
+&= \alpha_{f,c} + \delta_t + \sum_{l \neq 2013}^{2025} \beta_{l}
+\left( \text{Expansion}_{l} \times \text{MedicaidShare}_c \right) \\
+&\quad + \sum_{j \neq 2013}^{2025} \gamma_{\ell}
+\left( \text{Expansion}_{j} \times \text{PDL_Exposure}_{f,c} \right) + \varepsilon_{f,c,t}
+\end{aligned}
+$$
+
+Where:
+
+$$
+\text{PDL_Exposure}_{f,c}
+=
+\frac{
+\text{Number of drugs on PDL}_{f,c}
+}{
+\text{Number of drugs}_{f,c}
+}
+$$
+
+- $\beta$ measures market size effects
+- $\gamma$ measures the effect of firms more exposed to the PDL pricing pressure
+
+- Measuring price effects is unrealistic and therefore measuring the effect of being on the market itself is worhtwhl
+
+
+```{r}
+source(here("exploration/HT_week1_RQ2.r"))
+```
+
+## FDA coefficients
+
+```{r}
+fda_rq2_models
+```
+
+## FDA plots
+
+```{r}
+
+iplot(
+  fda_rq2_feols_exante,
+  i.select = 1,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "Event study: Medicaid market size (ex ante)"
+)
+
+iplot(
+  fda_rq2_feols_exante,
+  i.select = 2,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "Event study: PDL exposure (ex ante)"
+)
+
+iplot(
+  fda_rq2_feols_expost,
+  i.select = 1,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "Event study: Medicaid market size (ex post)"
+)
+
+iplot(
+  fda_rq2_feols_expost,
+  i.select = 2,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "Event study: PDL exposure (ex post)"
+)
+
+```
+
+## Patent coefficients
+
+```{r}
+patent_rq2_models
+```
+
+## Patent plots
+
+```{r}
+
+iplot(
+  patent_rq2_feols_exante,
+  i.select = 1,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "Event study: Medicaid market size (ex ante)"
+)
+
+iplot(
+  patent_rq2_feols_exante,
+  i.select = 2,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "Event study: PDL exposure (ex ante)"
+)
+
+iplot(
+  patent_rq2_feols_expost,
+  i.select = 1,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "Event study: Medicaid market size (ex post)"
+)
+
+iplot(
+  patent_rq2_feols_expost,
+  i.select = 2,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "Event study: PDL exposure (ex post)"
+)
+
+```
+
+## RQ3: Innovation portfolio
+
+**Old issue:**
+
+Share of innovation variable is polluted by averaging changes in share of innovation across all therapeutic areas. However, a reduction in the share of innovation for therapeutic area A by firm X would also mean that the firm faces an increases in other areas. Current DiD specification cannot isolate these effects .
+
+
+**Fixes**
+
+1. Change variable from share of innovation to a count of innovation - avoids spillovers effect of an increase in share A leading to a decrease in share B.
+2. Introduce triple difference to isolate effects of each therapeutic class.
+
+
+$$
+\begin{aligned}
+\begin{aligned}
+Y_{f,c,t}
+&= \alpha_f + \lambda_c + \delta_t \\
+&\quad + \sum_{c \in \mathcal{C}}
+\beta_c
+\Big(
+\mathbb{1}\{t \geq 2014\}
+\times \text{MedicaidShare}_c
+\times \mathbb{1}\{\text{ATC} = c\}
+\Big)
++ \varepsilon_{f,c,t}.
+\end{aligned}
+\end{aligned}
+$$
+
+```{r}
+source(here("exploration/HT_week1_RQ3.r"))
+```
+
+## FDA coefficients
+
+```{r}
+
+fda_rq3_models
+
+```
+
+## Patent coefficients
+
+```{r}
+
+patent_rq3_models
+
+```
+
+# Appendix
+
+## Available Data
+
+A large issue with cleaning the data comes from cleaning the datasrets in such a way they can be mapped to the Medicaid SDUD dataset.
+
+This involves mapping each of the datasets to a therapeutic area, as well as finding a method to match firms since firms aren't even mentioned in the SDUD data.
+  - Standard cleaning and fuzzy matching did not work !
+
+| Outcome Data | Stage in innovation pipeline | Processed |
+| -------- | ---- | - |
+| Patents | early stage | ✅ | 
+| Clinical trials | mid stage | ❌ |
+| Drug Approvals | end stage | ✅ | 
+
+
+
+## Medicaid State Drug Utilisation Data
+
+| Variable | Info |
+| -- | ------------|
+| NDC | 11 digit code uniquely identifying drugs, their firm and the package sizing. This is split into three variables: **labeler code** (firm);**product code** (drug for said firm); **package size** |
+| Drug name | Name of the drug |
+| Units reimbursed | Number of units paid for by Medicaid during the Year-Q |
+| Number of prescriptions | Count of prescriptions for a given drug in in that state and Year-Q |
+| Reimbursement amount | Tells us the total amount paid for a given drug in that state and Year-Q. This is split into three variables: total, medicaid and non-medicaid.|
+
+Most firms have multiple NDC labeler codes so matching on labeler code is insufficient and further cleaning was required.
+
+## Aggregation
+
+Aggregated at broad therapeutic level.
+- ATC level 1: main anatonmical groups
+- ATC level 2: further refines each level1 cat into a therapeutic subgroup e.g. diabetes, antibacterials, beta-blockers
+
+| ATC Code | Therapeutic Area |
+|-|-------------------|
+| A | Alimentary tract and metabolism |
+| B | Blood and blood-forming organs |
+| C | Cardiovascular system |
+| D | Dermatologicals |
+| G | Genito-urinary system and sex hormones |
+| H | Systemic hormonal preparations |
+| J | Anti-infectives for systemic use |
+| L | Antineoplastic and immunomodulating agents |
+| M | Musculo-skeletal system |
+| N | Nervous system |
+| P | Antiparasitic products, insecticides and repellents |
+| R | Respiratory system |
+| S | Sensory organs |
+| V | Various |
+
+## Collapsing SDUD
+
+After cleaning Medicaid SDUD data it's collapsed to obtain the number of prescriptions and reimbursement amounts.
+This is used to build demand proxies for a given therapeutic area.
+
+```r
+
+# Collapse SDUD data to firm-year-quarter-ATC level
+
+SDUD_firm_ATC <- SDUD_firm_mapped |>
+  group_by(
+    state,
+    firm,
+    labeler_code,
+    year,
+    quarter,
+    ATC_Level1,
+    ATC_Level2
+  ) |>
+  summarise(
+    prescriptions = sum(number_of_prescriptions, na.rm = TRUE),
+    medicaid_reimbursed = sum(medicaid_amount_reimbursed, na.rm = TRUE),
+    non_medicaid_reimbursed = sum(non_medicaid_amount_reimbursed, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# SDUD ATC level 1 aggregate indicators
+
+SDUD_ATC1 <- SDUD_firm_ATC |>
+  group_by(year, quarter, ATC_Level1) |>
+  summarise(
+    ATC1_prescriptions = sum(prescriptions, na.rm = TRUE),
+    ATC1_medicaid_reimbursed = sum(medicaid_reimbursed, na.rm = TRUE),
+    ATC1_non_medicaid_reimbursed = sum(non_medicaid_reimbursed, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# SDUD ATC level 2 aggregate indicators
+
+SDUD_ATC2 <- SDUD_firm_ATC |>
+  group_by(year, quarter, ATC_Level2) |>
+  summarise(
+    ATC2_prescriptions = sum(prescriptions, na.rm = TRUE),
+    ATC2_medicaid_reimbursed = sum(medicaid_reimbursed, na.rm = TRUE),
+    ATC2_non_medicaid_reimbursed = sum(non_medicaid_reimbursed, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+```
+
+## Collapsing Patents
+
+```r
+
+pharma_patents_collapsed <- pharma_patents_full |>
+  filter(patent_year >= 2005) |>
+  group_by(
+    ndc_firm_id,
+    firm,
+    patent_year,
+    patent_quarter,
+    ATC1
+  ) |>
+  summarise(
+    num_patents = n(),
+    .groups = "drop"
+  )
+
+```
+
+## Collapsing Drug approvals
+
+```r
+
+fda_approvals_panel <- fda_atc_expanded |>
+  group_by(
+    sponsor_name,
+    labeler_code,
+    approval_year,
+    approval_quarter,
+    atc_level1,
+    atc_level2
+  ) |>
+  summarise(
+    n_approvals = n(),
+    .groups = "drop"
+  )
+
+```

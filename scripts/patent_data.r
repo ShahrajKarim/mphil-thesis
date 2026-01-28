@@ -436,3 +436,151 @@ write.csv(
   "processed_data/patents/patents_sdud_merged.csv",
   row.names = FALSE
 )
+
+
+# Now merge patent data with SDUD - PDL data
+
+# Read the pharma patents clean data and collapse
+
+pharma_patents_full <- read_csv(
+  file = "processed_data/patents/pharma_patents_clean.csv",
+  col_types = cols(
+    patent_id = col_character()
+  )
+)
+
+patent_firm_ndc_firm_map <- read_csv(
+  "aux_data/patent_firm_to_ndc_firm_mapping.csv"
+)
+
+pharma_patents_full <- pharma_patents_full |>
+  left_join(
+    patent_firm_ndc_firm_map,
+    by = "firm"
+  )
+
+pharma_patents_collapsed <- pharma_patents_full |>
+  filter(patent_year >= 2005) |>
+  group_by(
+    ndc_firm_id,
+    firm,
+    patent_year,
+    patent_quarter,
+    ATC1
+  ) |>
+  summarise(
+    num_patents = n(),
+    .groups = "drop"
+  )
+
+
+# Import ATC mapping for SDUD data
+
+ndc_atc_mapping <- read_csv(
+  "aux_data/ndc_atc_mapping.csv",
+  col_types = cols(
+    ndc = col_character(),
+  )
+)
+
+# Import SDUD - PDL data
+
+SDUD_PDL <- readRDS(
+  file = "processed_data/state_drug_utilisation_data/SDUD_firm_PDL.rds"
+) |>
+select(
+  state, ndc, firm, labeler_code, product_code,
+  year, quarter, number_of_prescriptions,
+  medicaid_amount_reimbursed, non_medicaid_amount_reimbursed,
+  medicaid_coverage_start, medicaid_coverage_end, medicaid_covered,
+  price_stage_pass, pt_stage_pass, remain_in_list
+) |>
+  left_join(ndc_atc_mapping, by = "ndc", relationship = "many-to-many") |>
+  select(- rxcui, -ATC_Level2) |>
+  mutate(
+    in_pdl = ifelse(price_stage_pass == 1 & pt_stage_pass == 1, 1, 0)
+  ) 
+  
+# Generate Medicaid exposure
+
+PDL_exposure <- SDUD_PDL |>
+  select(labeler_code, year, price_stage_pass, pt_stage_pass, in_pdl, ATC_Level1) |>
+  filter(year >= 2010 & year <= 2014) |>
+  mutate(
+    price_stage_pass = ifelse(is.na(price_stage_pass), 0, price_stage_pass),
+    pt_stage_pass = ifelse(is.na(pt_stage_pass), 0, pt_stage_pass),
+    in_pdl = ifelse(is.na(in_pdl), 0, in_pdl)
+  ) |>
+  group_by(labeler_code, ATC_Level1) |>
+  summarise(
+    pt_stage_pass_prop = mean(pt_stage_pass),
+    price_stage_pass_prop = mean(price_stage_pass),
+    in_pdl_prop = mean(in_pdl),
+    .groups = "drop"
+  )
+
+# Collapse SDUD-PDL data to firm-year-quarter-ATC level
+
+SDUD_PDL <- SDUD_PDL |>
+  left_join(
+    PDL_exposure,
+    by = c("labeler_code", "ATC_Level1")
+  ) |>
+  group_by(
+    labeler_code,
+    year,
+    quarter,
+    ATC_Level1,
+  ) |>
+  summarise(
+    prescriptions = sum(number_of_prescriptions, na.rm = TRUE),
+    medicaid_reimbursed = sum(medicaid_amount_reimbursed, na.rm = TRUE),
+    non_medicaid_reimbursed = sum(non_medicaid_amount_reimbursed, na.rm = TRUE),
+    price_stage_pass = first(price_stage_pass_prop),
+    pt_stage_pass = first(pt_stage_pass_prop),
+    in_pdl = first(in_pdl_prop),
+    .groups = "drop"
+  ) |>
+  mutate(
+    price_stage_pass = ifelse(is.na(price_stage_pass), 0, price_stage_pass),
+    pt_stage_pass = ifelse(is.na(pt_stage_pass), 0, pt_stage_pass),
+    in_pdl = ifelse(is.na(in_pdl), 0, in_pdl)
+  )
+
+SDUD_ATC1 <- SDUD_PDL |>
+  group_by(year, quarter, ATC_Level1) |>
+  summarise(
+    ATC1_prescriptions = sum(prescriptions, na.rm = TRUE),
+    ATC1_medicaid_reimbursed = sum(medicaid_reimbursed, na.rm = TRUE),
+    ATC1_non_medicaid_reimbursed = sum(non_medicaid_reimbursed, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+SDUD_PDL <- SDUD_PDL |>
+  left_join(
+    SDUD_ATC1,
+    by = c("year", "quarter", "ATC_Level1")
+  )
+
+# Merge with collapsed patents data
+
+patent_sdud_pdl_merged <- pharma_patents_collapsed |>
+  left_join(
+    SDUD_PDL,
+    by = c(
+      "ndc_firm_id" = "labeler_code",
+      "patent_year" = "year",
+      "patent_quarter" = "quarter",
+      "ATC1" = "ATC_Level1"
+    ),
+    relationship = "many-to-many"
+  ) |>
+  mutate(across(where(is.numeric), ~ replace_na(.x, 0)))
+
+# Save final merged dataset
+
+write.csv(
+  patent_sdud_pdl_merged,
+  "processed_data/patents/patents_sdud_pdl_merged.csv",
+  row.names = FALSE
+)
