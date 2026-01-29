@@ -577,6 +577,79 @@ patent_sdud_pdl_merged <- pharma_patents_collapsed |>
   ) |>
   mutate(across(where(is.numeric), ~ replace_na(.x, 0)))
 
+# Balance dataset
+
+patent_sdud_pdl_merged <- patent_sdud_pdl_merged |>
+  group_by(
+    patent_year,
+    patent_quarter,
+    ATC1
+  )|>
+  mutate(
+    prescriptions_yqa = max(prescriptions, na.rm = TRUE),
+    medicaid_reimbursed_yqa = max(medicaid_reimbursed, na.rm = TRUE),
+    non_medicaid_reimbursed_yqa = max(non_medicaid_reimbursed, na.rm = TRUE),
+    ATC1_prescriptions_yqa = max(ATC1_prescriptions, na.rm = TRUE),
+    ATC1_medicaid_reimbursed_yqa = max(ATC1_medicaid_reimbursed, na.rm = TRUE),
+    ATC1_non_medicaid_reimbursed_yqa = max(ATC1_non_medicaid_reimbursed, na.rm = TRUE)
+  ) |>
+  ungroup() |>
+  group_by(
+    firm,
+    ATC1,
+    patent_year,
+    patent_quarter
+  ) |>
+  summarise(
+    num_patents = sum(num_patents, na.rm = TRUE),
+    price_stage_pass = first(na.omit(price_stage_pass)),
+    pt_stage_pass = first(na.omit(pt_stage_pass)),
+    in_pdl = first(na.omit(in_pdl)),
+    prescriptions = first(prescriptions_yqa),
+    medicaid_reimbursed = first(medicaid_reimbursed_yqa),
+    non_medicaid_reimbursed = first(non_medicaid_reimbursed_yqa),
+    ATC1_prescriptions = first(ATC1_prescriptions_yqa),
+    ATC1_medicaid_reimbursed = first(ATC1_medicaid_reimbursed_yqa),
+    ATC1_non_medicaid_reimbursed = first(ATC1_non_medicaid_reimbursed_yqa),
+    .groups = "drop"
+    ) |>
+  complete(
+    firm,
+    ATC1,
+    patent_year,
+    patent_quarter,
+    fill = list(num_patents = 0)
+  ) |>
+  group_by(firm, ATC1) |>
+  fill(price_stage_pass, pt_stage_pass, in_pdl, .direction = "downup") |>
+  ungroup() |>
+  group_by(
+    patent_year,
+    patent_quarter,
+    ATC1
+  ) |>
+  fill(
+    prescriptions,
+    medicaid_reimbursed,
+    non_medicaid_reimbursed,
+    ATC1_prescriptions,
+    ATC1_medicaid_reimbursed,
+    ATC1_non_medicaid_reimbursed,
+    .direction = "downup"
+  ) |>
+  ungroup() |>
+  mutate(
+    price_stage_pass = replace_na(price_stage_pass, 0),
+    pt_stage_pass = replace_na(pt_stage_pass, 0),
+    in_pdl = replace_na(in_pdl, 0),
+    prescriptions = replace_na(prescriptions, 0),
+    medicaid_reimbursed = replace_na(medicaid_reimbursed, 0),
+    non_medicaid_reimbursed = replace_na(non_medicaid_reimbursed, 0),
+    ATC1_prescriptions = replace_na(ATC1_prescriptions, 0),
+    ATC1_medicaid_reimbursed = replace_na(ATC1_medicaid_reimbursed, 0),
+    ATC1_non_medicaid_reimbursed = replace_na(ATC1_non_medicaid_reimbursed, 0)
+  )
+
 # Save final merged dataset
 
 write.csv(
