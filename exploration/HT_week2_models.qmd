@@ -642,3 +642,92 @@ patent_rq3_models
 rm(patent_rq3_feols_exante, patent_rq3_feols_expost, patent_rq3_model_list, patent_rq3_models)
 
 ```
+
+
+## FDA coefficients - removal of P
+
+```{r}
+
+fda_ex_ante_data <- fda_ex_ante_data |>
+  mutate(post = ifelse(approval_year >= 2014, 1, 0)) |>
+  filter(atc_level1 != "P")
+
+fda_ex_post_data <- fda_ex_post_data |>
+  mutate(post = ifelse(approval_year >= 2014, 1, 0)) |>
+  filter(atc_level1 != "P")
+
+fda_rq3_feols_exante <- feols(
+  approvals ~ medicaid_market_share : post : i(atc_level1) | 
+  firm + atc_level1 + approval_year,
+  data = fda_ex_ante_data,
+  cluster = ~ firm
+)
+
+fda_rq3_feols_expost <- feols(
+  approvals ~ medicaid_market_share : post : i(atc_level1) | 
+  firm + atc_level1 + approval_year,
+  data = fda_ex_post_data,
+  cluster = ~ firm
+)
+
+fda_rq3_model_list <- list(
+  "FEOLS: Ex Ante"  = fda_rq3_feols_exante,
+  "FEOLS: Ex Post"  = fda_rq3_feols_expost
+)
+
+fda_rq3_models <- modelsummary(
+             fda_rq3_model_list,
+             stars = c(`*` = 0.05, `**` = 0.01, `***` = 0.001)
+             )
+
+fda_rq3_models
+
+rm(fda_rq3_feols_exante, fda_rq3_feols_expost, fda_rq3_model_list, fda_rq3_models)
+
+rm(fda_approvals)
+
+```
+
+## Patent coefficients - removal of P
+
+```{r}
+
+patents_ex_ante_year <- patents_ex_ante_year |>
+  mutate(post = ifelse(patent_year >= 2014, 1, 0)) |>
+  filter(atc_level1 != "P")
+
+patents_ex_post_year <- patents_ex_post_year |>
+  mutate(post = ifelse(patent_year >= 2014, 1, 0)) |>
+  filter(atc_level1 != "P")
+
+patent_rq3_feols_exante <- feols(
+  patents ~ medicaid_market_share : post : i(atc_level1) | 
+  firm + atc_level1 + patent_year,
+  data = patents_ex_ante_year,
+  cluster = ~ firm
+)
+
+patent_rq3_feols_expost <- feols(
+  patents ~ medicaid_market_share : post : i(atc_level1) | 
+  firm + atc_level1 + patent_year,
+  data = patents_ex_post_year,
+  cluster = ~ firm
+)
+
+
+patent_rq3_model_list <- list(
+  "FEOLS: Ex Ante"  = patent_rq3_feols_exante,
+  "FEOLS: Ex Post"  = patent_rq3_feols_expost
+)
+
+patent_rq3_models <- modelsummary(
+             patent_rq3_model_list,
+             stars = c(`*` = 0.05, `**` = 0.01, `***` = 0.001)
+             )
+
+
+patent_rq3_models
+
+rm(patent_rq3_feols_exante, patent_rq3_feols_expost, patent_rq3_model_list, patent_rq3_models)
+
+```

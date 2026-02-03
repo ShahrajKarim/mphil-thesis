@@ -1377,8 +1377,8 @@ Y_{f,c,t}
 
     <script>
 
-      function styleCell_u5b6coqpcqbw88uuzm3c(i, j, css_id) {
-          var table = document.getElementById("tinytable_u5b6coqpcqbw88uuzm3c");
+      function styleCell_xfchy3id28bbvcc4t386(i, j, css_id) {
+          var table = document.getElementById("tinytable_xfchy3id28bbvcc4t386");
           var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -1388,7 +1388,7 @@ Y_{f,c,t}
           }
       }
       function insertSpanRow(i, colspan, content) {
-        var table = document.getElementById('tinytable_u5b6coqpcqbw88uuzm3c');
+        var table = document.getElementById('tinytable_xfchy3id28bbvcc4t386');
         var newRow = table.insertRow(i);
         var newCell = newRow.insertCell(0);
         newCell.setAttribute("colspan", colspan);
@@ -1396,8 +1396,8 @@ Y_{f,c,t}
         // this may be unsafe, but innerText does not interpret <br>
         newCell.innerHTML = content;
       }
-      function spanCell_u5b6coqpcqbw88uuzm3c(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_u5b6coqpcqbw88uuzm3c");
+      function spanCell_xfchy3id28bbvcc4t386(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_xfchy3id28bbvcc4t386");
         const targetRow = table.rows[i];
         const targetCell = targetRow.cells[j];
         for (let r = 0; r < rowspan; r++) {
@@ -1427,20 +1427,20 @@ Y_{f,c,t}
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: 38, j: 1 }, { i: 38, j: 2 },  ], css_id: 'tinytable_css_wbgt64dpt00z5r98dhdj',}, 
-          { positions: [ { i: 38, j: 0 },  ], css_id: 'tinytable_css_szpoum2vdfmpj1zcdtcv',}, 
-          { positions: [ { i: 26, j: 2 }, { i: 26, j: 1 },  ], css_id: 'tinytable_css_o6elu2ftspynmm7io0a8',}, 
-          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_o4iu3q2x6lpc6femmybu',}, 
-          { positions: [ { i: 0, j: 1 }, { i: 0, j: 2 },  ], css_id: 'tinytable_css_nmszc27umomjhmvmxkaw',}, 
-          { positions: [ { i: 26, j: 0 },  ], css_id: 'tinytable_css_iwhhpho0tt3m8g9fqp17',}, 
-          { positions: [ { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 1, j: 1 }, { i: 6, j: 1 }, { i: 7, j: 1 }, { i: 8, j: 1 }, { i: 5, j: 1 }, { i: 10, j: 1 }, { i: 11, j: 1 }, { i: 12, j: 1 }, { i: 9, j: 1 }, { i: 14, j: 1 }, { i: 15, j: 1 }, { i: 16, j: 1 }, { i: 17, j: 1 }, { i: 18, j: 1 }, { i: 19, j: 1 }, { i: 20, j: 1 }, { i: 21, j: 1 }, { i: 22, j: 1 }, { i: 23, j: 1 }, { i: 24, j: 1 }, { i: 25, j: 1 }, { i: 13, j: 1 }, { i: 27, j: 1 }, { i: 28, j: 1 }, { i: 29, j: 1 }, { i: 30, j: 1 }, { i: 31, j: 1 }, { i: 32, j: 1 }, { i: 33, j: 1 }, { i: 34, j: 1 }, { i: 35, j: 1 }, { i: 36, j: 1 }, { i: 37, j: 1 }, { i: 12, j: 2 }, { i: 27, j: 2 }, { i: 1, j: 2 }, { i: 2, j: 2 }, { i: 3, j: 2 }, { i: 4, j: 2 }, { i: 5, j: 2 }, { i: 6, j: 2 }, { i: 7, j: 2 }, { i: 8, j: 2 }, { i: 9, j: 2 }, { i: 10, j: 2 }, { i: 11, j: 2 }, { i: 25, j: 2 }, { i: 13, j: 2 }, { i: 14, j: 2 }, { i: 15, j: 2 }, { i: 16, j: 2 }, { i: 17, j: 2 }, { i: 18, j: 2 }, { i: 19, j: 2 }, { i: 20, j: 2 }, { i: 21, j: 2 }, { i: 22, j: 2 }, { i: 23, j: 2 }, { i: 24, j: 2 }, { i: 29, j: 2 }, { i: 30, j: 2 }, { i: 31, j: 2 }, { i: 28, j: 2 }, { i: 33, j: 2 }, { i: 34, j: 2 }, { i: 35, j: 2 }, { i: 32, j: 2 }, { i: 37, j: 2 }, { i: 36, j: 2 },  ], css_id: 'tinytable_css_4vun9wxua3b7d6lowxhm',}, 
-          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 6, j: 0 }, { i: 7, j: 0 }, { i: 8, j: 0 }, { i: 9, j: 0 }, { i: 10, j: 0 }, { i: 11, j: 0 }, { i: 12, j: 0 }, { i: 13, j: 0 }, { i: 14, j: 0 }, { i: 15, j: 0 }, { i: 16, j: 0 }, { i: 17, j: 0 }, { i: 18, j: 0 }, { i: 19, j: 0 }, { i: 20, j: 0 }, { i: 21, j: 0 }, { i: 22, j: 0 }, { i: 23, j: 0 }, { i: 24, j: 0 }, { i: 25, j: 0 }, { i: 30, j: 0 }, { i: 27, j: 0 }, { i: 28, j: 0 }, { i: 29, j: 0 }, { i: 34, j: 0 }, { i: 31, j: 0 }, { i: 32, j: 0 }, { i: 33, j: 0 }, { i: 35, j: 0 }, { i: 36, j: 0 }, { i: 37, j: 0 },  ], css_id: 'tinytable_css_1ug9inc00x1w6foqbpzx',}, 
+          { positions: [ { i: 26, j: 0 },  ], css_id: 'tinytable_css_vxmwue8boe0a5u8lnsxe',}, 
+          { positions: [ { i: 26, j: 2 }, { i: 26, j: 1 },  ], css_id: 'tinytable_css_r86tfr1xosb0zhs48zaq',}, 
+          { positions: [ { i: 38, j: 1 }, { i: 38, j: 2 },  ], css_id: 'tinytable_css_k3n1sr538cwqeg0d2cix',}, 
+          { positions: [ { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 1, j: 1 }, { i: 6, j: 1 }, { i: 7, j: 1 }, { i: 8, j: 1 }, { i: 5, j: 1 }, { i: 10, j: 1 }, { i: 11, j: 1 }, { i: 12, j: 1 }, { i: 9, j: 1 }, { i: 14, j: 1 }, { i: 15, j: 1 }, { i: 16, j: 1 }, { i: 17, j: 1 }, { i: 18, j: 1 }, { i: 19, j: 1 }, { i: 20, j: 1 }, { i: 21, j: 1 }, { i: 22, j: 1 }, { i: 23, j: 1 }, { i: 24, j: 1 }, { i: 25, j: 1 }, { i: 13, j: 1 }, { i: 27, j: 1 }, { i: 28, j: 1 }, { i: 29, j: 1 }, { i: 30, j: 1 }, { i: 31, j: 1 }, { i: 32, j: 1 }, { i: 33, j: 1 }, { i: 34, j: 1 }, { i: 35, j: 1 }, { i: 36, j: 1 }, { i: 37, j: 1 }, { i: 12, j: 2 }, { i: 27, j: 2 }, { i: 1, j: 2 }, { i: 2, j: 2 }, { i: 3, j: 2 }, { i: 4, j: 2 }, { i: 5, j: 2 }, { i: 6, j: 2 }, { i: 7, j: 2 }, { i: 8, j: 2 }, { i: 9, j: 2 }, { i: 10, j: 2 }, { i: 11, j: 2 }, { i: 25, j: 2 }, { i: 13, j: 2 }, { i: 14, j: 2 }, { i: 15, j: 2 }, { i: 16, j: 2 }, { i: 17, j: 2 }, { i: 18, j: 2 }, { i: 19, j: 2 }, { i: 20, j: 2 }, { i: 21, j: 2 }, { i: 22, j: 2 }, { i: 23, j: 2 }, { i: 24, j: 2 }, { i: 29, j: 2 }, { i: 30, j: 2 }, { i: 31, j: 2 }, { i: 28, j: 2 }, { i: 33, j: 2 }, { i: 34, j: 2 }, { i: 35, j: 2 }, { i: 32, j: 2 }, { i: 37, j: 2 }, { i: 36, j: 2 },  ], css_id: 'tinytable_css_g8b0cjm0nv52qa3v25ci',}, 
+          { positions: [ { i: 38, j: 0 },  ], css_id: 'tinytable_css_g3lre7wifjqal2dru1hs',}, 
+          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 6, j: 0 }, { i: 7, j: 0 }, { i: 8, j: 0 }, { i: 9, j: 0 }, { i: 10, j: 0 }, { i: 11, j: 0 }, { i: 12, j: 0 }, { i: 13, j: 0 }, { i: 14, j: 0 }, { i: 15, j: 0 }, { i: 16, j: 0 }, { i: 17, j: 0 }, { i: 18, j: 0 }, { i: 19, j: 0 }, { i: 20, j: 0 }, { i: 21, j: 0 }, { i: 22, j: 0 }, { i: 23, j: 0 }, { i: 24, j: 0 }, { i: 25, j: 0 }, { i: 30, j: 0 }, { i: 27, j: 0 }, { i: 28, j: 0 }, { i: 29, j: 0 }, { i: 34, j: 0 }, { i: 31, j: 0 }, { i: 32, j: 0 }, { i: 33, j: 0 }, { i: 35, j: 0 }, { i: 36, j: 0 }, { i: 37, j: 0 },  ], css_id: 'tinytable_css_d016qevanopvi8wyk6zc',}, 
+          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_68fnlcovd0yfa4b86hmz',}, 
+          { positions: [ { i: 0, j: 1 }, { i: 0, j: 2 },  ], css_id: 'tinytable_css_1d9s0ujwo522bpsbsmo1',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_u5b6coqpcqbw88uuzm3c(cell.i, cell.j, group.css_id);
+                  styleCell_xfchy3id28bbvcc4t386(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -1448,17 +1448,17 @@ Y_{f,c,t}
 
     <style>
 
-.table td.tinytable_css_wbgt64dpt00z5r98dhdj, .table th.tinytable_css_wbgt64dpt00z5r98dhdj { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
-.table td.tinytable_css_szpoum2vdfmpj1zcdtcv, .table th.tinytable_css_szpoum2vdfmpj1zcdtcv { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
-.table td.tinytable_css_o6elu2ftspynmm7io0a8, .table th.tinytable_css_o6elu2ftspynmm7io0a8 { text-align: center; border-bottom: solid black 0.05em; }
-.table td.tinytable_css_o4iu3q2x6lpc6femmybu, .table th.tinytable_css_o4iu3q2x6lpc6femmybu { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-.table td.tinytable_css_nmszc27umomjhmvmxkaw, .table th.tinytable_css_nmszc27umomjhmvmxkaw { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-.table td.tinytable_css_iwhhpho0tt3m8g9fqp17, .table th.tinytable_css_iwhhpho0tt3m8g9fqp17 { text-align: left; border-bottom: solid black 0.05em; }
-.table td.tinytable_css_4vun9wxua3b7d6lowxhm, .table th.tinytable_css_4vun9wxua3b7d6lowxhm { text-align: center; }
-.table td.tinytable_css_1ug9inc00x1w6foqbpzx, .table th.tinytable_css_1ug9inc00x1w6foqbpzx { text-align: left; }
+.table td.tinytable_css_vxmwue8boe0a5u8lnsxe, .table th.tinytable_css_vxmwue8boe0a5u8lnsxe { text-align: left; border-bottom: solid black 0.05em; }
+.table td.tinytable_css_r86tfr1xosb0zhs48zaq, .table th.tinytable_css_r86tfr1xosb0zhs48zaq { text-align: center; border-bottom: solid black 0.05em; }
+.table td.tinytable_css_k3n1sr538cwqeg0d2cix, .table th.tinytable_css_k3n1sr538cwqeg0d2cix { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
+.table td.tinytable_css_g8b0cjm0nv52qa3v25ci, .table th.tinytable_css_g8b0cjm0nv52qa3v25ci { text-align: center; }
+.table td.tinytable_css_g3lre7wifjqal2dru1hs, .table th.tinytable_css_g3lre7wifjqal2dru1hs { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+.table td.tinytable_css_d016qevanopvi8wyk6zc, .table th.tinytable_css_d016qevanopvi8wyk6zc { text-align: left; }
+.table td.tinytable_css_68fnlcovd0yfa4b86hmz, .table th.tinytable_css_68fnlcovd0yfa4b86hmz { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+.table td.tinytable_css_1d9s0ujwo522bpsbsmo1, .table th.tinytable_css_1d9s0ujwo522bpsbsmo1 { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
 </style>
     <div class="container">
-      <table class="table table-borderless" id="tinytable_u5b6coqpcqbw88uuzm3c" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_xfchy3id28bbvcc4t386" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         
               <tr>
@@ -1674,8 +1674,8 @@ Y_{f,c,t}
 
     <script>
 
-      function styleCell_fi2ddygsyme26yshyvjj(i, j, css_id) {
-          var table = document.getElementById("tinytable_fi2ddygsyme26yshyvjj");
+      function styleCell_3ljf0igs3cd1dq1fstk8(i, j, css_id) {
+          var table = document.getElementById("tinytable_3ljf0igs3cd1dq1fstk8");
           var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -1685,7 +1685,7 @@ Y_{f,c,t}
           }
       }
       function insertSpanRow(i, colspan, content) {
-        var table = document.getElementById('tinytable_fi2ddygsyme26yshyvjj');
+        var table = document.getElementById('tinytable_3ljf0igs3cd1dq1fstk8');
         var newRow = table.insertRow(i);
         var newCell = newRow.insertCell(0);
         newCell.setAttribute("colspan", colspan);
@@ -1693,8 +1693,8 @@ Y_{f,c,t}
         // this may be unsafe, but innerText does not interpret <br>
         newCell.innerHTML = content;
       }
-      function spanCell_fi2ddygsyme26yshyvjj(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_fi2ddygsyme26yshyvjj");
+      function spanCell_3ljf0igs3cd1dq1fstk8(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_3ljf0igs3cd1dq1fstk8");
         const targetRow = table.rows[i];
         const targetCell = targetRow.cells[j];
         for (let r = 0; r < rowspan; r++) {
@@ -1724,20 +1724,20 @@ Y_{f,c,t}
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: 38, j: 1 }, { i: 38, j: 2 },  ], css_id: 'tinytable_css_yquhwn3kj22408krerzi',}, 
-          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_tiwrpo3mq6r5f9q0zpc2',}, 
-          { positions: [ { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 1, j: 1 }, { i: 6, j: 1 }, { i: 7, j: 1 }, { i: 8, j: 1 }, { i: 5, j: 1 }, { i: 10, j: 1 }, { i: 11, j: 1 }, { i: 12, j: 1 }, { i: 9, j: 1 }, { i: 14, j: 1 }, { i: 15, j: 1 }, { i: 16, j: 1 }, { i: 17, j: 1 }, { i: 18, j: 1 }, { i: 19, j: 1 }, { i: 20, j: 1 }, { i: 21, j: 1 }, { i: 22, j: 1 }, { i: 23, j: 1 }, { i: 24, j: 1 }, { i: 25, j: 1 }, { i: 13, j: 1 }, { i: 27, j: 1 }, { i: 28, j: 1 }, { i: 29, j: 1 }, { i: 30, j: 1 }, { i: 31, j: 1 }, { i: 32, j: 1 }, { i: 33, j: 1 }, { i: 34, j: 1 }, { i: 35, j: 1 }, { i: 36, j: 1 }, { i: 37, j: 1 }, { i: 12, j: 2 }, { i: 27, j: 2 }, { i: 1, j: 2 }, { i: 2, j: 2 }, { i: 3, j: 2 }, { i: 4, j: 2 }, { i: 5, j: 2 }, { i: 6, j: 2 }, { i: 7, j: 2 }, { i: 8, j: 2 }, { i: 9, j: 2 }, { i: 10, j: 2 }, { i: 11, j: 2 }, { i: 25, j: 2 }, { i: 13, j: 2 }, { i: 14, j: 2 }, { i: 15, j: 2 }, { i: 16, j: 2 }, { i: 17, j: 2 }, { i: 18, j: 2 }, { i: 19, j: 2 }, { i: 20, j: 2 }, { i: 21, j: 2 }, { i: 22, j: 2 }, { i: 23, j: 2 }, { i: 24, j: 2 }, { i: 29, j: 2 }, { i: 30, j: 2 }, { i: 31, j: 2 }, { i: 28, j: 2 }, { i: 33, j: 2 }, { i: 34, j: 2 }, { i: 35, j: 2 }, { i: 32, j: 2 }, { i: 37, j: 2 }, { i: 36, j: 2 },  ], css_id: 'tinytable_css_duqwzeqwxh9yngx6phgc',}, 
-          { positions: [ { i: 0, j: 1 }, { i: 0, j: 2 },  ], css_id: 'tinytable_css_b3fv46wvps4wdiitl2sd',}, 
-          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 6, j: 0 }, { i: 7, j: 0 }, { i: 8, j: 0 }, { i: 9, j: 0 }, { i: 10, j: 0 }, { i: 11, j: 0 }, { i: 12, j: 0 }, { i: 13, j: 0 }, { i: 14, j: 0 }, { i: 15, j: 0 }, { i: 16, j: 0 }, { i: 17, j: 0 }, { i: 18, j: 0 }, { i: 19, j: 0 }, { i: 20, j: 0 }, { i: 21, j: 0 }, { i: 22, j: 0 }, { i: 23, j: 0 }, { i: 24, j: 0 }, { i: 25, j: 0 }, { i: 30, j: 0 }, { i: 27, j: 0 }, { i: 28, j: 0 }, { i: 29, j: 0 }, { i: 34, j: 0 }, { i: 31, j: 0 }, { i: 32, j: 0 }, { i: 33, j: 0 }, { i: 35, j: 0 }, { i: 36, j: 0 }, { i: 37, j: 0 },  ], css_id: 'tinytable_css_ab0qfte8hzl0shrxjhhj',}, 
-          { positions: [ { i: 26, j: 2 }, { i: 26, j: 1 },  ], css_id: 'tinytable_css_5oqbm7kzt1tuesg5jw6t',}, 
-          { positions: [ { i: 38, j: 0 },  ], css_id: 'tinytable_css_4u5a2iqm54bvxtcx1fm9',}, 
-          { positions: [ { i: 26, j: 0 },  ], css_id: 'tinytable_css_3anis6tadhee26b9jehd',}, 
+          { positions: [ { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 1, j: 1 }, { i: 6, j: 1 }, { i: 7, j: 1 }, { i: 8, j: 1 }, { i: 5, j: 1 }, { i: 10, j: 1 }, { i: 11, j: 1 }, { i: 12, j: 1 }, { i: 9, j: 1 }, { i: 14, j: 1 }, { i: 15, j: 1 }, { i: 16, j: 1 }, { i: 17, j: 1 }, { i: 18, j: 1 }, { i: 19, j: 1 }, { i: 20, j: 1 }, { i: 21, j: 1 }, { i: 22, j: 1 }, { i: 23, j: 1 }, { i: 24, j: 1 }, { i: 25, j: 1 }, { i: 13, j: 1 }, { i: 27, j: 1 }, { i: 28, j: 1 }, { i: 29, j: 1 }, { i: 30, j: 1 }, { i: 31, j: 1 }, { i: 32, j: 1 }, { i: 33, j: 1 }, { i: 34, j: 1 }, { i: 35, j: 1 }, { i: 36, j: 1 }, { i: 37, j: 1 }, { i: 12, j: 2 }, { i: 27, j: 2 }, { i: 1, j: 2 }, { i: 2, j: 2 }, { i: 3, j: 2 }, { i: 4, j: 2 }, { i: 5, j: 2 }, { i: 6, j: 2 }, { i: 7, j: 2 }, { i: 8, j: 2 }, { i: 9, j: 2 }, { i: 10, j: 2 }, { i: 11, j: 2 }, { i: 25, j: 2 }, { i: 13, j: 2 }, { i: 14, j: 2 }, { i: 15, j: 2 }, { i: 16, j: 2 }, { i: 17, j: 2 }, { i: 18, j: 2 }, { i: 19, j: 2 }, { i: 20, j: 2 }, { i: 21, j: 2 }, { i: 22, j: 2 }, { i: 23, j: 2 }, { i: 24, j: 2 }, { i: 29, j: 2 }, { i: 30, j: 2 }, { i: 31, j: 2 }, { i: 28, j: 2 }, { i: 33, j: 2 }, { i: 34, j: 2 }, { i: 35, j: 2 }, { i: 32, j: 2 }, { i: 37, j: 2 }, { i: 36, j: 2 },  ], css_id: 'tinytable_css_w5ae8frf11336m2w07qt',}, 
+          { positions: [ { i: 26, j: 0 },  ], css_id: 'tinytable_css_vqg4lkqnt0xozt559yof',}, 
+          { positions: [ { i: 26, j: 2 }, { i: 26, j: 1 },  ], css_id: 'tinytable_css_myyf82l91e50nomh2ioo',}, 
+          { positions: [ { i: 0, j: 1 }, { i: 0, j: 2 },  ], css_id: 'tinytable_css_blq5wfmr8c9gqqyb0zh1',}, 
+          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 6, j: 0 }, { i: 7, j: 0 }, { i: 8, j: 0 }, { i: 9, j: 0 }, { i: 10, j: 0 }, { i: 11, j: 0 }, { i: 12, j: 0 }, { i: 13, j: 0 }, { i: 14, j: 0 }, { i: 15, j: 0 }, { i: 16, j: 0 }, { i: 17, j: 0 }, { i: 18, j: 0 }, { i: 19, j: 0 }, { i: 20, j: 0 }, { i: 21, j: 0 }, { i: 22, j: 0 }, { i: 23, j: 0 }, { i: 24, j: 0 }, { i: 25, j: 0 }, { i: 30, j: 0 }, { i: 27, j: 0 }, { i: 28, j: 0 }, { i: 29, j: 0 }, { i: 34, j: 0 }, { i: 31, j: 0 }, { i: 32, j: 0 }, { i: 33, j: 0 }, { i: 35, j: 0 }, { i: 36, j: 0 }, { i: 37, j: 0 },  ], css_id: 'tinytable_css_6pwtucsmibnvt30gjl7f',}, 
+          { positions: [ { i: 38, j: 0 },  ], css_id: 'tinytable_css_2liz2jzpfoec707d79o4',}, 
+          { positions: [ { i: 38, j: 1 }, { i: 38, j: 2 },  ], css_id: 'tinytable_css_2cb6njbycz30g1xg7tjb',}, 
+          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_10vk2qvod5ab5g1scd6c',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_fi2ddygsyme26yshyvjj(cell.i, cell.j, group.css_id);
+                  styleCell_3ljf0igs3cd1dq1fstk8(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -1745,17 +1745,17 @@ Y_{f,c,t}
 
     <style>
 
-.table td.tinytable_css_yquhwn3kj22408krerzi, .table th.tinytable_css_yquhwn3kj22408krerzi { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
-.table td.tinytable_css_tiwrpo3mq6r5f9q0zpc2, .table th.tinytable_css_tiwrpo3mq6r5f9q0zpc2 { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-.table td.tinytable_css_duqwzeqwxh9yngx6phgc, .table th.tinytable_css_duqwzeqwxh9yngx6phgc { text-align: center; }
-.table td.tinytable_css_b3fv46wvps4wdiitl2sd, .table th.tinytable_css_b3fv46wvps4wdiitl2sd { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-.table td.tinytable_css_ab0qfte8hzl0shrxjhhj, .table th.tinytable_css_ab0qfte8hzl0shrxjhhj { text-align: left; }
-.table td.tinytable_css_5oqbm7kzt1tuesg5jw6t, .table th.tinytable_css_5oqbm7kzt1tuesg5jw6t { text-align: center; border-bottom: solid black 0.05em; }
-.table td.tinytable_css_4u5a2iqm54bvxtcx1fm9, .table th.tinytable_css_4u5a2iqm54bvxtcx1fm9 { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
-.table td.tinytable_css_3anis6tadhee26b9jehd, .table th.tinytable_css_3anis6tadhee26b9jehd { text-align: left; border-bottom: solid black 0.05em; }
+.table td.tinytable_css_w5ae8frf11336m2w07qt, .table th.tinytable_css_w5ae8frf11336m2w07qt { text-align: center; }
+.table td.tinytable_css_vqg4lkqnt0xozt559yof, .table th.tinytable_css_vqg4lkqnt0xozt559yof { text-align: left; border-bottom: solid black 0.05em; }
+.table td.tinytable_css_myyf82l91e50nomh2ioo, .table th.tinytable_css_myyf82l91e50nomh2ioo { text-align: center; border-bottom: solid black 0.05em; }
+.table td.tinytable_css_blq5wfmr8c9gqqyb0zh1, .table th.tinytable_css_blq5wfmr8c9gqqyb0zh1 { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+.table td.tinytable_css_6pwtucsmibnvt30gjl7f, .table th.tinytable_css_6pwtucsmibnvt30gjl7f { text-align: left; }
+.table td.tinytable_css_2liz2jzpfoec707d79o4, .table th.tinytable_css_2liz2jzpfoec707d79o4 { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+.table td.tinytable_css_2cb6njbycz30g1xg7tjb, .table th.tinytable_css_2cb6njbycz30g1xg7tjb { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
+.table td.tinytable_css_10vk2qvod5ab5g1scd6c, .table th.tinytable_css_10vk2qvod5ab5g1scd6c { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
 </style>
     <div class="container">
-      <table class="table table-borderless" id="tinytable_fi2ddygsyme26yshyvjj" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_3ljf0igs3cd1dq1fstk8" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         
               <tr>
@@ -1935,6 +1935,590 @@ Y_{f,c,t}
                   <td>RMSE                                         </td>
                   <td>1.82      </td>
                   <td>1.82      </td>
+                </tr>
+                <tr>
+                  <td>Std.Errors                                   </td>
+                  <td>by: firm  </td>
+                  <td>by: firm  </td>
+                </tr>
+                <tr>
+                  <td>FE: firm                                     </td>
+                  <td>X         </td>
+                  <td>X         </td>
+                </tr>
+                <tr>
+                  <td>FE: atc_level1                               </td>
+                  <td>X         </td>
+                  <td>X         </td>
+                </tr>
+                <tr>
+                  <td>FE: patent_year                              </td>
+                  <td>X         </td>
+                  <td>X         </td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+</div>
+</div>
+</section>
+<section id="fda-coefficients---removal-of-p" class="slide level2">
+<h2>FDA coefficients - removal of P</h2>
+<div class="cell">
+<div class="cell-output-display">
+<!-- preamble start -->
+
+    <script>
+
+      function styleCell_0n62ph7ti0oov4gsdifd(i, j, css_id) {
+          var table = document.getElementById("tinytable_0n62ph7ti0oov4gsdifd");
+          var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
+          if (cell) {
+              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
+              cell.classList.add(css_id);
+          } else {
+              console.warn(`Cell at (${i}, ${j}) not found.`);
+          }
+      }
+      function insertSpanRow(i, colspan, content) {
+        var table = document.getElementById('tinytable_0n62ph7ti0oov4gsdifd');
+        var newRow = table.insertRow(i);
+        var newCell = newRow.insertCell(0);
+        newCell.setAttribute("colspan", colspan);
+        // newCell.innerText = content;
+        // this may be unsafe, but innerText does not interpret <br>
+        newCell.innerHTML = content;
+      }
+      function spanCell_0n62ph7ti0oov4gsdifd(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_0n62ph7ti0oov4gsdifd");
+        const targetRow = table.rows[i];
+        const targetCell = targetRow.cells[j];
+        for (let r = 0; r < rowspan; r++) {
+          // Only start deleting cells to the right for the first row (r == 0)
+          if (r === 0) {
+            // Delete cells to the right of the target cell in the first row
+            for (let c = colspan - 1; c > 0; c--) {
+              if (table.rows[i + r].cells[j + c]) {
+                table.rows[i + r].deleteCell(j + c);
+              }
+            }
+          }
+          // For rows below the first, delete starting from the target column
+          if (r > 0) {
+            for (let c = colspan - 1; c >= 0; c--) {
+              if (table.rows[i + r] && table.rows[i + r].cells[j]) {
+                table.rows[i + r].deleteCell(j);
+              }
+            }
+          }
+        }
+        // Set rowspan and colspan of the target cell
+        targetCell.rowSpan = rowspan;
+        targetCell.colSpan = colspan;
+      }
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_zwffoon9jh82ihtx2ts0',}, 
+          { positions: [ { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 6, j: 1 }, { i: 3, j: 1 }, { i: 8, j: 1 }, { i: 9, j: 1 }, { i: 10, j: 1 }, { i: 7, j: 1 }, { i: 12, j: 1 }, { i: 13, j: 1 }, { i: 14, j: 1 }, { i: 15, j: 1 }, { i: 16, j: 1 }, { i: 17, j: 1 }, { i: 18, j: 1 }, { i: 19, j: 1 }, { i: 20, j: 1 }, { i: 21, j: 1 }, { i: 22, j: 1 }, { i: 23, j: 1 }, { i: 11, j: 1 }, { i: 25, j: 1 }, { i: 26, j: 1 }, { i: 27, j: 1 }, { i: 28, j: 1 }, { i: 29, j: 1 }, { i: 30, j: 1 }, { i: 31, j: 1 }, { i: 32, j: 1 }, { i: 33, j: 1 }, { i: 34, j: 1 }, { i: 35, j: 1 }, { i: 12, j: 2 }, { i: 13, j: 2 }, { i: 1, j: 2 }, { i: 2, j: 2 }, { i: 3, j: 2 }, { i: 4, j: 2 }, { i: 5, j: 2 }, { i: 6, j: 2 }, { i: 7, j: 2 }, { i: 8, j: 2 }, { i: 9, j: 2 }, { i: 10, j: 2 }, { i: 11, j: 2 }, { i: 25, j: 2 }, { i: 26, j: 2 }, { i: 14, j: 2 }, { i: 15, j: 2 }, { i: 16, j: 2 }, { i: 17, j: 2 }, { i: 18, j: 2 }, { i: 19, j: 2 }, { i: 20, j: 2 }, { i: 21, j: 2 }, { i: 22, j: 2 }, { i: 23, j: 2 }, { i: 28, j: 2 }, { i: 29, j: 2 }, { i: 30, j: 2 }, { i: 27, j: 2 }, { i: 32, j: 2 }, { i: 33, j: 2 }, { i: 34, j: 2 }, { i: 31, j: 2 }, { i: 35, j: 2 },  ], css_id: 'tinytable_css_vu0k5ow9irbk7ng4zcr5',}, 
+          { positions: [ { i: 24, j: 2 }, { i: 24, j: 1 },  ], css_id: 'tinytable_css_s7dghabq5xu89gfixth9',}, 
+          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 6, j: 0 }, { i: 7, j: 0 }, { i: 8, j: 0 }, { i: 9, j: 0 }, { i: 10, j: 0 }, { i: 11, j: 0 }, { i: 12, j: 0 }, { i: 13, j: 0 }, { i: 14, j: 0 }, { i: 15, j: 0 }, { i: 16, j: 0 }, { i: 17, j: 0 }, { i: 18, j: 0 }, { i: 19, j: 0 }, { i: 20, j: 0 }, { i: 21, j: 0 }, { i: 22, j: 0 }, { i: 23, j: 0 }, { i: 28, j: 0 }, { i: 25, j: 0 }, { i: 26, j: 0 }, { i: 27, j: 0 }, { i: 32, j: 0 }, { i: 29, j: 0 }, { i: 30, j: 0 }, { i: 31, j: 0 }, { i: 33, j: 0 }, { i: 34, j: 0 }, { i: 35, j: 0 },  ], css_id: 'tinytable_css_r9dasouc2gh0gr0d7ugp',}, 
+          { positions: [ { i: 36, j: 0 },  ], css_id: 'tinytable_css_ias9sj9bsb9kczbmz4ao',}, 
+          { positions: [ { i: 24, j: 0 },  ], css_id: 'tinytable_css_dszz5b6y0atm62eoez0p',}, 
+          { positions: [ { i: 0, j: 1 }, { i: 0, j: 2 },  ], css_id: 'tinytable_css_9yooox5yv16yy80cfd72',}, 
+          { positions: [ { i: 36, j: 1 }, { i: 36, j: 2 },  ], css_id: 'tinytable_css_3lfa507hq1e0dqlxw9zb',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  styleCell_0n62ph7ti0oov4gsdifd(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <style>
+
+.table td.tinytable_css_zwffoon9jh82ihtx2ts0, .table th.tinytable_css_zwffoon9jh82ihtx2ts0 { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+.table td.tinytable_css_vu0k5ow9irbk7ng4zcr5, .table th.tinytable_css_vu0k5ow9irbk7ng4zcr5 { text-align: center; }
+.table td.tinytable_css_s7dghabq5xu89gfixth9, .table th.tinytable_css_s7dghabq5xu89gfixth9 { text-align: center; border-bottom: solid black 0.05em; }
+.table td.tinytable_css_r9dasouc2gh0gr0d7ugp, .table th.tinytable_css_r9dasouc2gh0gr0d7ugp { text-align: left; }
+.table td.tinytable_css_ias9sj9bsb9kczbmz4ao, .table th.tinytable_css_ias9sj9bsb9kczbmz4ao { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+.table td.tinytable_css_dszz5b6y0atm62eoez0p, .table th.tinytable_css_dszz5b6y0atm62eoez0p { text-align: left; border-bottom: solid black 0.05em; }
+.table td.tinytable_css_9yooox5yv16yy80cfd72, .table th.tinytable_css_9yooox5yv16yy80cfd72 { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+.table td.tinytable_css_3lfa507hq1e0dqlxw9zb, .table th.tinytable_css_3lfa507hq1e0dqlxw9zb { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
+</style>
+    <div class="container">
+      <table class="table table-borderless" id="tinytable_0n62ph7ti0oov4gsdifd" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+        <thead>
+        
+              <tr>
+                <th scope="col"> </th>
+                <th scope="col">FEOLS: Ex Ante</th>
+                <th scope="col">FEOLS: Ex Post</th>
+              </tr>
+        </thead>
+        <tfoot><tr><td colspan="3">* p &lt; 0.05, ** p &lt; 0.01, *** p &lt; 0.001</td></tr></tfoot>
+        <tbody>
+                <tr>
+                  <td>medicaid_market_share × post × atc_level1 = A</td>
+                  <td>1.211**  </td>
+                  <td>1.301**  </td>
+                </tr>
+                <tr>
+                  <td>                                             </td>
+                  <td>(0.391)  </td>
+                  <td>(0.420)  </td>
+                </tr>
+                <tr>
+                  <td>medicaid_market_share × post × atc_level1 = B</td>
+                  <td>-0.396   </td>
+                  <td>-0.121   </td>
+                </tr>
+                <tr>
+                  <td>                                             </td>
+                  <td>(2.567)  </td>
+                  <td>(0.784)  </td>
+                </tr>
+                <tr>
+                  <td>medicaid_market_share × post × atc_level1 = C</td>
+                  <td>0.229    </td>
+                  <td>0.373    </td>
+                </tr>
+                <tr>
+                  <td>                                             </td>
+                  <td>(0.171)  </td>
+                  <td>(0.278)  </td>
+                </tr>
+                <tr>
+                  <td>medicaid_market_share × post × atc_level1 = D</td>
+                  <td>0.707**  </td>
+                  <td>0.881**  </td>
+                </tr>
+                <tr>
+                  <td>                                             </td>
+                  <td>(0.270)  </td>
+                  <td>(0.337)  </td>
+                </tr>
+                <tr>
+                  <td>medicaid_market_share × post × atc_level1 = G</td>
+                  <td>-2.516   </td>
+                  <td>-1.058   </td>
+                </tr>
+                <tr>
+                  <td>                                             </td>
+                  <td>(2.666)  </td>
+                  <td>(1.121)  </td>
+                </tr>
+                <tr>
+                  <td>medicaid_market_share × post × atc_level1 = H</td>
+                  <td>1.144    </td>
+                  <td>0.446    </td>
+                </tr>
+                <tr>
+                  <td>                                             </td>
+                  <td>(1.358)  </td>
+                  <td>(0.530)  </td>
+                </tr>
+                <tr>
+                  <td>medicaid_market_share × post × atc_level1 = J</td>
+                  <td>-0.145   </td>
+                  <td>-0.078   </td>
+                </tr>
+                <tr>
+                  <td>                                             </td>
+                  <td>(0.165)  </td>
+                  <td>(0.089)  </td>
+                </tr>
+                <tr>
+                  <td>medicaid_market_share × post × atc_level1 = L</td>
+                  <td>-0.321   </td>
+                  <td>-0.244   </td>
+                </tr>
+                <tr>
+                  <td>                                             </td>
+                  <td>(2.789)  </td>
+                  <td>(2.115)  </td>
+                </tr>
+                <tr>
+                  <td>medicaid_market_share × post × atc_level1 = M</td>
+                  <td>0.022    </td>
+                  <td>0.017    </td>
+                </tr>
+                <tr>
+                  <td>                                             </td>
+                  <td>(1.127)  </td>
+                  <td>(0.858)  </td>
+                </tr>
+                <tr>
+                  <td>medicaid_market_share × post × atc_level1 = N</td>
+                  <td>0.034    </td>
+                  <td>0.047    </td>
+                </tr>
+                <tr>
+                  <td>                                             </td>
+                  <td>(0.074)  </td>
+                  <td>(0.101)  </td>
+                </tr>
+                <tr>
+                  <td>medicaid_market_share × post × atc_level1 = R</td>
+                  <td>0.298    </td>
+                  <td>0.178    </td>
+                </tr>
+                <tr>
+                  <td>                                             </td>
+                  <td>(0.217)  </td>
+                  <td>(0.130)  </td>
+                </tr>
+                <tr>
+                  <td>medicaid_market_share × post × atc_level1 = S</td>
+                  <td>8.052*   </td>
+                  <td>6.473*   </td>
+                </tr>
+                <tr>
+                  <td>                                             </td>
+                  <td>(3.737)  </td>
+                  <td>(3.004)  </td>
+                </tr>
+                <tr>
+                  <td>Num.Obs.                                     </td>
+                  <td>561600   </td>
+                  <td>561600   </td>
+                </tr>
+                <tr>
+                  <td>R2                                           </td>
+                  <td>0.235    </td>
+                  <td>0.235    </td>
+                </tr>
+                <tr>
+                  <td>R2 Adj.                                      </td>
+                  <td>0.234    </td>
+                  <td>0.234    </td>
+                </tr>
+                <tr>
+                  <td>R2 Within                                    </td>
+                  <td>0.000    </td>
+                  <td>0.000    </td>
+                </tr>
+                <tr>
+                  <td>R2 Within Adj.                               </td>
+                  <td>0.000    </td>
+                  <td>0.000    </td>
+                </tr>
+                <tr>
+                  <td>AIC                                          </td>
+                  <td>2001093.2</td>
+                  <td>2001093.2</td>
+                </tr>
+                <tr>
+                  <td>BIC                                          </td>
+                  <td>2009117.5</td>
+                  <td>2009117.5</td>
+                </tr>
+                <tr>
+                  <td>RMSE                                         </td>
+                  <td>1.44     </td>
+                  <td>1.44     </td>
+                </tr>
+                <tr>
+                  <td>Std.Errors                                   </td>
+                  <td>by: firm </td>
+                  <td>by: firm </td>
+                </tr>
+                <tr>
+                  <td>FE: firm                                     </td>
+                  <td>X        </td>
+                  <td>X        </td>
+                </tr>
+                <tr>
+                  <td>FE: atc_level1                               </td>
+                  <td>X        </td>
+                  <td>X        </td>
+                </tr>
+                <tr>
+                  <td>FE: approval_year                            </td>
+                  <td>X        </td>
+                  <td>X        </td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+</div>
+</div>
+</section>
+<section id="patent-coefficients---removal-of-p" class="slide level2">
+<h2>Patent coefficients - removal of P</h2>
+<div class="cell">
+<div class="cell-output-display">
+<!-- preamble start -->
+
+    <script>
+
+      function styleCell_m2tycjkpgl1ds6fazp7z(i, j, css_id) {
+          var table = document.getElementById("tinytable_m2tycjkpgl1ds6fazp7z");
+          var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
+          if (cell) {
+              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
+              cell.classList.add(css_id);
+          } else {
+              console.warn(`Cell at (${i}, ${j}) not found.`);
+          }
+      }
+      function insertSpanRow(i, colspan, content) {
+        var table = document.getElementById('tinytable_m2tycjkpgl1ds6fazp7z');
+        var newRow = table.insertRow(i);
+        var newCell = newRow.insertCell(0);
+        newCell.setAttribute("colspan", colspan);
+        // newCell.innerText = content;
+        // this may be unsafe, but innerText does not interpret <br>
+        newCell.innerHTML = content;
+      }
+      function spanCell_m2tycjkpgl1ds6fazp7z(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_m2tycjkpgl1ds6fazp7z");
+        const targetRow = table.rows[i];
+        const targetCell = targetRow.cells[j];
+        for (let r = 0; r < rowspan; r++) {
+          // Only start deleting cells to the right for the first row (r == 0)
+          if (r === 0) {
+            // Delete cells to the right of the target cell in the first row
+            for (let c = colspan - 1; c > 0; c--) {
+              if (table.rows[i + r].cells[j + c]) {
+                table.rows[i + r].deleteCell(j + c);
+              }
+            }
+          }
+          // For rows below the first, delete starting from the target column
+          if (r > 0) {
+            for (let c = colspan - 1; c >= 0; c--) {
+              if (table.rows[i + r] && table.rows[i + r].cells[j]) {
+                table.rows[i + r].deleteCell(j);
+              }
+            }
+          }
+        }
+        // Set rowspan and colspan of the target cell
+        targetCell.rowSpan = rowspan;
+        targetCell.colSpan = colspan;
+      }
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 6, j: 0 }, { i: 7, j: 0 }, { i: 8, j: 0 }, { i: 9, j: 0 }, { i: 10, j: 0 }, { i: 11, j: 0 }, { i: 12, j: 0 }, { i: 13, j: 0 }, { i: 14, j: 0 }, { i: 15, j: 0 }, { i: 16, j: 0 }, { i: 17, j: 0 }, { i: 18, j: 0 }, { i: 19, j: 0 }, { i: 20, j: 0 }, { i: 21, j: 0 }, { i: 22, j: 0 }, { i: 23, j: 0 }, { i: 24, j: 0 }, { i: 25, j: 0 }, { i: 30, j: 0 }, { i: 27, j: 0 }, { i: 28, j: 0 }, { i: 29, j: 0 }, { i: 34, j: 0 }, { i: 31, j: 0 }, { i: 32, j: 0 }, { i: 33, j: 0 }, { i: 35, j: 0 }, { i: 36, j: 0 }, { i: 37, j: 0 },  ], css_id: 'tinytable_css_zaihwk3guykra90dg9gi',}, 
+          { positions: [ { i: 0, j: 1 }, { i: 0, j: 2 },  ], css_id: 'tinytable_css_yeq39vq3k2lk1mojf8m6',}, 
+          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_mqcvaemkyxp3s1unenb0',}, 
+          { positions: [ { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 1, j: 1 }, { i: 6, j: 1 }, { i: 7, j: 1 }, { i: 8, j: 1 }, { i: 5, j: 1 }, { i: 10, j: 1 }, { i: 11, j: 1 }, { i: 12, j: 1 }, { i: 9, j: 1 }, { i: 14, j: 1 }, { i: 15, j: 1 }, { i: 16, j: 1 }, { i: 17, j: 1 }, { i: 18, j: 1 }, { i: 19, j: 1 }, { i: 20, j: 1 }, { i: 21, j: 1 }, { i: 22, j: 1 }, { i: 23, j: 1 }, { i: 24, j: 1 }, { i: 25, j: 1 }, { i: 13, j: 1 }, { i: 27, j: 1 }, { i: 28, j: 1 }, { i: 29, j: 1 }, { i: 30, j: 1 }, { i: 31, j: 1 }, { i: 32, j: 1 }, { i: 33, j: 1 }, { i: 34, j: 1 }, { i: 35, j: 1 }, { i: 36, j: 1 }, { i: 37, j: 1 }, { i: 12, j: 2 }, { i: 27, j: 2 }, { i: 1, j: 2 }, { i: 2, j: 2 }, { i: 3, j: 2 }, { i: 4, j: 2 }, { i: 5, j: 2 }, { i: 6, j: 2 }, { i: 7, j: 2 }, { i: 8, j: 2 }, { i: 9, j: 2 }, { i: 10, j: 2 }, { i: 11, j: 2 }, { i: 25, j: 2 }, { i: 13, j: 2 }, { i: 14, j: 2 }, { i: 15, j: 2 }, { i: 16, j: 2 }, { i: 17, j: 2 }, { i: 18, j: 2 }, { i: 19, j: 2 }, { i: 20, j: 2 }, { i: 21, j: 2 }, { i: 22, j: 2 }, { i: 23, j: 2 }, { i: 24, j: 2 }, { i: 29, j: 2 }, { i: 30, j: 2 }, { i: 31, j: 2 }, { i: 28, j: 2 }, { i: 33, j: 2 }, { i: 34, j: 2 }, { i: 35, j: 2 }, { i: 32, j: 2 }, { i: 37, j: 2 }, { i: 36, j: 2 },  ], css_id: 'tinytable_css_hm5gzn1l0hr1tojpzcup',}, 
+          { positions: [ { i: 38, j: 0 },  ], css_id: 'tinytable_css_fpj5b34ni1u2udwmoyuo',}, 
+          { positions: [ { i: 38, j: 1 }, { i: 38, j: 2 },  ], css_id: 'tinytable_css_chx8x9lvcwfkb7sbdacq',}, 
+          { positions: [ { i: 26, j: 0 },  ], css_id: 'tinytable_css_8y7liwualx4stt44hw5u',}, 
+          { positions: [ { i: 26, j: 2 }, { i: 26, j: 1 },  ], css_id: 'tinytable_css_6jmtr4gny2ac0uy8ky3m',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  styleCell_m2tycjkpgl1ds6fazp7z(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <style>
+
+.table td.tinytable_css_zaihwk3guykra90dg9gi, .table th.tinytable_css_zaihwk3guykra90dg9gi { text-align: left; }
+.table td.tinytable_css_yeq39vq3k2lk1mojf8m6, .table th.tinytable_css_yeq39vq3k2lk1mojf8m6 { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+.table td.tinytable_css_mqcvaemkyxp3s1unenb0, .table th.tinytable_css_mqcvaemkyxp3s1unenb0 { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+.table td.tinytable_css_hm5gzn1l0hr1tojpzcup, .table th.tinytable_css_hm5gzn1l0hr1tojpzcup { text-align: center; }
+.table td.tinytable_css_fpj5b34ni1u2udwmoyuo, .table th.tinytable_css_fpj5b34ni1u2udwmoyuo { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+.table td.tinytable_css_chx8x9lvcwfkb7sbdacq, .table th.tinytable_css_chx8x9lvcwfkb7sbdacq { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
+.table td.tinytable_css_8y7liwualx4stt44hw5u, .table th.tinytable_css_8y7liwualx4stt44hw5u { text-align: left; border-bottom: solid black 0.05em; }
+.table td.tinytable_css_6jmtr4gny2ac0uy8ky3m, .table th.tinytable_css_6jmtr4gny2ac0uy8ky3m { text-align: center; border-bottom: solid black 0.05em; }
+</style>
+    <div class="container">
+      <table class="table table-borderless" id="tinytable_m2tycjkpgl1ds6fazp7z" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+        <thead>
+        
+              <tr>
+                <th scope="col"> </th>
+                <th scope="col">FEOLS: Ex Ante</th>
+                <th scope="col">FEOLS: Ex Post</th>
+              </tr>
+        </thead>
+        <tfoot><tr><td colspan="3">* p &lt; 0.05, ** p &lt; 0.01, *** p &lt; 0.001</td></tr></tfoot>
+        <tbody>
+                <tr>
+                  <td>medicaid_market_share × post × atc_level1 = A</td>
+                  <td>0.252     </td>
+                  <td>0.069     </td>
+                </tr>
+                <tr>
+                  <td>                                             </td>
+                  <td>(0.153)   </td>
+                  <td>(0.129)   </td>
+                </tr>
+                <tr>
+                  <td>medicaid_market_share × post × atc_level1 = B</td>
+                  <td>2.269***  </td>
+                  <td>2.179***  </td>
+                </tr>
+                <tr>
+                  <td>                                             </td>
+                  <td>(0.442)   </td>
+                  <td>(0.562)   </td>
+                </tr>
+                <tr>
+                  <td>medicaid_market_share × post × atc_level1 = C</td>
+                  <td>0.590**   </td>
+                  <td>0.289     </td>
+                </tr>
+                <tr>
+                  <td>                                             </td>
+                  <td>(0.224)   </td>
+                  <td>(0.174)   </td>
+                </tr>
+                <tr>
+                  <td>medicaid_market_share × post × atc_level1 = D</td>
+                  <td>7.921***  </td>
+                  <td>3.640**   </td>
+                </tr>
+                <tr>
+                  <td>                                             </td>
+                  <td>(1.800)   </td>
+                  <td>(1.152)   </td>
+                </tr>
+                <tr>
+                  <td>medicaid_market_share × post × atc_level1 = G</td>
+                  <td>4.803***  </td>
+                  <td>3.376***  </td>
+                </tr>
+                <tr>
+                  <td>                                             </td>
+                  <td>(1.053)   </td>
+                  <td>(0.983)   </td>
+                </tr>
+                <tr>
+                  <td>medicaid_market_share × post × atc_level1 = H</td>
+                  <td>12.926*** </td>
+                  <td>7.835***  </td>
+                </tr>
+                <tr>
+                  <td>                                             </td>
+                  <td>(2.475)   </td>
+                  <td>(1.951)   </td>
+                </tr>
+                <tr>
+                  <td>medicaid_market_share × post × atc_level1 = J</td>
+                  <td>3.124***  </td>
+                  <td>1.614**   </td>
+                </tr>
+                <tr>
+                  <td>                                             </td>
+                  <td>(0.673)   </td>
+                  <td>(0.500)   </td>
+                </tr>
+                <tr>
+                  <td>medicaid_market_share × post × atc_level1 = L</td>
+                  <td>15.201*** </td>
+                  <td>15.972*** </td>
+                </tr>
+                <tr>
+                  <td>                                             </td>
+                  <td>(2.753)   </td>
+                  <td>(3.730)   </td>
+                </tr>
+                <tr>
+                  <td>medicaid_market_share × post × atc_level1 = M</td>
+                  <td>1.660**   </td>
+                  <td>0.678     </td>
+                </tr>
+                <tr>
+                  <td>                                             </td>
+                  <td>(0.510)   </td>
+                  <td>(0.374)   </td>
+                </tr>
+                <tr>
+                  <td>medicaid_market_share × post × atc_level1 = N</td>
+                  <td>-0.015    </td>
+                  <td>-0.153    </td>
+                </tr>
+                <tr>
+                  <td>                                             </td>
+                  <td>(0.052)   </td>
+                  <td>(0.091)   </td>
+                </tr>
+                <tr>
+                  <td>medicaid_market_share × post × atc_level1 = R</td>
+                  <td>0.298***  </td>
+                  <td>0.254***  </td>
+                </tr>
+                <tr>
+                  <td>                                             </td>
+                  <td>(0.063)   </td>
+                  <td>(0.075)   </td>
+                </tr>
+                <tr>
+                  <td>medicaid_market_share × post × atc_level1 = S</td>
+                  <td>1.556***  </td>
+                  <td>1.496***  </td>
+                </tr>
+                <tr>
+                  <td>                                             </td>
+                  <td>(0.300)   </td>
+                  <td>(0.377)   </td>
+                </tr>
+                <tr>
+                  <td>medicaid_market_share × post × atc_level1 = V</td>
+                  <td>25.742*** </td>
+                  <td>18.592**  </td>
+                </tr>
+                <tr>
+                  <td>                                             </td>
+                  <td>(5.810)   </td>
+                  <td>(5.845)   </td>
+                </tr>
+                <tr>
+                  <td>Num.Obs.                                     </td>
+                  <td>4904432   </td>
+                  <td>4904432   </td>
+                </tr>
+                <tr>
+                  <td>R2                                           </td>
+                  <td>0.337     </td>
+                  <td>0.337     </td>
+                </tr>
+                <tr>
+                  <td>R2 Adj.                                      </td>
+                  <td>0.334     </td>
+                  <td>0.334     </td>
+                </tr>
+                <tr>
+                  <td>R2 Within                                    </td>
+                  <td>0.000     </td>
+                  <td>0.000     </td>
+                </tr>
+                <tr>
+                  <td>R2 Within Adj.                               </td>
+                  <td>0.000     </td>
+                  <td>0.000     </td>
+                </tr>
+                <tr>
+                  <td>AIC                                          </td>
+                  <td>20062617.5</td>
+                  <td>20062617.5</td>
+                </tr>
+                <tr>
+                  <td>BIC                                          </td>
+                  <td>20379245.5</td>
+                  <td>20379245.5</td>
+                </tr>
+                <tr>
+                  <td>RMSE                                         </td>
+                  <td>1.86      </td>
+                  <td>1.86      </td>
                 </tr>
                 <tr>
                   <td>Std.Errors                                   </td>
