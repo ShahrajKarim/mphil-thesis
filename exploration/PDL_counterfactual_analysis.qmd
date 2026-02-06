@@ -1,0 +1,322 @@
+---
+title: "PDL Counterfactual Analysis"
+author: "Mohammad-Shah Karim"
+date: today
+
+execute:
+  dir: project
+
+format:
+  revealjs:
+    css: styles.css
+    toc: true
+    toc-depth: 1
+    slideNumber: true
+    auto: true
+    scrollable: true
+    embed-resources: true
+    self-contained-math: true
+    mermaid:
+      theme: default
+---
+
+# The Preferred Drug List
+
+## The Mechanism
+
+A drug becomes preferred when it is clinically acceptable **and** offers the lowest net cost among substitutes.
+
+1. P&T committee evaluates safety, efficacy and literature on drug.
+
+2. States compare net price among clinically equivalent drugs, with price determining which eligible drugs become most preferred.
+
+```{mermaid}
+flowchart LR
+    Start["Candidate Drug"]
+    
+    Clinical["Clinical Review<br/>(Safety & Efficacy)"]
+    Economic["Economic Evaluation<br/>(Net Cost vs Substitutes)"]
+    
+    Start --> Clinical
+    Start --> Economic
+
+    Clinical --> Decision{"Composite<br/>Decision"}
+    Economic --> Decision
+
+    Decision -->|PASSED BOTH<br/>(Clinical + Cost)| PDL["Preferred Drug<br/>(Winner)"]
+    Decision -->|FAILED EITHER<br/>(Clinical or Cost)| NonPDL["Non-Preferred Drug<br/>(Counterfactuals)"]
+```
+
+
+## Understanding counterfactuals
+
+There are two situations by which a pharmaceutical firm gets rejected:
+
+1. **Failing the P&T stage**: The drug does not reach standards for efficacy or safety.
+
+2. **Failing the cost stage**: Some other drug exists that is cheaper for Medicaid to purchase for that state.
+
+In both cases, failing only one of these stages indicates that a firm had just missed out on being eligible for the Medicaid PDL.
+
+**However**
+
+It's likely that incentives differ based on which stage had failed.
+
+# Patent data
+
+```{r}
+
+# Load necessary libraries
+library(tidyverse)
+library(lubridate)
+library(readr)
+library(stringr)
+library(ggplot2)
+library(fixest)
+library(knitr)
+library(modelsummary)
+library(kableExtra)
+library(fixest)
+library(TwoWayFEWeights)
+library(DIDmultiplegtDYN)
+library(did)
+library(here)
+
+# Load FDA approval data
+
+fda_approvals <- read_csv(
+    here(
+        "processed_data/fda_approvals/fda_sdud_pdl_merged.csv"
+        )
+) |>
+rename(
+    approvals = n_approvals,
+    firm = sponsor_name
+    )
+
+# Load patent data
+
+patents <- read_csv(
+    here(
+        "processed_data/patents/patents_sdud_pdl_merged.csv"
+    )
+) |>
+    rename(
+        atc_level1 = ATC1,
+        patents = num_patents) |>
+    filter(patent_year >= 2010)
+
+```
+
+## P&T pass distribution
+
+```{r}
+patents_pt <- patents %>% filter(pt_stage_pass > 0)
+
+ggplot(patents_pt, aes(x = pt_stage_pass)) +
+  geom_histogram(
+    bins = 30,
+    fill = "steelblue",
+    color = "white"
+  ) +
+  labs(
+    title = "Distribution of P&T pass rates",
+    x = "P&T pass rate (share passing stage)",
+    y = "Count"
+  ) +
+  theme_classic()
+
+```
+
+
+## Price stage pass distribution
+
+```{r}
+
+patents_price <- patents %>% filter(price_stage_pass > 0)
+
+ggplot(patents_price, aes(x = price_stage_pass)) +
+  geom_histogram(
+    bins = 30,
+    fill = "steelblue",
+    color = "white"
+  ) +
+  labs(
+    title = "Distribution of Price pass rates",
+    x = "Price pass rate (share passing stage)",
+    y = "Count"
+  ) +
+  theme_classic()
+
+```
+
+## In PDL distribution
+
+```{r}
+
+patents_pdl <- patents %>% filter(in_pdl > 0)
+
+ggplot(patents_pdl, aes(x = in_pdl)) +
+  geom_histogram(
+    bins = 30,
+    fill = "steelblue",
+    color = "white"
+  ) +
+  labs(
+    title = "Distribution in PDL",
+    x = "Share in PDL",
+    y = "Count"
+  ) +
+  theme_classic()
+
+```
+
+
+# Empirical Modelling
+
+## The effect of passing the price stage
+
+- Only using observations with $P\&T = 1$.
+- This means the counterfactual is those that do not fail the price stage test.
+
+$$
+Y_{f,c,t} = \alpha_{f,c} + \delta_t + \beta \mathbb{1}\{Year_t \geq 2014\} \times \text{In_PDL}_{f,c} + \phi 
+$$
+
+
+
+## The effect of passing the P&T Stage
+
+- Only using observations with $\text{Price_Stage} = 1$.
+- This means the counterfactual is those that do not fail P&T stage.
+
+$$
+Y_{f,c,t} = \alpha_{f,c} + \delta_t + \beta \mathbb{1}\{Year_t \geq 2014\} \times \text{In_PDL}_{f,c}
+$$
+
+## Passing first stage and passing both
+
+$$
+Y_{f,c,t} = \alpha_{f,c} + \delta_t + \beta \mathbb{1}\{Year_t \geq 2014\} \times \text{In_PDL}_{f,c}
+$$
+
+# Empirical Results
+
+## Passing the price stage test
+
+```r
+
+patents_price_stage <- patents |>
+    filter(pt_stage_pass == 1) |>
+    mutate(post = ifelse(patent_year >= 2014, 1, 0))
+
+
+pass_price_stage_test <- feols(
+  patents ~ in_pdl : post | 
+              firm^atc_level1 + patent_year,
+              data = patents_price_stage,
+              cluster = ~ firm
+)
+
+modelsummary(pass_price_stage_test)
+
+```
+
+```{r}
+
+patents_price_stage <- patents |>
+    filter(pt_stage_pass == 1) |>
+    mutate(post = ifelse(patent_year >= 2014, 1, 0))
+
+
+pass_price_stage_test <- feols(
+  patents ~ in_pdl : post | 
+              firm^atc_level1 + patent_year,
+              data = patents_price_stage,
+              cluster = ~ firm
+)
+
+modelsummary(pass_price_stage_test,
+             stars = c(`*` = 0.05, `**` = 0.01, `***` = 0.001),
+             gof_omit = "R2 Within*|R2 Adj*|RMSE|Std.Errors|IC|Log",)
+
+```
+
+## Passing the P&T stage
+
+```r
+
+patents_pt_stage <- patents |>
+    filter(price_stage_pass == 1) |>
+    mutate(post = ifelse(patent_year >= 2014, 1, 0))
+
+
+pass_pt_stage_test <- feols(
+  patents ~ in_pdl : post | 
+              firm^atc_level1 + patent_year,
+              data = patents_pt_stage,
+              cluster = ~ firm
+)
+
+modelsummary(pass_pt_stage_test)
+
+```
+
+```{r}
+
+patents_pt_stage <- patents |>
+    filter(price_stage_pass == 1) |>
+    mutate(post = ifelse(patent_year >= 2014, 1, 0))
+
+
+pass_pt_stage_test <- feols(
+  patents ~ in_pdl : post | 
+              firm^atc_level1 + patent_year,
+              data = patents_pt_stage,
+              cluster = ~ firm
+)
+
+modelsummary(pass_pt_stage_test,
+             stars = c(`*` = 0.05, `**` = 0.01, `***` = 0.001),
+             gof_omit = "R2 Within*|R2 Adj*|RMSE|Std.Errors|IC|Log",)
+
+```
+
+
+## Passing first stage and passing both
+
+```{r}
+
+patents <- patents |>
+    mutate(post = ifelse(patent_year >= 2014, 1, 0))
+
+
+overall_pdl_test <- feols(
+  patents ~ post : pt_stage_pass + price_stage_pass : post + in_pdl : post | 
+              firm^atc_level1 + patent_year,
+              data = patents,
+              cluster = ~ firm
+)
+
+modelsummary(overall_pdl_test,
+             stars = c(`*` = 0.05, `**` = 0.01, `***` = 0.001),
+             gof_omit = "R2 Within*|R2 Adj*|RMSE|Std.Errors|IC|Log",)
+
+pt_stage_coef <- as.numeric(coefficients(overall_pdl_test)[1])
+price_stage_coef <- as.numeric(coefficients(overall_pdl_test)[2])
+in_pdl_coef <- as.numeric(coefficients(overall_pdl_test)[3])
+
+```
+
+## The "Stranded Quality" Penalty
+
+
+| Regulatory Signal | Coefficient | Economic Interpretation |
+| --- | --- | --- |
+| **Clinical Pass Only**<br>($\beta_{PT}$) | **`r round(pt_stage_coef, 3)`** | **The "Stranded Quality" Penalty.**<br>Firms with high clinical quality ($a_i \uparrow$) that fail the price check face the steepest decline. |
+| **Price Pass Only**<br>($\beta_{Price}$) | **`r round(price_stage_coef, 3)`** | **The "Low-Quality" Penalty.**<br>Low-cost drugs that fail clinical standards are also discouraged. |
+| **PDL Winner**<br>($\beta_{PDL}$) | **+`r round(in_pdl_coef, 3)`** | **The "Access Premium."**<br>Securing the contract reverses the penalty. The market rewards access, not just science. |
+
+**Conclusion:**
+The aggregate decline in innovation is driven by **Unrewarded Quality**.
+The expansion didn't make *all* innovation bad; it specifically punished expensive innovation that could not clear the stricter budget hurdle ($\gamma \uparrow$).
