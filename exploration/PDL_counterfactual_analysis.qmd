@@ -208,7 +208,7 @@ overall_pdl_test <- feols(
 
 modelsummary(overall_pdl_test,
              stars = c(`*` = 0.05, `**` = 0.01, `***` = 0.001),
-             gof_omit = "R2 Within*|R2 Adj*|RMSE|Std.Errors|IC|Log",)
+             gof_omit = "R2 Within*|R2 Adj*|RMSE|Std.Errors|IC|Log")
 
 pt_stage_coef <- as.numeric(coefficients(overall_pdl_test)[1])
 price_stage_coef <- as.numeric(coefficients(overall_pdl_test)[2])
