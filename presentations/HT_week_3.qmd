@@ -415,94 +415,135 @@ rm(patent_rq2_feols_expost)
 
 ```
 
-# Theoretical Framework
+# Theoretical Framework: Stochastic Innovation and the Bidding Trap
 
-## 1. Production Technology: Stochastic Innovation
+## 1. Production Technology
 
-**The Core Tension:**
-
-Innovation is a function of investment **effort** ($e_i$) and **risk** ($\epsilon_i$).
-
-**The Quality Production Function:**
+**Innovation.** Firms choose effort $e_i$ to generate clinical quality $a_i$, subject to idiosyncratic risk $\epsilon_i$:
 
 $$
-a_i = \ln(e_i) + \epsilon_i, \quad \epsilon_i \sim N(0, \sigma^2)
+a_i = \ln(e_i) + \epsilon_i, 
+\qquad \epsilon_i \sim \mathcal{N}(0,\sigma^2).
 $$
 
-- **Effort ($e_i$):** Deterministic investment (R&D spending).
-- **Shock ($\epsilon_i$):** Idiosyncratic clinical risk (trial success/failure).
-- **Cost:** Convex cost of effort, $C(e_i) = \frac{1}{2} k e_i^2$.
-
-**Key Implication:**
-
-Firms choose effort $e_i$ *ex-ante*, before realizing if the drug is a "clinical success" or a failure.
-
-## 2. Institutional Hurdles: The Two Stages
-
-The firm faces two distinct barriers to entry.
-
-**Stage 1: The Clinical Threshold ($\bar{a}$)**
-
-The P&T Committee sets a minimum safety/efficacy standard.
+**Cost of effort.** Effort is costly and convex:
 
 $$
-\text{Pass P\&T if } a_i \ge \bar{a}
-$$
-* Let $Q(e_i) = \Pr(a_i \ge \bar{a})$ be the probability of clinical success.
-* $Q'(e_i) > 0$: Higher effort increases the chance of passing.
-
-**Gate 2: The Economic Threshold (Price)**
-
-Among clinically approved drugs, the state awards the PDL based on price.
-
-$$
-\text{Win PDL if } p_i < p_j \quad \text{(conditional on passing Gate 1)}
+C(e_i) = \tfrac{1}{2} k e_i^2.
 $$
 
-## 3. The Winning Probability ($\omega_i$)
-
-The probability of winning the market ($\omega_i$) decomposes into two mutually exclusive cases:
+**Clinical gate (P\&T).** A drug is clinically approved (qualifies for the pricing stage) if it meets the threshold $\bar a$:
 
 $$
-\omega_i = \underbrace{Q(e_i)[1 - Q(e_j)]}_{\text{Case A: Monopoly}} + \underbrace{Q(e_i)Q(e_j) \cdot \mathbb{I}(p_i < p_j)}_{\text{Case B: Price Competition}}
+Q(e_i) \equiv \Pr\!\big(\ln(e_i) + \epsilon_i \ge \bar a\big).
 $$
 
-**The Firm's Incentive:**
+## 2. Three States of the World
 
-- **Case A (Clinical Monopoly):** You pass, rival fails. You win automatically.
-  - *High Margins.*
-- **Case B (Price War):** Both pass. You compete on price ($p_i$).
-  - *Compressed Margins.*
+Profits depend on the joint realization of clinical outcomes for you $(i)$ and your rival $(j)$.
 
-## 4. Firm Optimisation & The "Trap"
+**State A: Monopoly (the prize).**
 
-**The Maximisation Problem:**
+- **Condition:** $i$ passes, $j$ fails.  
+- **Probability:** $Q(e_i)[1-Q(e_j)]$.  
+- **Outcome:** $i$ wins access to market $M$ at a monopoly net price $p^{M}$.
+
+**State B: Duopoly (the auction trap).**
+
+- **Condition:** both $i$ and $j$ pass.  
+- **Probability:** $Q(e_i)Q(e_j)$
+- **Mechanism:** first-price sealed-bid procurement auction for preferred status (lowest net price wins).  
+- **Result (simplifying assumption):** competition drives bids to cost, so expected profit is approximately zero.
+
+**State C: Failure (baseline).**
+
+- **Condition:** $i$ fails the P\&T gate.  
+- **Probability:** $1-Q(e_i)$
+- **Outcome:** $i$ does not enter; profit $=0$.
+
+## 3. Maximization Problem
+
+The firm chooses effort $e_i$ to maximize expected profit across the three states:
+
 $$
-\max_{e_i} \Pi_i = \underbrace{p_i(M) \cdot M \cdot \omega_i}_{\text{Expected Revenue}} - \underbrace{\frac{1}{2}k e_i^2}_{\text{Certain Cost}}
+\max_{e_i}\ \Pi_i
+=
+\underbrace{Q(e_i)\,[1-Q(e_j)] \cdot M\,(p^{M}-c_i)}_{\text{State A: Monopoly}}
++
+\underbrace{Q(e_i)Q(e_j)\cdot 0}_{\text{State B: Auction}}
++
+\underbrace{[1-Q(e_i)]\cdot 0}_{\text{State C: Failure}}
+-
+\underbrace{\tfrac{1}{2}k e_i^2}_{\text{Cost of effort}}.
 $$
 
-**The Effect of Expansion ($M \uparrow$):**
+## 4. Simplified Objective
 
-Expansion increases the state's bargaining power, forcing prices ($p_i$) down in the **Competitive State (Case B)**.
+Under the “rent dissipation in duopoly” assumption, the problem collapses to:
 
-**The Incentive Trap:**
+$$
+\max_{e_i}\ \Pi_i
+=
+Q(e_i)\,[1-Q(e_j)] \cdot M\,(p^{M}-c_i)
+-
+\tfrac{1}{2}k e_i^2.
+$$
 
-1.  As $p_i \to 0$ (due to expansion), the value of **Case B** collapses.
-2.  The firm is left relying only on **Case A** (Monopoly), which is rare.
-3.  **Result:** Expected marginal revenue falls below marginal cost. The firm reduces effort $e_i$.
 
-## 5. Mapping Theory to Empirics
+## 5. Visualising the Game
 
-This stochastic model explains the regression coefficients perfectly.
+```{mermaid}
+flowchart TD
 
-| Theoretical Outcome | Empirical Equivalent | Coefficient | Interpretation |
-| --- | --- | --- | --- |
-| **Effort Sunk, Price War Lost** | **Stranded Quality** | $\beta_1 < 0$ | You paid $\frac{1}{2}ke^2$ to pass P&T, but lost the price war. **Pure Loss.** |
-| **Effort Sunk, Price War Won** | **PDL Winner** | $\beta_3 > 0$ | You paid the cost and secured the revenue ($p_i M$). **Success.** |
+%% Stage 0: Effort
+E0["Stage 0: Firms choose effort<br/>e_i , e_j"]
 
-**Conclusion:**
+%% Stage 1: Nature draws costs
+N1["Stage 1: Nature draws costs<br/>c_i ~ U[c_low, c_high]<br/>c_j ~ U[c_low, c_high]<br/>(Private information)"]
 
-The negative $\beta_1$ confirms that firms are discouraged by the **risk of winning the science but losing the economics.**
+%% Stage 2: Clinical Gate
+C1{"Stage 2: Clinical Gate (P&T)"}
+
+M1["State A: Monopoly<br/>i passes, j fails"]
+D1["State B: Duopoly (Auction)<br/>Both pass"]
+F1["State C: Failure<br/>i fails"]
+
+%% Monopoly pricing
+PM["Uncontested outcome<br/>i gets access at p^M"]
+PI_M["Profit:<br/>pi_i = M (p^M - c_i)"]
+
+%% Duopoly auction
+PD["First-price sealed-bid auction<br/>Firms bid b_i, b_j<br/>Lowest bid wins preferred access"]
+
+W_i["i wins:<br/>b_i < b_j"]
+W_j["j wins:<br/>b_j < b_i"]
+
+PI_Di["If i wins:<br/>Expected pi_i approx 0"]
+PI_Dj["If j wins:<br/>pi_i = 0"]
+
+%% Failure payoff
+PI_F["pi_i = 0"]
+
+%% Flow connections
+E0 --> N1
+N1 --> C1
+
+C1 -->|i passes, j fails| M1
+C1 -->|both pass| D1
+C1 -->|i fails| F1
+
+M1 --> PM
+PM --> PI_M
+
+D1 --> PD
+PD --> W_i
+PD --> W_j
+W_i --> PI_Di
+W_j --> PI_Dj
+
+F1 --> PI_F
+```
+
 
 # Bibliography
 
