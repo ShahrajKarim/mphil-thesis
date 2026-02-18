@@ -1,214 +1,251 @@
 # theoretical_model/initial_model.py
 #
-# Pipeline overview:
-# 1. Set primitives + parameter values.
-# 2. Define clinical gate: Q(e) and Q'(e) under a_i = log(e_i) + eps_i.
-# 3. Define payoffs by state:
-#       - Monopoly: i passes, j fails  -> earns M * (p_mono - E[c] - tau(M))
-#       - Duopoly: both pass           -> first-price procurement auction (lowest bid wins)
-#       - Failure: i fails             -> 0
-# 4. Solve symmetric interior effort e*(M) using a bracketing search + Brent.
-# 5. Plot e*(M) over a grid of M and (optionally) save outputs for Quarto.
+# Comparative statics: symmetric Nash effort e*(M)
+# Two firms choose effort -> clinical gate -> if both pass, price stage (procurement auction)
+#
+# Units:
+# - M is in millions of prescriptions/patients (volume)
+# - prices/costs/tau(M) are $ per prescription
+# - profits are in million-$
+# - k is in million-$ units
 
-# --- libraries --- #
-import os
+from typing import Dict, Tuple
+
 import numpy as np
 import matplotlib.pyplot as plt
-
-from scipy.optimize import brentq
+from scipy.optimize import minimize_scalar
 from scipy.stats import norm
 
-# --- parameters --- #
 
-# effort cost: C(e) = 0.5 * k * e^2
-k = 2.0
+# ============================================================
+# 1) Parameters
+# ============================================================
 
-# clinical noise + threshold
+# effort cost: 0.5 * k * e^2 (million-$)
+k = 0.5
+
+# clinical tech: a = log(e) + eps, eps ~ N(0, sigma^2)
 sigma = 1.0
-a_bar = 0.5
+a_bar = 0.0
 
-# monopoly price (or cap) used in monopoly state
-p_mono = 2.5
+# monopoly price cap ($ per prescription)
+p_mono = 10.0
 
-# statutory wedge tau(M): increasing in market size
-alpha = 0.008
+# cost distribution in price stage ($ per prescription)
+c_low, c_high = 0.0, 1.0
 
+# wedge intensity (per-unit wedge in $ per prescription)
+alpha = 0.1
 
-def tau(M: float) -> float:
-    # increasing wedge with diminishing effect
-    return alpha * np.log(1.0 + M)
-
-
-# marginal cost support in the auction stage
-c_low = 0.0
-c_high = 1.0
-
-# numerical guard for log(e)
-_EPS = 1e-12
+_EPS_EFFORT = 1e-10
 
 
-# --- clinical gate: Q(e) and Q'(e) --- #
+def tau(M_millions: float) -> float:
+    """
+    Per-unit wedge tau(M) in $/rx.
+    M is in millions, so log1p(M) avoids mechanical blow-ups from units.
+    """
+    return alpha * np.log1p(M_millions)
+
+
+# ============================================================
+# 2) Clinical pass probability
+# ============================================================
 
 def Q(e: float) -> float:
-    # Pr(log(e) + eps >= a_bar), eps ~ N(0, sigma^2)
-    e = max(e, _EPS)
-    z = (np.log(e) - a_bar) / sigma
+    e_safe = max(e, _EPS_EFFORT)
+    z = (np.log(e_safe) - a_bar) / sigma
     return float(norm.cdf(z))
 
 
-def Q_prime(e: float) -> float:
-    # derivative dQ/de = phi(z) * (1/(e*sigma))
-    e = max(e, _EPS)
-    z = (np.log(e) - a_bar) / sigma
-    return float(norm.pdf(z) * (1.0 / (e * sigma)))
+# ============================================================
+# 3) Payoffs
+# ============================================================
+
+def expected_cost_uniform() -> float:
+    return 0.5 * (c_low + c_high)
 
 
-# --- payoffs by state --- #
-
-def V_monopoly(M: float) -> float:
-    # Ex-ante monopoly value:
-    #   V_M(M) = M * (p_mono - E[c] - tau(M))
-    avg_cost = 0.5 * (c_low + c_high)
-    margin = p_mono - avg_cost - tau(M)
-    return M * margin
+def V_monopoly(M_millions: float) -> float:
+    # profit (million-$) = M * (p_mono - E[c] - tau(M))
+    margin = p_mono - expected_cost_uniform() - tau(M_millions)
+    return M_millions * margin
 
 
-def duopoly_profit_per_unit_two_bidders_uniform() -> float:
-    # With two bidders, costs iid Uniform[c_low, c_high], first-price procurement auction:
-    # expected profit per unit market size is (c_high - c_low) / 6.
-    #
-    # IMPORTANT NOTE ABOUT tau(M):
-    # If the wedge enters payoff as: pi = M(b - c - tau(M)),
-    # then in a procurement auction bidders optimally shift bids upward by tau(M),
-    # so expected *markup* is unchanged under no binding price cap.
-    #
-    # If you want margin compression in the duopoly state, impose a cap/constraint
-    # (e.g. bids cannot exceed some reference price), or let tau affect feasibility.
+def profit_per_unit_duopoly_uniform_two_bidders() -> float:
+    # Two-bidder procurement auction: expected winner markup = (c_high - c_low)/6
     return (c_high - c_low) / 6.0
 
 
-def V_duopoly(M: float) -> float:
-    # Expected value in the "both pass" state (auction).
-    return M * duopoly_profit_per_unit_two_bidders_uniform()
+def V_duopoly(M_millions: float) -> float:
+    return M_millions * profit_per_unit_duopoly_uniform_two_bidders()
 
 
-# --- symmetric effort condition --- #
+# ============================================================
+# 4) Objective, best response, symmetric fixed point
+# ============================================================
 
-def foc_symmetric(e: float, M: float) -> float:
-    # Symmetric FOC used in your slides:
-    #
-    # q  = Q(e)
-    # qp = Q'(e)
-    #
-    # Expected payoff conditional on i passing the clinical gate:
-    #   (1 - q) * V_M(M)   [rival fails -> monopoly]
-    # + q       * V_D(M)   [rival passes -> auction]
-    #
-    # FOC:
-    #   qp * [ (1-q) V_M + q V_D ] - k e = 0
-    q = Q(e)
-    qp = Q_prime(e)
+def psi(e_self: float, M_millions: float, q_rival: float) -> float:
+    """
+    Expected profit (million-$), given rival pass probability q_rival:
 
-    VM = V_monopoly(M)
-    VD = V_duopoly(M)
+      Psi(e) = q*(1-q_rival)*V_M + q*q_rival*V_D - 0.5*k*e^2
+    """
+    e_safe = max(e_self, _EPS_EFFORT)
+    q_self = Q(e_safe)
 
-    expected_value_given_pass = (1.0 - q) * VM + q * VD
-    return qp * expected_value_given_pass - k * e
+    VM = V_monopoly(M_millions)
+    VD = V_duopoly(M_millions)
+
+    expected_payoff = q_self * (1.0 - q_rival) * VM + q_self * q_rival * VD
+    effort_cost = 0.5 * k * (e_safe ** 2)
+
+    return float(expected_payoff - effort_cost)
 
 
-def solve_e_star(
-    M: float,
-    e_min: float = 1e-8,
-    e_max: float = 100.0,
-    n_grid: int = 250
+def argmax_psi_given_qrival(
+    M_millions: float,
+    q_rival: float,
+    e_bounds: Tuple[float, float] = (1e-8, 30.0)
 ) -> float:
-    # Solve foc_symmetric(e, M) = 0 by:
-    # 1) scanning a grid for a sign change
-    # 2) bracketing root with brentq
-    #
-    # Conservative corner handling:
-    # - if no sign change is found, return 0.0
+    """
+    Direct maximisation of Psi(e | q_rival fixed).
+    Returns 0 if the maximised value is negative (exit).
+    """
+    lo, hi = e_bounds
 
-    # Optional: if monopoly value <= 0, set effort to 0
-    # (you can remove this if you want effort driven purely by the duopoly state)
-    if V_monopoly(M) <= 0:
+    res = minimize_scalar(
+        lambda e: -psi(e, M_millions, q_rival),
+        bounds=(lo, hi),
+        method="bounded",
+        options={"xatol": 1e-6}
+    )
+
+    e_hat = float(res.x)
+
+    # Exit option
+    if psi(e_hat, M_millions, q_rival) < 0:
         return 0.0
 
-    grid = np.geomspace(e_min, e_max, n_grid)
-    vals = np.array([foc_symmetric(float(e), M) for e in grid])
-
-    sgn = np.sign(vals)
-    idx = np.where(sgn[:-1] * sgn[1:] < 0)[0]
-
-    if idx.size == 0:
-        return 0.0
-
-    a = float(grid[idx[0]])
-    b = float(grid[idx[0] + 1])
-
-    try:
-        return float(brentq(lambda x: foc_symmetric(float(x), M), a, b))
-    except ValueError:
-        return 0.0
+    return e_hat
 
 
-# --- comparative statics --- #
-
-def run_comparative_statics(
-    M_min: float = 0.1,
-    M_max: float = 15.0,
-    n_M: int = 120
-) -> tuple[np.ndarray, np.ndarray]:
-    M_values = np.linspace(M_min, M_max, n_M)
-    e_stars = np.array([solve_e_star(float(M)) for M in M_values])
-    return M_values, e_stars
+def best_response(
+    M_millions: float,
+    e_rival: float,
+    e_bounds: Tuple[float, float] = (1e-8, 30.0)
+) -> float:
+    q_rival = Q(e_rival)
+    return argmax_psi_given_qrival(M_millions, q_rival, e_bounds=e_bounds)
 
 
-# --- outputs --- #
+def solve_symmetric_nash(
+    M_millions: float,
+    e_init: float = 1.0,
+    max_iter: int = 200,
+    tol: float = 1e-5
+) -> float:
+    """
+    Symmetric fixed point: e = BR(M, e).
+    """
+    e_old = max(e_init, 0.0)
 
-def ensure_dir(path: str) -> None:
-    if path == "":
-        return
-    os.makedirs(path, exist_ok=True)
+    for _ in range(max_iter):
+        e_new = best_response(M_millions, e_old)
 
+        if abs(e_new - e_old) <= tol:
+            return float(e_new)
+
+        # mild damping for stability
+        e_old = 0.8 * e_old + 0.2 * e_new
+
+    return float(e_old)
+
+
+# ============================================================
+# 5) Comparative statics + plots
+# ============================================================
 
 def main() -> None:
-    # run
-    M_values, e_stars = run_comparative_statics()
 
-    # diagnostics
-    print("Comparative statics complete.")
-    print("M range:", float(M_values.min()), "to", float(M_values.max()))
-    print("e*(M) min/max:", float(e_stars.min()), float(e_stars.max()))
-    print("Share of zeros:", float(np.mean(e_stars == 0.0)))
+    # ---- A) Solve e*(M) on a grid ----
+    M_grid = np.linspace(0.1, 25.0, 160)
 
-    # plot
-    plt.figure(figsize=(9, 5))
-    plt.plot(M_values, e_stars, linewidth=2)
-    plt.xlabel("Market size (M)")
-    plt.ylabel(r"Optimal effort $e^*(M)$")
-    plt.title("Comparative statics: effort vs market size")
-    plt.grid(alpha=0.3)
+    e_grid = np.zeros_like(M_grid)
+    e_guess = 1.0
 
-    # save (optional but useful for Quarto)
-    out_dir = "theoretical_model/outputs"
-    ensure_dir(out_dir)
+    for i, M in enumerate(M_grid):
+        e_star = solve_symmetric_nash(M, e_init=e_guess)
+        e_grid[i] = e_star
+        e_guess = max(e_star, 1e-6)
 
-    fig_path = os.path.join(out_dir, "effort_vs_market_size.png")
-    plt.savefig(fig_path, dpi=200, bbox_inches="tight")
-    print("Saved figure:", fig_path)
+    # ---- B) Pick cases: small / peak / large (automatically) ----
+    interior_idx = np.where(e_grid > 1e-6)[0]
+    if len(interior_idx) == 0:
+        raise RuntimeError("No interior solutions found. Reduce alpha or increase p_mono.")
 
-    # also save the data so you can plot in Quarto/R if you want
-    csv_path = os.path.join(out_dir, "effort_vs_market_size.csv")
-    np.savetxt(
-        csv_path,
-        np.column_stack([M_values, e_stars]),
-        delimiter=",",
-        header="M,e_star",
-        comments=""
-    )
-    print("Saved data:", csv_path)
+    peak_i = interior_idx[np.argmax(e_grid[interior_idx])]
+    M_peak = float(M_grid[peak_i])
 
+    M_small = float(np.quantile(M_grid[interior_idx], 0.10))
+    M_large = float(np.quantile(M_grid[interior_idx], 0.90))
+
+    M_cases = [M_small, M_peak, M_large]
+
+    # Solve equilibrium at the chosen cases
+    case_e = {M: solve_symmetric_nash(M, e_init=1.0) for M in M_cases}
+
+    # ---- C) Colors consistent across panels ----
+    colors: Dict[float, str] = {
+        M_small: "C0",
+        M_peak:  "C2",
+        M_large: "C3",
+    }
+
+    # ---- D) Build 2-panel figure ----
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+    # Panel 1: effort vs market size
+    ax1 = axes[0]
+    ax1.plot(M_grid, e_grid, linewidth=2.5, label="Optimal effort")
+
+    for M in M_cases:
+        ax1.scatter(M, case_e[M], s=90, color=colors[M], label=f"M = {M:.2f}")
+
+    ax1.set_title("Effort vs Market Size")
+    ax1.set_xlabel("Market size M (millions)")
+    ax1.set_ylabel("Optimal effort $e^*(M)$")
+    ax1.grid(alpha=0.3)
+    ax1.legend()
+
+    # Panel 2: profit hills Psi(e; M | q_rival fixed at equilibrium)
+    ax2 = axes[1]
+
+    e_max_plot = max(8.0, 1.25 * float(np.max(e_grid)))
+    e_plot = np.linspace(0.0, e_max_plot, 300)
+
+    for M in M_cases:
+        e_star = case_e[M]
+        q_rival = Q(e_star)
+
+        psi_vals = [psi(max(e, _EPS_EFFORT), M, q_rival) for e in e_plot]
+        ax2.plot(e_plot, psi_vals, linewidth=2.5, color=colors[M], label=f"M = {M:.2f}")
+
+        # Mark the argmax of the plotted hill (should match equilibrium in symmetry)
+        e_hat = argmax_psi_given_qrival(M, q_rival, e_bounds=(1e-8, 30.0))
+        psi_hat = psi(max(e_hat, _EPS_EFFORT), M, q_rival)
+        ax2.scatter(e_hat, psi_hat, s=90, color=colors[M])
+
+        if abs(e_hat - e_star) > 1e-3:
+            print(f"[warning] M={M:.2f}: equilibrium e={e_star:.4f} but hill argmax e={e_hat:.4f}")
+
+    ax2.set_title(r"Profit function $\Psi(e; M)$")
+    ax2.set_xlabel("Effort level (e)")
+    ax2.set_ylabel("Expected profit (million-$)")
+    ax2.grid(alpha=0.3)
+    ax2.legend()
+
+    plt.tight_layout()
     plt.show()
 
 
