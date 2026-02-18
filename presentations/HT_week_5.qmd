@@ -278,7 +278,7 @@ Where:
 - $Y_{f,c,t}$: innovation outcome for firm $f$ in therapeutic class $c$ and year $t$  
   *(patents or FDA approvals)*
 - $\text{MedicaidShare}_c$: ex-ante measure of the utilisation share for therapeutic class $c$
-- $\alphaf{f,c}, \delta_t$: firm-disease-class and year fixed effects
+- $\alpha{f,c}, \delta_t$: firm-disease-class and year fixed effects
 
 ## Research Question 2: Market Size and Pricing Pressure
 
