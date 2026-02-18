@@ -220,6 +220,6 @@ in_pdl_coef <- as.numeric(coefficients(overall_pdl_test)[3])
 
 | Firm Type | Active Terms | Net Effect | Interpretation |
 | --- | --- | --- | --- |
-| **Pass P&T, Fail Price** | $\beta_1$ | **`r round(pt_stage_coef, 2)`** | **The Penalty.**<br>Quality without price competitiveness is punished. |
-| **Fail P&T, Pass Price** | $\beta_2$ | **`r round(price_stage_coef, 2)`** | **The Floor.**<br>Being cheap isn't enough if clinical value is low. |
-| **Pass Both** | $\beta_3$ | **`r round(in_pdl_coef, 2)`** | **The Premium.**<br>Satisfying both constraints raises innovation incentives. |
+| **Pass P&T, Fail Price** | $\beta_1$ | **`r round(pt_stage_coef, 2)`** | Quality without price competitiveness is punished. |
+| **Fail P&T, Pass Price** | $\beta_2$ | **`r round(price_stage_coef, 2)`** | Being cheap isn't enough if clinical value is low. |
+| **Pass Both** | $\beta_3$ | **`r round(in_pdl_coef, 2)`** | Satisfying both constraints raises innovation incentives. |

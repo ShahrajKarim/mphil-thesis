@@ -442,7 +442,7 @@
   <meta name="generator" content="quarto-1.6.32">
 
   <meta name="author" content="Mohammad-Shah Karim">
-  <meta name="dcterms.date" content="2026-02-11">
+  <meta name="dcterms.date" content="2026-02-18">
   <title>PDL Counterfactual Analysis</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -3741,7 +3741,7 @@ Mohammad-Shah Karim
 </div>
 </div>
 
-  <p class="date">2026-02-11</p>
+  <p class="date">2026-02-18</p>
 </section><section id="TOC">
 <nav role="doc-toc"> 
 <h2 id="toc-title">Table of contents</h2>
@@ -3849,8 +3849,8 @@ Y_{f,c,t}
 
     <script>
 
-      function styleCell_gcndi7bq7ajgi1eihjtq(i, j, css_id) {
-          var table = document.getElementById("tinytable_gcndi7bq7ajgi1eihjtq");
+      function styleCell_fxc9cju7s6l7oq8q0jpa(i, j, css_id) {
+          var table = document.getElementById("tinytable_fxc9cju7s6l7oq8q0jpa");
           var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -3860,7 +3860,7 @@ Y_{f,c,t}
           }
       }
       function insertSpanRow(i, colspan, content) {
-        var table = document.getElementById('tinytable_gcndi7bq7ajgi1eihjtq');
+        var table = document.getElementById('tinytable_fxc9cju7s6l7oq8q0jpa');
         var newRow = table.insertRow(i);
         var newCell = newRow.insertCell(0);
         newCell.setAttribute("colspan", colspan);
@@ -3868,8 +3868,8 @@ Y_{f,c,t}
         // this may be unsafe, but innerText does not interpret <br>
         newCell.innerHTML = content;
       }
-      function spanCell_gcndi7bq7ajgi1eihjtq(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_gcndi7bq7ajgi1eihjtq");
+      function spanCell_fxc9cju7s6l7oq8q0jpa(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_fxc9cju7s6l7oq8q0jpa");
         const targetRow = table.rows[i];
         const targetCell = targetRow.cells[j];
         for (let r = 0; r < rowspan; r++) {
@@ -3899,20 +3899,20 @@ Y_{f,c,t}
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: 10, j: 0 },  ], css_id: 'tinytable_css_jvaonrdhzm7780vbbw5b',}, 
-          { positions: [ { i: 10, j: 1 },  ], css_id: 'tinytable_css_j1us5mykxysnqcgzhbbs',}, 
-          { positions: [ { i: 6, j: 0 },  ], css_id: 'tinytable_css_b6gq60h890pigg5hda41',}, 
-          { positions: [ { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 7, j: 1 }, { i: 8, j: 1 }, { i: 9, j: 1 },  ], css_id: 'tinytable_css_amf1m0cwxpwwvas4h77f',}, 
-          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_6bal37zhrfyfmunoefo4',}, 
-          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 7, j: 0 }, { i: 8, j: 0 }, { i: 9, j: 0 },  ], css_id: 'tinytable_css_5x38qzb5rxyt5d94y290',}, 
-          { positions: [ { i: 6, j: 1 },  ], css_id: 'tinytable_css_1nc3kkcs0zlnt8hoor3i',}, 
-          { positions: [ { i: 0, j: 1 },  ], css_id: 'tinytable_css_0ezaul6arhx90s0vsc0e',}, 
+          { positions: [ { i: 6, j: 0 },  ], css_id: 'tinytable_css_oba338fezjm0d9bza010',}, 
+          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_j0bigskotjuwb9v6b96l',}, 
+          { positions: [ { i: 10, j: 1 },  ], css_id: 'tinytable_css_itjqglqcc8p3c07izqde',}, 
+          { positions: [ { i: 6, j: 1 },  ], css_id: 'tinytable_css_hnss2jn6j6t06hhcw55s',}, 
+          { positions: [ { i: 10, j: 0 },  ], css_id: 'tinytable_css_gzepk1y8v84jmn2tto8z',}, 
+          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 7, j: 0 }, { i: 8, j: 0 }, { i: 9, j: 0 },  ], css_id: 'tinytable_css_1sczl0cotnvccod8yz2g',}, 
+          { positions: [ { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 7, j: 1 }, { i: 8, j: 1 }, { i: 9, j: 1 },  ], css_id: 'tinytable_css_1337reky1g0sgufjl02h',}, 
+          { positions: [ { i: 0, j: 1 },  ], css_id: 'tinytable_css_0k8zasxdhy16ohr19wsv',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_gcndi7bq7ajgi1eihjtq(cell.i, cell.j, group.css_id);
+                  styleCell_fxc9cju7s6l7oq8q0jpa(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -3920,17 +3920,17 @@ Y_{f,c,t}
 
     <style>
 
-.table td.tinytable_css_jvaonrdhzm7780vbbw5b, .table th.tinytable_css_jvaonrdhzm7780vbbw5b { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
-.table td.tinytable_css_j1us5mykxysnqcgzhbbs, .table th.tinytable_css_j1us5mykxysnqcgzhbbs { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
-.table td.tinytable_css_b6gq60h890pigg5hda41, .table th.tinytable_css_b6gq60h890pigg5hda41 { text-align: left; border-bottom: solid black 0.05em; }
-.table td.tinytable_css_amf1m0cwxpwwvas4h77f, .table th.tinytable_css_amf1m0cwxpwwvas4h77f { text-align: center; }
-.table td.tinytable_css_6bal37zhrfyfmunoefo4, .table th.tinytable_css_6bal37zhrfyfmunoefo4 { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-.table td.tinytable_css_5x38qzb5rxyt5d94y290, .table th.tinytable_css_5x38qzb5rxyt5d94y290 { text-align: left; }
-.table td.tinytable_css_1nc3kkcs0zlnt8hoor3i, .table th.tinytable_css_1nc3kkcs0zlnt8hoor3i { text-align: center; border-bottom: solid black 0.05em; }
-.table td.tinytable_css_0ezaul6arhx90s0vsc0e, .table th.tinytable_css_0ezaul6arhx90s0vsc0e { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+.table td.tinytable_css_oba338fezjm0d9bza010, .table th.tinytable_css_oba338fezjm0d9bza010 { text-align: left; border-bottom: solid black 0.05em; }
+.table td.tinytable_css_j0bigskotjuwb9v6b96l, .table th.tinytable_css_j0bigskotjuwb9v6b96l { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+.table td.tinytable_css_itjqglqcc8p3c07izqde, .table th.tinytable_css_itjqglqcc8p3c07izqde { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
+.table td.tinytable_css_hnss2jn6j6t06hhcw55s, .table th.tinytable_css_hnss2jn6j6t06hhcw55s { text-align: center; border-bottom: solid black 0.05em; }
+.table td.tinytable_css_gzepk1y8v84jmn2tto8z, .table th.tinytable_css_gzepk1y8v84jmn2tto8z { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+.table td.tinytable_css_1sczl0cotnvccod8yz2g, .table th.tinytable_css_1sczl0cotnvccod8yz2g { text-align: left; }
+.table td.tinytable_css_1337reky1g0sgufjl02h, .table th.tinytable_css_1337reky1g0sgufjl02h { text-align: center; }
+.table td.tinytable_css_0k8zasxdhy16ohr19wsv, .table th.tinytable_css_0k8zasxdhy16ohr19wsv { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
 </style>
     <div class="container">
-      <table class="table table-borderless" id="tinytable_gcndi7bq7ajgi1eihjtq" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_fxc9cju7s6l7oq8q0jpa" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         
               <tr>
@@ -4009,19 +4009,19 @@ Y_{f,c,t}
 <td><strong>Pass P&amp;T, Fail Price</strong></td>
 <td><span class="math inline">\(\beta_1\)</span></td>
 <td><strong>-2.85</strong></td>
-<td><strong>The Penalty.</strong><br>Quality without price competitiveness is punished.</td>
+<td>Quality without price competitiveness is punished.</td>
 </tr>
 <tr class="even">
 <td><strong>Fail P&amp;T, Pass Price</strong></td>
 <td><span class="math inline">\(\beta_2\)</span></td>
 <td><strong>-1.82</strong></td>
-<td><strong>The Floor.</strong><br>Being cheap isn’t enough if clinical value is low.</td>
+<td>Being cheap isn’t enough if clinical value is low.</td>
 </tr>
 <tr class="odd">
 <td><strong>Pass Both</strong></td>
 <td><span class="math inline">\(\beta_3\)</span></td>
 <td><strong>3.87</strong></td>
-<td><strong>The Premium.</strong><br>Satisfying both constraints raises innovation incentives.</td>
+<td>Satisfying both constraints raises innovation incentives.</td>
 </tr>
 </tbody>
 </table>
