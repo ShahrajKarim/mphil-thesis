@@ -35,8 +35,8 @@ alpha = 0.008
 
 
 def tau(M: float) -> float:
-    # simple functional form (easy to discuss in slides)
-    return alpha * (M**2)
+    # increasing wedge with diminishing effect
+    return alpha * np.log(1.0 + M)
 
 
 # marginal cost support in the auction stage
