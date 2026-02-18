@@ -6635,6 +6635,13 @@ Y_{f,c,t}
 + \varepsilon_{f,c,t}
 \end{aligned}
 \]</span></p>
+<p>Where:</p>
+<ul>
+<li><span class="math inline">\(Y_{f,c,t}\)</span>: innovation outcome for firm <span class="math inline">\(f\)</span> in therapeutic class <span class="math inline">\(c\)</span> and year <span class="math inline">\(t\)</span><br>
+<em>(patents or FDA approvals)</em></li>
+<li><span class="math inline">\(\text{MedicaidShare}_c\)</span>: ex-ante measure of the utilisation share for therapeutic class <span class="math inline">\(c\)</span></li>
+<li><span class="math inline">\(\alphaf{f,c}, \delta_t\)</span>: firm-disease-class and year fixed effects</li>
+</ul>
 </section>
 <section id="research-question-2-market-size-and-pricing-pressure" class="slide level2">
 <h2>Research Question 2: Market Size and Pricing Pressure</h2>
@@ -6659,7 +6666,7 @@ Y_{f,c,t}
 \]</span></p>
 <ul>
 <li><span class="math inline">\(\beta\)</span> measures market size effects</li>
-<li><span class="math inline">\(\gamma\)</span> measures the effect of firms more exposed to the PDL pricing pressure</li>
+<li><span class="math inline">\(\gamma\)</span> measures the effect of firms more exposed to the PDL pricing pressure for a given disease class</li>
 </ul>
 </section>
 <section id="research-question-3-innovation-portfolio" class="slide level2">
@@ -6669,17 +6676,20 @@ Y_{f,c,t}
 \begin{aligned}
 Y_{f,c,t}
 &amp;= \alpha_f + \lambda_c + \delta_t \\
-&amp;\quad + \sum_{c \in \mathcal{C}}
+&amp;\quad + \sum_{c \in C}
 \beta_c
 \Big(
 \mathbb{1}\{t \geq 2014\}
 \times \text{MedicaidShare}_c
 \times \mathbb{1}\{\text{ATC} = c\}
 \Big)
-+ \varepsilon_{f,c,t}.
++ \varepsilon_{f,c,t}
 \end{aligned}
 \end{aligned}
 \]</span></p>
+<ul>
+<li><span class="math inline">\(\beta_c\)</span> measures how post-ACA innovation in therapeutic class c responds to its Medicaid exposure.</li>
+</ul>
 </section></section>
 <section>
 <section id="results" class="title-slide slide level1 center">
@@ -6767,8 +6777,8 @@ Y_{f,c,t}
 
     <script>
 
-      function styleCell_0tpsj4fycrv0hsnhlr7c(i, j, css_id) {
-          var table = document.getElementById("tinytable_0tpsj4fycrv0hsnhlr7c");
+      function styleCell_4eehgy3ii1pobpn0sy9l(i, j, css_id) {
+          var table = document.getElementById("tinytable_4eehgy3ii1pobpn0sy9l");
           var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -6778,7 +6788,7 @@ Y_{f,c,t}
           }
       }
       function insertSpanRow(i, colspan, content) {
-        var table = document.getElementById('tinytable_0tpsj4fycrv0hsnhlr7c');
+        var table = document.getElementById('tinytable_4eehgy3ii1pobpn0sy9l');
         var newRow = table.insertRow(i);
         var newCell = newRow.insertCell(0);
         newCell.setAttribute("colspan", colspan);
@@ -6786,8 +6796,8 @@ Y_{f,c,t}
         // this may be unsafe, but innerText does not interpret <br>
         newCell.innerHTML = content;
       }
-      function spanCell_0tpsj4fycrv0hsnhlr7c(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_0tpsj4fycrv0hsnhlr7c");
+      function spanCell_4eehgy3ii1pobpn0sy9l(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_4eehgy3ii1pobpn0sy9l");
         const targetRow = table.rows[i];
         const targetCell = targetRow.cells[j];
         for (let r = 0; r < rowspan; r++) {
@@ -6817,20 +6827,20 @@ Y_{f,c,t}
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: 10, j: 0 },  ], css_id: 'tinytable_css_x8qqrfhvjr6ex0rcrrgq',}, 
-          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 7, j: 0 }, { i: 8, j: 0 }, { i: 9, j: 0 },  ], css_id: 'tinytable_css_wpydpc66trwy5uc6u209',}, 
-          { positions: [ { i: 0, j: 1 },  ], css_id: 'tinytable_css_lyvd3ztnh0d1mujk0n69',}, 
-          { positions: [ { i: 6, j: 1 },  ], css_id: 'tinytable_css_l9yvaxupka3gvba263is',}, 
-          { positions: [ { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 7, j: 1 }, { i: 8, j: 1 }, { i: 9, j: 1 },  ], css_id: 'tinytable_css_j5csci3vg0u8djyxxipe',}, 
-          { positions: [ { i: 6, j: 0 },  ], css_id: 'tinytable_css_ihpkfo19xfl64xp7qatp',}, 
-          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_i05uu3ezinf227dbzt2b',}, 
-          { positions: [ { i: 10, j: 1 },  ], css_id: 'tinytable_css_547almcmy233i9d7inuk',}, 
+          { positions: [ { i: 10, j: 0 },  ], css_id: 'tinytable_css_vqba0rzuichs32lj3l60',}, 
+          { positions: [ { i: 0, j: 1 },  ], css_id: 'tinytable_css_toi7s26of8y4dfo1nr2d',}, 
+          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_omvg4jgirjb61rtvegrn',}, 
+          { positions: [ { i: 6, j: 1 },  ], css_id: 'tinytable_css_h1tvgcktl6vnb42lalud',}, 
+          { positions: [ { i: 10, j: 1 },  ], css_id: 'tinytable_css_gcxhai5pfxfru3ocjtt1',}, 
+          { positions: [ { i: 6, j: 0 },  ], css_id: 'tinytable_css_dncjoguc7ppy2p59a0t0',}, 
+          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 7, j: 0 }, { i: 8, j: 0 }, { i: 9, j: 0 },  ], css_id: 'tinytable_css_degmymgz3s94jmey6zx7',}, 
+          { positions: [ { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 7, j: 1 }, { i: 8, j: 1 }, { i: 9, j: 1 },  ], css_id: 'tinytable_css_3a0xxtqm1qu6szh92omt',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_0tpsj4fycrv0hsnhlr7c(cell.i, cell.j, group.css_id);
+                  styleCell_4eehgy3ii1pobpn0sy9l(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -6838,17 +6848,17 @@ Y_{f,c,t}
 
     <style>
 
-.table td.tinytable_css_x8qqrfhvjr6ex0rcrrgq, .table th.tinytable_css_x8qqrfhvjr6ex0rcrrgq { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
-.table td.tinytable_css_wpydpc66trwy5uc6u209, .table th.tinytable_css_wpydpc66trwy5uc6u209 { text-align: left; }
-.table td.tinytable_css_lyvd3ztnh0d1mujk0n69, .table th.tinytable_css_lyvd3ztnh0d1mujk0n69 { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-.table td.tinytable_css_l9yvaxupka3gvba263is, .table th.tinytable_css_l9yvaxupka3gvba263is { text-align: center; border-bottom: solid black 0.05em; }
-.table td.tinytable_css_j5csci3vg0u8djyxxipe, .table th.tinytable_css_j5csci3vg0u8djyxxipe { text-align: center; }
-.table td.tinytable_css_ihpkfo19xfl64xp7qatp, .table th.tinytable_css_ihpkfo19xfl64xp7qatp { text-align: left; border-bottom: solid black 0.05em; }
-.table td.tinytable_css_i05uu3ezinf227dbzt2b, .table th.tinytable_css_i05uu3ezinf227dbzt2b { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-.table td.tinytable_css_547almcmy233i9d7inuk, .table th.tinytable_css_547almcmy233i9d7inuk { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
+.table td.tinytable_css_vqba0rzuichs32lj3l60, .table th.tinytable_css_vqba0rzuichs32lj3l60 { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+.table td.tinytable_css_toi7s26of8y4dfo1nr2d, .table th.tinytable_css_toi7s26of8y4dfo1nr2d { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+.table td.tinytable_css_omvg4jgirjb61rtvegrn, .table th.tinytable_css_omvg4jgirjb61rtvegrn { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+.table td.tinytable_css_h1tvgcktl6vnb42lalud, .table th.tinytable_css_h1tvgcktl6vnb42lalud { text-align: center; border-bottom: solid black 0.05em; }
+.table td.tinytable_css_gcxhai5pfxfru3ocjtt1, .table th.tinytable_css_gcxhai5pfxfru3ocjtt1 { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
+.table td.tinytable_css_dncjoguc7ppy2p59a0t0, .table th.tinytable_css_dncjoguc7ppy2p59a0t0 { text-align: left; border-bottom: solid black 0.05em; }
+.table td.tinytable_css_degmymgz3s94jmey6zx7, .table th.tinytable_css_degmymgz3s94jmey6zx7 { text-align: left; }
+.table td.tinytable_css_3a0xxtqm1qu6szh92omt, .table th.tinytable_css_3a0xxtqm1qu6szh92omt { text-align: center; }
 </style>
     <div class="container">
-      <table class="table table-borderless" id="tinytable_0tpsj4fycrv0hsnhlr7c" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_4eehgy3ii1pobpn0sy9l" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         
               <tr>
@@ -6917,29 +6927,29 @@ Y_{f,c,t}
 <thead>
 <tr class="header">
 <th>Firm Type</th>
-<th>Active Terms</th>
-<th>Net Effect</th>
+<th>Coefficient</th>
+<th>Estimated Effect</th>
 <th>Interpretation</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><strong>Pass P&amp;T, Fail Price</strong></td>
+<td>Pass P&amp;T <br> Fail Price</td>
 <td><span class="math inline">\(\beta_1\)</span></td>
 <td><strong>-2.85</strong></td>
-<td>Quality without price competitiveness is punished.</td>
+<td>Post-expansion change in innovation for clinically approved drugs that do not secure preferred pricing status.</td>
 </tr>
 <tr class="even">
-<td><strong>Fail P&amp;T, Pass Price</strong></td>
+<td>Fail P&amp;T <br> Pass Price</td>
 <td><span class="math inline">\(\beta_2\)</span></td>
 <td><strong>-1.82</strong></td>
-<td>Being cheap isn’t enough if clinical value is low.</td>
+<td>Post-expansion change in innovation associated with price competitiveness conditional on failing clinical approval.</td>
 </tr>
 <tr class="odd">
-<td><strong>Pass Both</strong></td>
+<td>Pass P&amp;T <br> Pass Price</td>
 <td><span class="math inline">\(\beta_3\)</span></td>
 <td><strong>3.87</strong></td>
-<td>Satisfying both constraints raises innovation incentives.</td>
+<td>Post-expansion change in innovation for drugs securing full PDL access (clinical + price).</td>
 </tr>
 </tbody>
 </table>
