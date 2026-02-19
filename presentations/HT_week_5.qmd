@@ -33,9 +33,9 @@ use_condaenv("thesis", required = TRUE)
 
 ## What is the Affordable Care Act (ACA)?
 
-- **Medicaid** is a governement health insurance programme covering medical care and prescription drugs. This was previously restricted to specific low-income groups (e.g., children, pregnant women, and the disabled).
-- The **ACA** expanded Medicaid eligibility to virtually *all* adults with incomes up to 138% of the federal poverty level, removing the old categorical restrictions.
-- Over **21 million** previously uninsured adults gained health coverage and access to prescription drugs—directly through this expansion. 
+- **Medicaid** is a government health insurance programme covering medical care and prescription drugs. This was previously restricted to specific low-income groups (e.g., children, pregnant women, and the disabled).
+- The **ACA** expanded Medicaid eligibility to all adults with incomes up to 138% of the federal poverty level, removing the old categorical restrictions.
+- Over **21 million** previously uninsured adults gained health coverage and access to prescription drugs directly through this expansion. 
 
 This expansion represents a **demand shock**
 
