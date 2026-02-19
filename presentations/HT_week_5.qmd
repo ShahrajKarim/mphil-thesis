@@ -33,6 +33,14 @@ use_condaenv("thesis", required = TRUE)
 
 ## What is the Affordable Care Act (ACA)?
 
+- **What is Medicaid?** A governemnt health insurance programme covering medical care and prescription drugs - this was traditionally restricted to specific low-income groups (e.g., children, pregnant women, and the disabled).
+- The **ACA** expanded Medicaid eligibility to virtually *all* adults with incomes up to 138% of the federal poverty level, removing the old categorical restrictions.
+- Over **21 million** previously uninsured adults gained health coverage and access to prescription drugs—directly through this expansion. 
+
+This expansion represents a **demand shock**
+
+## What is the Affordable Care Act (ACA)?
+
 - Most comprehensive US health reform since Medicare and Medicaid.
 - Expanded access to health insurance and reduced financial barriers to care.
 - Intended to improve coverage stability for low-income individuals.
@@ -89,26 +97,21 @@ Unexplored areas:
 - Does Medicaid expansion change where firms innovate?
 - Do price regulation weaken market-size incentives?
 
-## Medicaid and Prescription Drugs
+## The Preferred Drug List (PDL)
 
-**Rebates:**  
+The **PDL** is state-managed list that drives prescribing behavior for Medicaid patients.
 
-  - Brand drugs: ≥ 23.1 % rebate on average manufacturer price or best price 
-  - Generics: ≥ 13 % of AMP  
-  - Inflation rebate: added if prices rise faster than inflation  
+- Drugs on the PDL do not require prior authorisation
+    - They become the default choice for doctors for a given illness
+    - A drug on the list captures the vast majority of the state's market volume.
 
-**Preferred Drug Lists:**
-
-- States designate PDLs with negotiated rebates, with some firms adopting a uniform PDL to increase bargaining power.
-- Some states join multi-state alliances to collectively negotiate deeper rebates.
-
-## The Preferred Drug List Mechanism
+- In exchange for this guaranteed market volume, firms must compete to offer the state the lowest price net of offered rebates.
 
 A drug becomes preferred when it is clinically acceptable **and** offers the lowest net cost among substitutes.
 
-1. P&T committee evaluates safety, efficacy and literature on drug.
+1. **Clinical Stage**: P&T committee evaluates safety, efficacy and literature on drug.
 
-2. States compare net price among clinically equivalent drugs, with price determining which eligible drugs become most preferred.
+2. **Price Stage**: States compare net price among clinically equivalent drugs, with price determining which eligible drugs become most preferred.
 
 ```{mermaid}
 flowchart LR
@@ -127,7 +130,7 @@ flowchart LR
     Decision -->|"FAILED EITHER<br>(Clinical or Cost)"| NonPDL["Non-Preferred Drug<br>(Counterfactuals)"]
 ```
 
-# Empirical Analysis
+# Research Question
 
 ```{r}
 library(here)
@@ -311,7 +314,7 @@ Where:
 - $Y_{f,c,t}$: innovation outcome for firm $f$ in therapeutic class $c$ and year $t$  
   *(patents or FDA approvals)*
 - $\text{MedicaidShare}_c$: ex-ante measure of the utilisation share for therapeutic class $c$
-- $\alpha{f,c}, \delta_t$: firm-disease-class and year fixed effects
+- $\alpha_{f,c}, \delta_t$: firm-disease-class and year fixed effects
 
 ## Research Question 2: Market Size and Pricing Pressure
 
@@ -361,14 +364,11 @@ $$
 
 - $\beta_c$ measures how post-ACA innovation in therapeutic class c responds to its Medicaid exposure.
 
-
-# Results
-
-## The puzzle
+## The Puzzle - Research Question 2
 
 - Therapeutic classes with greater Medicaid exposure experience a decline in patenting after expansion, even after controlling for PDL exposure
 - Market size increased
-- **Innovation falls**
+- Innovation falls
 
 ```{r}
 
@@ -468,9 +468,7 @@ There are two situations by which a pharmaceutical firm gets rejected:
 
 In both cases, failing only one of these stages indicates that a firm had just missed out on being eligible for the Medicaid PDL.
 
-**However**
-
-It's likely that incentives differ based on which stage had failed.
+It's possible that incentives differ based on which stage a firm failed at.
 
 ## Empirical Modelling
 
@@ -552,12 +550,12 @@ in_pdl_coef <- as.numeric(coefficients(overall_pdl_test)[3])
 
 | Firm Type | Coefficient | Estimated Effect | Interpretation |
 | --- | --- | --- | --- |
-| Pass P&T <br> Fail Price | $\beta_1$ | **`r round(pt_stage_coef, 2)`** | Post-expansion change in innovation for clinically approved drugs that do not secure preferred pricing status. |
-| Fail P&T <br> Pass Price | $\beta_2$ | **`r round(price_stage_coef, 2)`** | Post-expansion change in innovation associated with price competitiveness conditional on failing clinical approval. |
-| Pass P&T <br> Pass Price | $\beta_3$ | **`r round(in_pdl_coef, 2)`** | Post-expansion change in innovation for drugs securing full PDL access (clinical + price). |
+| Pass P&T <br> Fail Price | $\beta_1$ | **`r round(pt_stage_coef, 2)`** | Innovation declines post-expansion for drugs that meet clinical standards but fail to be cheap enough. |
+| Fail P&T <br> Pass Price | $\beta_2$ | **`r round(price_stage_coef, 2)`** | Innovation declines post-expansion for drugs that are price-competitive but do not pass the clinical stage. |
+| Pass P&T <br> Pass Price | $\beta_3$ | **`r round(in_pdl_coef, 2)`** | Innovation increases post-expansion for drugs that secure both clinical approval and preferred pricing status. |
 
 
-# Theoretical Framework - A Three Stage Game
+# Theoretical Model
 
 ## Stage 1 — Innovation Effort
 
@@ -717,8 +715,6 @@ Innovation falls even though market size increases.
 |------------------|-----------------|---------------|
 | Exclusive market access (Monopoly state) | PDL Status | $\beta_3 > 0$ |
 | Competitive price pressure (Duopoly state) | Passed P&T but not PDL | $\beta_1 < 0$ |
-
-**Conclusion:**
 
 - Innovation declines because the competitive state becomes less valuable.
 - Passing P&T no longer guarantees meaningful profits.

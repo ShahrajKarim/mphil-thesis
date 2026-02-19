@@ -3766,10 +3766,9 @@ Mohammad-Shah Karim
 <h2 id="toc-title">Table of contents</h2>
 <ul>
 <li><a href="#/an-introduction-to-the-aca" id="/toc-an-introduction-to-the-aca">An Introduction to the ACA</a></li>
-<li><a href="#/empirical-analysis" id="/toc-empirical-analysis">Empirical Analysis</a></li>
-<li><a href="#/results" id="/toc-results">Results</a></li>
+<li><a href="#/research-question" id="/toc-research-question">Research Question</a></li>
 <li><a href="#/pdl-counterfactual-analysis" id="/toc-pdl-counterfactual-analysis">PDL Counterfactual Analysis</a></li>
-<li><a href="#/theoretical-framework---a-three-stage-game" id="/toc-theoretical-framework---a-three-stage-game">Theoretical Framework - A Three Stage Game</a></li>
+<li><a href="#/theoretical-model" id="/toc-theoretical-model">Theoretical Model</a></li>
 <li><a href="#/bibliography" id="/toc-bibliography">Bibliography</a></li>
 </ul>
 </nav>
@@ -3780,6 +3779,15 @@ Mohammad-Shah Karim
 
 </section>
 <section id="what-is-the-affordable-care-act-aca" class="slide level2">
+<h2>What is the Affordable Care Act (ACA)?</h2>
+<ul>
+<li><strong>What is Medicaid?</strong> A governemnt health insurance programme covering medical care and prescription drugs - this was traditionally restricted to specific low-income groups (e.g., children, pregnant women, and the disabled).</li>
+<li>The <strong>ACA</strong> expanded Medicaid eligibility to virtually <em>all</em> adults with incomes up to 138% of the federal poverty level, removing the old categorical restrictions.</li>
+<li>Over <strong>21 million</strong> previously uninsured adults gained health coverage and access to prescription drugs—directly through this expansion.</li>
+</ul>
+<p>This expansion represents a <strong>demand shock</strong></p>
+</section>
+<section id="what-is-the-affordable-care-act-aca-1" class="slide level2">
 <h2>What is the Affordable Care Act (ACA)?</h2>
 <ul>
 <li>Most comprehensive US health reform since Medicare and Medicaid.</li>
@@ -9082,27 +9090,21 @@ function asArray(value) {
 <li>Do price regulation weaken market-size incentives?</li>
 </ul>
 </section>
-<section id="medicaid-and-prescription-drugs" class="slide level2">
-<h2>Medicaid and Prescription Drugs</h2>
-<p><strong>Rebates:</strong></p>
+<section id="the-preferred-drug-list-pdl" class="slide level2 scrollable">
+<h2>The Preferred Drug List (PDL)</h2>
+<p>The <strong>PDL</strong> is state-managed list that drives prescribing behavior for Medicaid patients.</p>
 <ul>
-<li>Brand drugs: ≥ 23.1 % rebate on average manufacturer price or best price</li>
-<li>Generics: ≥ 13 % of AMP<br>
-</li>
-<li>Inflation rebate: added if prices rise faster than inflation</li>
-</ul>
-<p><strong>Preferred Drug Lists:</strong></p>
+<li>Drugs on the PDL do not require prior authorisation
 <ul>
-<li>States designate PDLs with negotiated rebates, with some firms adopting a uniform PDL to increase bargaining power.</li>
-<li>Some states join multi-state alliances to collectively negotiate deeper rebates.</li>
+<li>They become the default choice for doctors for a given illness</li>
+<li>A drug on the list captures the vast majority of the state’s market volume.</li>
+</ul></li>
+<li>In exchange for this guaranteed market volume, firms must compete to offer the state the lowest price net of offered rebates.</li>
 </ul>
-</section>
-<section id="the-preferred-drug-list-mechanism" class="slide level2 scrollable">
-<h2>The Preferred Drug List Mechanism</h2>
 <p>A drug becomes preferred when it is clinically acceptable <strong>and</strong> offers the lowest net cost among substitutes.</p>
 <ol type="1">
-<li><p>P&amp;T committee evaluates safety, efficacy and literature on drug.</p></li>
-<li><p>States compare net price among clinically equivalent drugs, with price determining which eligible drugs become most preferred.</p></li>
+<li><p><strong>Clinical Stage</strong>: P&amp;T committee evaluates safety, efficacy and literature on drug.</p></li>
+<li><p><strong>Price Stage</strong>: States compare net price among clinically equivalent drugs, with price determining which eligible drugs become most preferred.</p></li>
 </ol>
 <div class="cell" data-reveal="true" data-layout-align="default">
 <div class="cell-output-display">
@@ -9131,8 +9133,8 @@ function asArray(value) {
 </div>
 </section></section>
 <section>
-<section id="empirical-analysis" class="title-slide slide level1 center">
-<h1>Empirical Analysis</h1>
+<section id="research-question" class="title-slide slide level1 center">
+<h1>Research Question</h1>
 
 </section>
 <section id="research-question-1-overall-innovation-response-to-market-size" class="slide level2">
@@ -9150,7 +9152,7 @@ Y_{f,c,t}
 <li><span class="math inline">\(Y_{f,c,t}\)</span>: innovation outcome for firm <span class="math inline">\(f\)</span> in therapeutic class <span class="math inline">\(c\)</span> and year <span class="math inline">\(t\)</span><br>
 <em>(patents or FDA approvals)</em></li>
 <li><span class="math inline">\(\text{MedicaidShare}_c\)</span>: ex-ante measure of the utilisation share for therapeutic class <span class="math inline">\(c\)</span></li>
-<li><span class="math inline">\(\alpha{f,c}, \delta_t\)</span>: firm-disease-class and year fixed effects</li>
+<li><span class="math inline">\(\alpha_{f,c}, \delta_t\)</span>: firm-disease-class and year fixed effects</li>
 </ul>
 </section>
 <section id="research-question-2-market-size-and-pricing-pressure" class="slide level2">
@@ -9200,18 +9202,13 @@ Y_{f,c,t}
 <ul>
 <li><span class="math inline">\(\beta_c\)</span> measures how post-ACA innovation in therapeutic class c responds to its Medicaid exposure.</li>
 </ul>
-</section></section>
-<section>
-<section id="results" class="title-slide slide level1 center">
-<h1>Results</h1>
-
 </section>
-<section id="the-puzzle" class="slide level2">
-<h2>The puzzle</h2>
+<section id="the-puzzle---research-question-2" class="slide level2">
+<h2>The Puzzle - Research Question 2</h2>
 <ul>
 <li>Therapeutic classes with greater Medicaid exposure experience a decline in patenting after expansion, even after controlling for PDL exposure</li>
 <li>Market size increased</li>
-<li><strong>Innovation falls</strong></li>
+<li>Innovation falls</li>
 </ul>
 <div class="cell">
 <div class="cell-output-display">
@@ -9257,8 +9254,7 @@ Y_{f,c,t}
 <li><p><strong>Failing the cost stage</strong>: Some other drug exists that is cheaper for Medicaid to purchase for that state.</p></li>
 </ol>
 <p>In both cases, failing only one of these stages indicates that a firm had just missed out on being eligible for the Medicaid PDL.</p>
-<p><strong>However</strong></p>
-<p>It’s likely that incentives differ based on which stage had failed.</p>
+<p>It’s possible that incentives differ based on which stage a firm failed at.</p>
 </section>
 <section id="empirical-modelling" class="slide level2">
 <h2>Empirical Modelling</h2>
@@ -9278,7 +9274,7 @@ Y_{f,c,t}
 <li>This isolates the value of passing each stage independently versus passing both.</li>
 </ul>
 </section>
-<section id="empirical-analysis-1" class="slide level2">
+<section id="empirical-analysis" class="slide level2">
 <h2>Empirical Analysis</h2>
 <div class="cell">
 <div class="cell-output-display">
@@ -9286,8 +9282,8 @@ Y_{f,c,t}
 
     <script>
 
-      function styleCell_ql9l11lky56e8clxxl7m(i, j, css_id) {
-          var table = document.getElementById("tinytable_ql9l11lky56e8clxxl7m");
+      function styleCell_hvjerykm0uli4sh9bayh(i, j, css_id) {
+          var table = document.getElementById("tinytable_hvjerykm0uli4sh9bayh");
           var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -9297,7 +9293,7 @@ Y_{f,c,t}
           }
       }
       function insertSpanRow(i, colspan, content) {
-        var table = document.getElementById('tinytable_ql9l11lky56e8clxxl7m');
+        var table = document.getElementById('tinytable_hvjerykm0uli4sh9bayh');
         var newRow = table.insertRow(i);
         var newCell = newRow.insertCell(0);
         newCell.setAttribute("colspan", colspan);
@@ -9305,8 +9301,8 @@ Y_{f,c,t}
         // this may be unsafe, but innerText does not interpret <br>
         newCell.innerHTML = content;
       }
-      function spanCell_ql9l11lky56e8clxxl7m(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_ql9l11lky56e8clxxl7m");
+      function spanCell_hvjerykm0uli4sh9bayh(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_hvjerykm0uli4sh9bayh");
         const targetRow = table.rows[i];
         const targetCell = targetRow.cells[j];
         for (let r = 0; r < rowspan; r++) {
@@ -9336,20 +9332,20 @@ Y_{f,c,t}
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: 10, j: 0 },  ], css_id: 'tinytable_css_zm6wpx0e4w65ib3htvq5',}, 
-          { positions: [ { i: 6, j: 1 },  ], css_id: 'tinytable_css_xkvcu30lnqvw3ud1b42c',}, 
-          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_wu6z5z6a6a99aj1n9abw',}, 
-          { positions: [ { i: 6, j: 0 },  ], css_id: 'tinytable_css_nxrw7n4e1zyefh5tnk9f',}, 
-          { positions: [ { i: 10, j: 1 },  ], css_id: 'tinytable_css_n4rr6llt04xpmwfqrfj7',}, 
-          { positions: [ { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 7, j: 1 }, { i: 8, j: 1 }, { i: 9, j: 1 },  ], css_id: 'tinytable_css_gap4ooekntbwjdl7npzl',}, 
-          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 7, j: 0 }, { i: 8, j: 0 }, { i: 9, j: 0 },  ], css_id: 'tinytable_css_156sj2k99017g3an9031',}, 
-          { positions: [ { i: 0, j: 1 },  ], css_id: 'tinytable_css_0fm26uqt25bd0annbwt3',}, 
+          { positions: [ { i: 10, j: 1 },  ], css_id: 'tinytable_css_zrlzlshrmlztrjmixpft',}, 
+          { positions: [ { i: 6, j: 0 },  ], css_id: 'tinytable_css_vaksyiup9f6c7vzuvzzf',}, 
+          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_u13xln8hqdwpljl4jqfj',}, 
+          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 7, j: 0 }, { i: 8, j: 0 }, { i: 9, j: 0 },  ], css_id: 'tinytable_css_tgnino89m89p8uhlr2kc',}, 
+          { positions: [ { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 7, j: 1 }, { i: 8, j: 1 }, { i: 9, j: 1 },  ], css_id: 'tinytable_css_rqhokbvrzdp8y2qcx0lx',}, 
+          { positions: [ { i: 10, j: 0 },  ], css_id: 'tinytable_css_oz9mmr9zxwxy1gav4ohv',}, 
+          { positions: [ { i: 0, j: 1 },  ], css_id: 'tinytable_css_k7gahfo5a4egauz0373p',}, 
+          { positions: [ { i: 6, j: 1 },  ], css_id: 'tinytable_css_47cm9o3bupkziidb5k2k',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_ql9l11lky56e8clxxl7m(cell.i, cell.j, group.css_id);
+                  styleCell_hvjerykm0uli4sh9bayh(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -9357,17 +9353,17 @@ Y_{f,c,t}
 
     <style>
 
-.table td.tinytable_css_zm6wpx0e4w65ib3htvq5, .table th.tinytable_css_zm6wpx0e4w65ib3htvq5 { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
-.table td.tinytable_css_xkvcu30lnqvw3ud1b42c, .table th.tinytable_css_xkvcu30lnqvw3ud1b42c { text-align: center; border-bottom: solid black 0.05em; }
-.table td.tinytable_css_wu6z5z6a6a99aj1n9abw, .table th.tinytable_css_wu6z5z6a6a99aj1n9abw { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-.table td.tinytable_css_nxrw7n4e1zyefh5tnk9f, .table th.tinytable_css_nxrw7n4e1zyefh5tnk9f { text-align: left; border-bottom: solid black 0.05em; }
-.table td.tinytable_css_n4rr6llt04xpmwfqrfj7, .table th.tinytable_css_n4rr6llt04xpmwfqrfj7 { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
-.table td.tinytable_css_gap4ooekntbwjdl7npzl, .table th.tinytable_css_gap4ooekntbwjdl7npzl { text-align: center; }
-.table td.tinytable_css_156sj2k99017g3an9031, .table th.tinytable_css_156sj2k99017g3an9031 { text-align: left; }
-.table td.tinytable_css_0fm26uqt25bd0annbwt3, .table th.tinytable_css_0fm26uqt25bd0annbwt3 { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+.table td.tinytable_css_zrlzlshrmlztrjmixpft, .table th.tinytable_css_zrlzlshrmlztrjmixpft { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
+.table td.tinytable_css_vaksyiup9f6c7vzuvzzf, .table th.tinytable_css_vaksyiup9f6c7vzuvzzf { text-align: left; border-bottom: solid black 0.05em; }
+.table td.tinytable_css_u13xln8hqdwpljl4jqfj, .table th.tinytable_css_u13xln8hqdwpljl4jqfj { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+.table td.tinytable_css_tgnino89m89p8uhlr2kc, .table th.tinytable_css_tgnino89m89p8uhlr2kc { text-align: left; }
+.table td.tinytable_css_rqhokbvrzdp8y2qcx0lx, .table th.tinytable_css_rqhokbvrzdp8y2qcx0lx { text-align: center; }
+.table td.tinytable_css_oz9mmr9zxwxy1gav4ohv, .table th.tinytable_css_oz9mmr9zxwxy1gav4ohv { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+.table td.tinytable_css_k7gahfo5a4egauz0373p, .table th.tinytable_css_k7gahfo5a4egauz0373p { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+.table td.tinytable_css_47cm9o3bupkziidb5k2k, .table th.tinytable_css_47cm9o3bupkziidb5k2k { text-align: center; border-bottom: solid black 0.05em; }
 </style>
     <div class="container">
-      <table class="table table-borderless" id="tinytable_ql9l11lky56e8clxxl7m" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_hvjerykm0uli4sh9bayh" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         
               <tr>
@@ -9446,26 +9442,26 @@ Y_{f,c,t}
 <td>Pass P&amp;T <br> Fail Price</td>
 <td><span class="math inline">\(\beta_1\)</span></td>
 <td><strong>-2.85</strong></td>
-<td>Post-expansion change in innovation for clinically approved drugs that do not secure preferred pricing status.</td>
+<td>Innovation declines post-expansion for drugs that meet clinical standards but fail to be cheap enough.</td>
 </tr>
 <tr class="even">
 <td>Fail P&amp;T <br> Pass Price</td>
 <td><span class="math inline">\(\beta_2\)</span></td>
 <td><strong>-1.82</strong></td>
-<td>Post-expansion change in innovation associated with price competitiveness conditional on failing clinical approval.</td>
+<td>Innovation declines post-expansion for drugs that are price-competitive but do not pass the clinical stage.</td>
 </tr>
 <tr class="odd">
 <td>Pass P&amp;T <br> Pass Price</td>
 <td><span class="math inline">\(\beta_3\)</span></td>
 <td><strong>3.87</strong></td>
-<td>Post-expansion change in innovation for drugs securing full PDL access (clinical + price).</td>
+<td>Innovation increases post-expansion for drugs that secure both clinical approval and preferred pricing status.</td>
 </tr>
 </tbody>
 </table>
 </section></section>
 <section>
-<section id="theoretical-framework---a-three-stage-game" class="title-slide slide level1 center">
-<h1>Theoretical Framework - A Three Stage Game</h1>
+<section id="theoretical-model" class="title-slide slide level1 center">
+<h1>Theoretical Model</h1>
 
 </section>
 <section id="stage-1-innovation-effort" class="slide level2">
@@ -9644,7 +9640,6 @@ V_D = M \int_c^{\bar c}(1-F(u))du
 </tr>
 </tbody>
 </table>
-<p><strong>Conclusion:</strong></p>
 <ul>
 <li>Innovation declines because the competitive state becomes less valuable.</li>
 <li>Passing P&amp;T no longer guarantees meaningful profits.</li>
