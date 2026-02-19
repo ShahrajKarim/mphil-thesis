@@ -3766,7 +3766,7 @@ Mohammad-Shah Karim
 <h2 id="toc-title">Table of contents</h2>
 <ul>
 <li><a href="#/an-introduction-to-the-aca" id="/toc-an-introduction-to-the-aca">An Introduction to the ACA</a></li>
-<li><a href="#/research-question" id="/toc-research-question">Research Question</a></li>
+<li><a href="#/research-questions" id="/toc-research-questions">Research Questions</a></li>
 <li><a href="#/pdl-counterfactual-analysis" id="/toc-pdl-counterfactual-analysis">PDL Counterfactual Analysis</a></li>
 <li><a href="#/theoretical-model" id="/toc-theoretical-model">Theoretical Model</a></li>
 <li><a href="#/bibliography" id="/toc-bibliography">Bibliography</a></li>
@@ -3781,20 +3781,11 @@ Mohammad-Shah Karim
 <section id="what-is-the-affordable-care-act-aca" class="slide level2">
 <h2>What is the Affordable Care Act (ACA)?</h2>
 <ul>
-<li><strong>What is Medicaid?</strong> A governemnt health insurance programme covering medical care and prescription drugs - this was traditionally restricted to specific low-income groups (e.g., children, pregnant women, and the disabled).</li>
+<li><strong>Medicaid</strong> is a governement health insurance programme covering medical care and prescription drugs. This was previously restricted to specific low-income groups (e.g., children, pregnant women, and the disabled).</li>
 <li>The <strong>ACA</strong> expanded Medicaid eligibility to virtually <em>all</em> adults with incomes up to 138% of the federal poverty level, removing the old categorical restrictions.</li>
 <li>Over <strong>21 million</strong> previously uninsured adults gained health coverage and access to prescription drugs—directly through this expansion.</li>
 </ul>
 <p>This expansion represents a <strong>demand shock</strong></p>
-</section>
-<section id="what-is-the-affordable-care-act-aca-1" class="slide level2">
-<h2>What is the Affordable Care Act (ACA)?</h2>
-<ul>
-<li>Most comprehensive US health reform since Medicare and Medicaid.</li>
-<li>Expanded access to health insurance and reduced financial barriers to care.</li>
-<li>Intended to improve coverage stability for low-income individuals.</li>
-</ul>
-<p>Medicaid expansion under ACA is a <strong>demand shock</strong></p>
 </section>
 <section id="what-changed-in-medicaid" class="slide level2">
 <h2>What changed in Medicaid?</h2>
@@ -9133,8 +9124,8 @@ function asArray(value) {
 </div>
 </section></section>
 <section>
-<section id="research-question" class="title-slide slide level1 center">
-<h1>Research Question</h1>
+<section id="research-questions" class="title-slide slide level1 center">
+<h1>Research Questions</h1>
 
 </section>
 <section id="research-question-1-overall-innovation-response-to-market-size" class="slide level2">
@@ -9256,8 +9247,8 @@ Y_{f,c,t}
 <p>In both cases, failing only one of these stages indicates that a firm had just missed out on being eligible for the Medicaid PDL.</p>
 <p>It’s possible that incentives differ based on which stage a firm failed at.</p>
 </section>
-<section id="empirical-modelling" class="slide level2">
-<h2>Empirical Modelling</h2>
+<section id="modelling-the-effect-of-the-pdl" class="slide level2">
+<h2>Modelling the effect of the PDL</h2>
 <p><span class="math display">\[
 \begin{aligned}
 Y_{f,c,t}
@@ -9282,8 +9273,8 @@ Y_{f,c,t}
 
     <script>
 
-      function styleCell_hvjerykm0uli4sh9bayh(i, j, css_id) {
-          var table = document.getElementById("tinytable_hvjerykm0uli4sh9bayh");
+      function styleCell_f7nthy42hmmpl1qd6dn2(i, j, css_id) {
+          var table = document.getElementById("tinytable_f7nthy42hmmpl1qd6dn2");
           var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -9293,7 +9284,7 @@ Y_{f,c,t}
           }
       }
       function insertSpanRow(i, colspan, content) {
-        var table = document.getElementById('tinytable_hvjerykm0uli4sh9bayh');
+        var table = document.getElementById('tinytable_f7nthy42hmmpl1qd6dn2');
         var newRow = table.insertRow(i);
         var newCell = newRow.insertCell(0);
         newCell.setAttribute("colspan", colspan);
@@ -9301,8 +9292,8 @@ Y_{f,c,t}
         // this may be unsafe, but innerText does not interpret <br>
         newCell.innerHTML = content;
       }
-      function spanCell_hvjerykm0uli4sh9bayh(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_hvjerykm0uli4sh9bayh");
+      function spanCell_f7nthy42hmmpl1qd6dn2(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_f7nthy42hmmpl1qd6dn2");
         const targetRow = table.rows[i];
         const targetCell = targetRow.cells[j];
         for (let r = 0; r < rowspan; r++) {
@@ -9332,20 +9323,20 @@ Y_{f,c,t}
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: 10, j: 1 },  ], css_id: 'tinytable_css_zrlzlshrmlztrjmixpft',}, 
-          { positions: [ { i: 6, j: 0 },  ], css_id: 'tinytable_css_vaksyiup9f6c7vzuvzzf',}, 
-          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_u13xln8hqdwpljl4jqfj',}, 
-          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 7, j: 0 }, { i: 8, j: 0 }, { i: 9, j: 0 },  ], css_id: 'tinytable_css_tgnino89m89p8uhlr2kc',}, 
-          { positions: [ { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 7, j: 1 }, { i: 8, j: 1 }, { i: 9, j: 1 },  ], css_id: 'tinytable_css_rqhokbvrzdp8y2qcx0lx',}, 
-          { positions: [ { i: 10, j: 0 },  ], css_id: 'tinytable_css_oz9mmr9zxwxy1gav4ohv',}, 
-          { positions: [ { i: 0, j: 1 },  ], css_id: 'tinytable_css_k7gahfo5a4egauz0373p',}, 
-          { positions: [ { i: 6, j: 1 },  ], css_id: 'tinytable_css_47cm9o3bupkziidb5k2k',}, 
+          { positions: [ { i: 6, j: 0 },  ], css_id: 'tinytable_css_rt1a2bx97eumg2x630d1',}, 
+          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 7, j: 0 }, { i: 8, j: 0 }, { i: 9, j: 0 },  ], css_id: 'tinytable_css_plf7xn49ifecwauzk6y4',}, 
+          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_pjk9a1ght851dt8evtcu',}, 
+          { positions: [ { i: 6, j: 1 },  ], css_id: 'tinytable_css_m348v9dzfkzbdsbtu8p2',}, 
+          { positions: [ { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 7, j: 1 }, { i: 8, j: 1 }, { i: 9, j: 1 },  ], css_id: 'tinytable_css_kmybna70huha0wvz2yhd',}, 
+          { positions: [ { i: 10, j: 0 },  ], css_id: 'tinytable_css_am2kvl17dx5aqfazauoy',}, 
+          { positions: [ { i: 10, j: 1 },  ], css_id: 'tinytable_css_9gblvkeqxuyh79zihge9',}, 
+          { positions: [ { i: 0, j: 1 },  ], css_id: 'tinytable_css_82o127udzwlx0pb9ssmp',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_hvjerykm0uli4sh9bayh(cell.i, cell.j, group.css_id);
+                  styleCell_f7nthy42hmmpl1qd6dn2(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -9353,17 +9344,17 @@ Y_{f,c,t}
 
     <style>
 
-.table td.tinytable_css_zrlzlshrmlztrjmixpft, .table th.tinytable_css_zrlzlshrmlztrjmixpft { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
-.table td.tinytable_css_vaksyiup9f6c7vzuvzzf, .table th.tinytable_css_vaksyiup9f6c7vzuvzzf { text-align: left; border-bottom: solid black 0.05em; }
-.table td.tinytable_css_u13xln8hqdwpljl4jqfj, .table th.tinytable_css_u13xln8hqdwpljl4jqfj { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-.table td.tinytable_css_tgnino89m89p8uhlr2kc, .table th.tinytable_css_tgnino89m89p8uhlr2kc { text-align: left; }
-.table td.tinytable_css_rqhokbvrzdp8y2qcx0lx, .table th.tinytable_css_rqhokbvrzdp8y2qcx0lx { text-align: center; }
-.table td.tinytable_css_oz9mmr9zxwxy1gav4ohv, .table th.tinytable_css_oz9mmr9zxwxy1gav4ohv { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
-.table td.tinytable_css_k7gahfo5a4egauz0373p, .table th.tinytable_css_k7gahfo5a4egauz0373p { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-.table td.tinytable_css_47cm9o3bupkziidb5k2k, .table th.tinytable_css_47cm9o3bupkziidb5k2k { text-align: center; border-bottom: solid black 0.05em; }
+.table td.tinytable_css_rt1a2bx97eumg2x630d1, .table th.tinytable_css_rt1a2bx97eumg2x630d1 { text-align: left; border-bottom: solid black 0.05em; }
+.table td.tinytable_css_plf7xn49ifecwauzk6y4, .table th.tinytable_css_plf7xn49ifecwauzk6y4 { text-align: left; }
+.table td.tinytable_css_pjk9a1ght851dt8evtcu, .table th.tinytable_css_pjk9a1ght851dt8evtcu { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+.table td.tinytable_css_m348v9dzfkzbdsbtu8p2, .table th.tinytable_css_m348v9dzfkzbdsbtu8p2 { text-align: center; border-bottom: solid black 0.05em; }
+.table td.tinytable_css_kmybna70huha0wvz2yhd, .table th.tinytable_css_kmybna70huha0wvz2yhd { text-align: center; }
+.table td.tinytable_css_am2kvl17dx5aqfazauoy, .table th.tinytable_css_am2kvl17dx5aqfazauoy { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+.table td.tinytable_css_9gblvkeqxuyh79zihge9, .table th.tinytable_css_9gblvkeqxuyh79zihge9 { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
+.table td.tinytable_css_82o127udzwlx0pb9ssmp, .table th.tinytable_css_82o127udzwlx0pb9ssmp { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
 </style>
     <div class="container">
-      <table class="table table-borderless" id="tinytable_hvjerykm0uli4sh9bayh" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_f7nthy42hmmpl1qd6dn2" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         
               <tr>

@@ -33,19 +33,11 @@ use_condaenv("thesis", required = TRUE)
 
 ## What is the Affordable Care Act (ACA)?
 
-- **What is Medicaid?** A governemnt health insurance programme covering medical care and prescription drugs - this was traditionally restricted to specific low-income groups (e.g., children, pregnant women, and the disabled).
+- **Medicaid** is a governement health insurance programme covering medical care and prescription drugs. This was previously restricted to specific low-income groups (e.g., children, pregnant women, and the disabled).
 - The **ACA** expanded Medicaid eligibility to virtually *all* adults with incomes up to 138% of the federal poverty level, removing the old categorical restrictions.
 - Over **21 million** previously uninsured adults gained health coverage and access to prescription drugs—directly through this expansion. 
 
 This expansion represents a **demand shock**
-
-## What is the Affordable Care Act (ACA)?
-
-- Most comprehensive US health reform since Medicare and Medicaid.
-- Expanded access to health insurance and reduced financial barriers to care.
-- Intended to improve coverage stability for low-income individuals.
-
-Medicaid expansion under ACA is a **demand shock**
 
 ## What changed in Medicaid?
 
@@ -130,7 +122,7 @@ flowchart LR
     Decision -->|"FAILED EITHER<br>(Clinical or Cost)"| NonPDL["Non-Preferred Drug<br>(Counterfactuals)"]
 ```
 
-# Research Question
+# Research Questions
 
 ```{r}
 library(here)
@@ -470,7 +462,7 @@ In both cases, failing only one of these stages indicates that a firm had just m
 
 It's possible that incentives differ based on which stage a firm failed at.
 
-## Empirical Modelling
+## Modelling the effect of the PDL
 
 $$
 \begin{aligned}
