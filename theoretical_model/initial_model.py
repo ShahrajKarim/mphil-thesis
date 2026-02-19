@@ -244,7 +244,7 @@ def main() -> None:
         e_grid = solve_curve(M_grid, p)
         axA.plot(M_grid, e_grid, linewidth=2.2, label=f"alpha = {a:g} (tau=M)")
 
-    axA.set_title("Vary wedge intensity (alpha)")
+    axA.set_title("Vary rebate intensity (alpha)")
     axA.set_xlabel("Market size M (millions)")
     axA.set_ylabel("Optimal effort $e^*(M)$")
     axA.grid(alpha=0.3)
@@ -274,13 +274,13 @@ def main() -> None:
     axC.grid(alpha=0.3)
     axC.legend()
 
-    # ---- Panel D: vary wedge functional form ----
+    # ---- Panel D: vary rebate functional form ----
     for name in tau_shape_grid:
         p = Params(**{**base.__dict__, "tau_shape": TAU_SHAPES[name]})
         e_grid = solve_curve(M_grid, p)
         axD.plot(M_grid, e_grid, linewidth=2.2, label=name)
 
-    axD.set_title("Vary wedge functional form")
+    axD.set_title("Vary rebate functional form")
     axD.set_xlabel("Market size M (millions)")
     axD.set_ylabel("Optimal effort $e^*(M)$")
     axD.grid(alpha=0.3)
