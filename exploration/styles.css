@@ -1,0 +1,176 @@
+/* Default text size */
+.reveal p {
+  font-size: 0.8em;
+}
+
+/* Smaller headings */
+.reveal h1 { font-size: 1.6em; }
+.reveal h2 { font-size: 1.3em; }
+.reveal h3 { font-size: 1.1em; }
+
+/* --- List spacing tweaks for Reveal.js --- */
+/* Keep list text same size as body text */
+.reveal ul, .reveal ol { 
+  margin-top: 0.2em; 
+  margin-bottom: 0.2em; 
+  padding-left: 1.1em; /* slightly tighter indent */
+}
+
+.reveal li {
+  font-size: 0.8em;       /* match paragraph size set above */
+  line-height: 1.25;      /* tighter than default */
+  margin: 0.15em 0;       /* reduce vertical gap between bullets */
+}
+
+/* Nested lists: avoid extra vertical whitespace */
+.reveal li > ul, .reveal li > ol {
+  margin-top: 0.15em;
+  margin-bottom: 0.15em;
+}
+
+/* Optional utility: make a slide extra-compact by adding {.compact} after the slide header */
+.compact ul, .compact ol { 
+  margin-top: 0.05em; 
+  margin-bottom: 0.05em; 
+}
+.compact li { 
+  margin: 0.05em 0; 
+  line-height: 1.2; 
+}
+
+/* Optional utility: slightly smaller text for dense slides by adding {.small} to the slide */
+.small p, .small li { 
+  font-size: 0.75em; 
+}
+
+/* --- Compact slide utilities (optional per-slide) --- */
+/* Apply by adding {.tight} to a slide header */
+.reveal section.tight { 
+  padding-top: 20px;      /* less vertical padding at top */
+  padding-bottom: 20px;   /* less vertical padding at bottom */
+}
+
+/* Tighter text spacing on tight slides */
+.tight p, .tight li { 
+  margin: 0.05em 0; 
+  line-height: 1.15; 
+}
+
+/* Tighter heading spacing */
+.tight h2 { margin: 0.2em 0 0.25em; }
+.tight h3 { margin: 0.15em 0 0.2em; }
+
+/* --- Headings & paragraph spacing (mild global tweak) --- */
+.reveal p { margin: 0.3em 0; }
+.reveal h2 { margin: 0.3em 0 0.4em; }
+.reveal h3 { margin: 0.25em 0 0.35em; }
+
+/* --- Extra-compact tables (optional per-slide) --- */
+/* Apply by adding {.tiny-table} to a slide header */
+.tiny-table table { font-size: 0.65em; }
+.tiny-table table th, 
+.tiny-table table td { 
+  padding: 0.1em 0.25em; 
+  line-height: 1.1; 
+}
+
+/* Default text size */
+.reveal p {
+  font-size: 0.8em;
+}
+
+/* Smaller headings */
+.reveal h1 { font-size: 1.6em; }
+.reveal h2 { font-size: 1.3em; }
+.reveal h3 { font-size: 1.1em; }
+
+/* --- List spacing tweaks for Reveal.js --- */
+/* Keep list text same size as body text */
+.reveal ul, .reveal ol { 
+  margin-top: 0.2em; 
+  margin-bottom: 0.2em; 
+  padding-left: 1.1em; /* slightly tighter indent */
+}
+
+.reveal li {
+  font-size: 0.8em;       /* match paragraph size set above */
+  line-height: 1.25;      /* tighter than default */
+  margin: 0.15em 0;       /* reduce vertical gap between bullets */
+}
+
+/* Nested lists: avoid extra vertical whitespace */
+.reveal li > ul, .reveal li > ol {
+  margin-top: 0.15em;
+  margin-bottom: 0.15em;
+}
+
+/* Optional utility: make a slide extra-compact by adding {.compact} after the slide header */
+.compact ul, .compact ol { 
+  margin-top: 0.05em; 
+  margin-bottom: 0.05em; 
+}
+.compact li { 
+  margin: 0.05em 0; 
+  line-height: 1.2; 
+}
+
+/* Optional utility: slightly smaller text for dense slides by adding {.small} to the slide */
+.small p, .small li { 
+  font-size: 0.75em; 
+}
+
+/* --- Compact slide utilities (optional per-slide) --- */
+/* Apply by adding {.tight} to a slide header */
+.reveal section.tight { 
+  padding-top: 20px;      /* less vertical padding at top */
+  padding-bottom: 20px;   /* less vertical padding at bottom */
+}
+
+/* Tighter text spacing on tight slides */
+.tight p, .tight li { 
+  margin: 0.05em 0; 
+  line-height: 1.15; 
+}
+
+/* Tighter heading spacing */
+.tight h2 { margin: 0.2em 0 0.25em; }
+.tight h3 { margin: 0.15em 0 0.2em; }
+
+/* --- Headings & paragraph spacing (mild global tweak) --- */
+.reveal p { margin: 0.3em 0; }
+.reveal h2 { margin: 0.3em 0 0.4em; }
+.reveal h3 { margin: 0.25em 0 0.35em; }
+
+/* --- Extra-compact tables (optional per-slide) --- */
+/* Apply by adding {.tiny-table} to a slide header */
+.tiny-table table { font-size: 0.65em; }
+.tiny-table table th, 
+.tiny-table table td { 
+  padding: 0.1em 0.25em; 
+  line-height: 1.1; 
+}
+
+/* --- Global compacting for Pandoc/Quarto tables in Reveal --- */
+.reveal table {
+  font-size: 0.80em;      /* shrink table text slightly by default */
+  width: 100%;
+}
+.reveal table th,
+.reveal table td {
+  padding: 0.20em 0.40em; /* reduce default cell padding */
+  line-height: 1.20;      /* reduce row height */
+}
+
+/* Make .small also affect tables on that slide */
+.small table { font-size: 0.75em; }
+
+/* Make .tight also tighten table cells on that slide */
+.tight table th,
+.tight table td { padding: 0.12em 0.30em; line-height: 1.10; }
+
+/* Optional: remove outer margins some themes add around tables */
+.reveal .table-wrapper, 
+.reveal .quarto-table {
+  margin-top: 0.2em;
+  margin-bottom: 0.2em;
+}

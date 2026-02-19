@@ -1,0 +1,304 @@
+---
+title: "Firm Level Variation Analysis"
+author: "Mohammad-Shah Karim"
+date: today
+
+execute:
+  dir: project
+
+format:
+  pdf:
+    toc: true
+    toc-depth: 2
+---
+
+\newpage
+
+# Libraries
+
+```{r libraries, warning = FALSE, message = FALSE}
+
+library(here)
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+library(tidyr)
+
+```
+
+\newpage
+
+# Load data
+
+```{r data, message = FALSE}
+
+# Load FDA approval data
+
+fda_approvals <- read_csv(
+    here(
+        "processed_data/fda_approvals/fda_sdud_pdl_merged.csv"
+        )
+) |>
+rename(
+    approvals = n_approvals,
+    firm = sponsor_name
+    ) |>
+mutate(post = approval_year >= 2014) |>
+filter(approval_year >= 2010)
+
+# Load patent data
+
+patents <- read_csv(
+    here(
+        "processed_data/patents/patents_sdud_pdl_merged.csv"
+    )
+) |>
+    rename(
+        atc_level1 = ATC1,
+        patents = num_patents) |>
+    mutate(post = patent_year >= 2014) |>
+    filter(patent_year >= 2010)
+
+
+```
+
+\newpage
+
+# Between firm variation for ATCs
+
+## FDA
+
+```{r FDA_between, message = FALSE}
+
+fda_firm_atc_prepost <- fda_approvals |>
+  group_by(firm, atc_level1, post) |>
+  summarise(any_innov = max(approvals > 0), .groups = "drop") |>
+  group_by(firm, post) |>
+  summarise(
+    n_atc_innov = sum(any_innov),
+    .groups = "drop"
+  )
+
+# Plot: FDA
+ggplot(fda_firm_atc_prepost, aes(x = n_atc_innov)) +
+  geom_histogram(bins = 30) +
+  facet_wrap(~ post, labeller = as_labeller(c(`FALSE` = "Pre (≤2013)", `TRUE` = "Post (≥2014)"))) +
+  labs(
+    title = "FDA approvals: number of ATC1 classes with innovation (by firm)",
+    x = "Number of ATC1 classes with ≥1 approval",
+    y = "Number of firms"
+  ) +
+  theme_classic()
+
+```
+
+
+## Patents
+
+```{r patents_between, message = FALSE}
+
+patent_firm_atc_prepost <- patents |>
+  group_by(firm, atc_level1, post) |>
+  summarise(any_innov = max(patents > 0), .groups = "drop") |>
+  group_by(firm, post) |>
+  summarise(
+    n_atc_innov = sum(any_innov),
+    .groups = "drop"
+  )
+
+ggplot(patent_firm_atc_prepost, aes(x = n_atc_innov)) +
+  geom_histogram(bins = 30) +
+  facet_wrap(~ post, labeller = as_labeller(c(`FALSE` = "Pre (≤2013)", `TRUE` = "Post (≥2014)"))) +
+  labs(
+    title = "Patents: number of ATC1 classes with innovation (by firm)",
+    x = "Number of ATC1 classes with ≥1 patent",
+    y = "Number of firms"
+  ) +
+  theme_classic()
+
+```
+
+\newpage
+
+# Within firm variation
+
+## FDA
+
+```{r FDA_within, message = FALSE}
+
+#| results: asis
+#| fig-width: 10
+#| fig-height: 6
+
+fda_firm_atc_counts <- fda_approvals |>
+  group_by(firm, atc_level1, post) |>
+  summarise(approvals = sum(approvals, na.rm = TRUE), .groups = "drop") |>
+  filter(approvals > 0)
+
+fda_firm_index <- fda_firm_atc_counts |>
+  group_by(firm) |>
+  summarise(total_approvals = sum(approvals), .groups = "drop") |>
+  arrange(desc(total_approvals)) |>
+  mutate(firm_id = row_number())
+
+
+fda_plot_data <- fda_firm_atc_counts |>
+  left_join(fda_firm_index, by = "firm") |>
+  pivot_wider(names_from = post, values_from = approvals, values_fill = 0) |>
+  rename(pre = `FALSE`, post_val = `TRUE`)
+
+atc_list_fda <- unique(fda_plot_data$atc_level1)
+
+for (i in atc_list_fda) {
+  
+  # Filter for the ATC and apply the "Both > 5" rule
+  single_atc_fda <- fda_plot_data |> 
+    filter(atc_level1 == i) |>
+    filter(pre >= 1 & post_val >= 1) # The Volume Filter
+  
+  # Skip the plot if no firms meet this strict criteria
+  if(nrow(single_atc_fda) == 0) {
+    cat("\n\n### ATC Level", i, ": No firms meet the >5 approvals threshold in both periods.\n\n")
+    next
+  }
+
+  p <- ggplot(single_atc_fda, aes(x = firm_id)) +
+    geom_segment(aes(xend = firm_id, y = pre, yend = post_val), 
+                 color = "grey80", alpha = 0.6) +
+    geom_point(aes(y = pre, color = "Pre (<=2013)"), size = 2, alpha = 0.8) +
+    geom_point(aes(y = post_val, color = "Post (>=2014)"), size = 2, alpha = 0.8) +
+    scale_color_manual(values = c("Pre (<=2013)" = "#2c3e50", "Post (>=2014)" = "#e67e22")) +
+    scale_y_continuous(trans = "log1p", breaks = c(1, 5, 10, 25, 50, 100, 250, 500)) + 
+    labs(title = paste("FDA High-Volume Firms (>1): ATC Level", i),
+         x = "Firm ID", y = "Approvals (log1p)", color = "Period") +
+    theme_classic() +
+    theme(axis.text.x = element_blank(), legend.position = "top")
+  
+  print(p)
+
+}
+
+```
+
+
+## Patents
+
+```{r patents_within, message = FALSE}
+
+#| results: asis
+#| fig-width: 10
+#| fig-height: 6
+
+patent_firm_atc_counts <- patents |>
+  group_by(firm, atc_level1, post) |>
+  summarise(patents = sum(patents, na.rm = TRUE), .groups = "drop") |>
+  filter(patents > 0)
+
+firm_index <- patent_firm_atc_counts |>
+  group_by(firm) |>
+  summarise(total_activity = sum(patents), .groups = "drop") |>
+  arrange(desc(total_activity)) |>
+  mutate(firm_id = row_number())
+
+patent_plot_data <- patent_firm_atc_counts |>
+  left_join(firm_index, by = "firm") |>
+  pivot_wider(names_from = post, values_from = patents, values_fill = 0) |>
+  rename(pre = `FALSE`, post_val = `TRUE`)
+
+atc_list <- unique(patent_plot_data$atc_level1)
+
+
+for (i in atc_list) {
+  
+  single_atc_data <- patent_plot_data |> 
+    filter(atc_level1 == i) |>
+    filter(pre >= 1 & post_val >= 1) # The Volume Filter
+
+  if(nrow(single_atc_data) == 0) next
+
+  p <- ggplot(single_atc_data, aes(x = firm_id)) +
+    geom_segment(aes(xend = firm_id, y = pre, yend = post_val), 
+                 color = "grey80", alpha = 0.6) +
+    geom_point(aes(y = pre, color = "Pre (<=2013)"), size = 2, alpha = 0.1) +
+    geom_point(aes(y = post_val, color = "Post (>=2014)"), size = 2, alpha = 0.1) +
+    scale_color_manual(values = c("Pre (<=2013)" = "#2980b9", "Post (>=2014)" = "#c0392b")) +
+    scale_y_continuous(trans = "log1p", breaks = c(1, 5, 10, 50, 100, 500, 1000, 2000)) + 
+    labs(title = paste("Patent High-Volume Firms (>1): ATC Level", i),
+         x = "Firm ID", y = "Patents (log1p)", color = "Period") +
+    theme_classic() +
+    theme(axis.text.x = element_blank(), legend.position = "top")
+  
+  print(p)
+
+}
+
+```
+
+\newpage
+
+# Variance analysis
+
+## FDA
+
+```{r FDA_variance, message = FALSE}
+
+fda_firm_atc_variance <- fda_plot_data |>
+  # Pivot to long to get one row per firm-atc-period
+  pivot_longer(cols = c(pre, post_val), names_to = "period", values_to = "count") |>
+  group_by(firm, period) |>
+  # Only keep firms active in more than 1 ATC in that period
+  filter(n_distinct(atc_level1) > 1) |> 
+  summarise(
+    atc_variance = var(count),
+    n_atcs = n_distinct(atc_level1),
+    .groups = "drop"
+  ) |>
+  filter(atc_variance > 0)
+
+# FDA Variance Distribution
+ggplot(fda_firm_atc_variance, aes(x = atc_variance, fill = period)) +
+  geom_density(alpha = 0.5) +
+  scale_x_log10() +
+  labs(
+    title = "Portfolio Variation: FDA Approvals (Across ATCs)",
+    subtitle = "Higher variance = more 'uneven' innovation across therapeutic classes",
+    x = "Variance across ATCs within a Firm",
+    y = "Density"
+  ) +
+  theme_classic()
+
+
+
+
+```
+
+
+## Patents
+
+```{r patents_variance, message = FALSE}
+
+
+patent_firm_atc_variance <- patent_plot_data |>
+  pivot_longer(cols = c(pre, post_val), names_to = "period", values_to = "count") |>
+  group_by(firm, period) |>
+  filter(n_distinct(atc_level1) > 1) |>
+  summarise(
+    atc_variance = var(count),
+    n_atcs = n_distinct(atc_level1),
+    .groups = "drop"
+  ) |>
+  filter(atc_variance > 0)
+
+# Patent Variance Distribution
+ggplot(patent_firm_atc_variance, aes(x = atc_variance, fill = period)) +
+  geom_density(alpha = 0.5) +
+  scale_x_log10() +
+  labs(
+    title = "Portfolio Variation: Patents (Across ATCs)",
+    x = "Variance across ATCs within a Firm",
+    y = "Density"
+  ) +
+  theme_classic()
+
+```

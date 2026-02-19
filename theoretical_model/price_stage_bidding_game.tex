@@ -1,0 +1,173 @@
+\documentclass[12pt]{article}
+\usepackage{geometry}
+\geometry{a4paper, portrait, margin=1in}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{parskip}
+\usepackage[hidelinks]{hyperref}
+\usepackage{natbib}
+
+\pagestyle{plain}
+
+\title{The Price Stage Duopoly Bidding Game}
+\author{Mohammad-Shah Karim}
+\date{February 2026}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\newpage
+
+\section{Setup}
+
+Consider the subgame where both firms $i$ and $j$ have passed the P\&T stage and compete in the price-stage test to gain PDL status. This interaction can be modelled as a first-price sealed-bid procurement auction.
+
+\begin{itemize}
+    \item \textbf{Players:} Two risk-neutral firms $i$ and $j$.
+
+    \item \textbf{Private Information:} Each firm independently draws a marginal cost 
+    $c_i, c_j$ from a common distribution $F(c)$ with support 
+    $[\underline{c}, \bar{c}]$.
+
+    \item \textbf{Actions:} Each firm submits a sealed bid (net price) $b_i$.
+
+    \item \textbf{Statutory Wedge ($\tau(M)$):} The state imposes a rebate 
+    $\tau(M)$ that is increasing in market size, i.e. $\tau'(M) > 0$. 
+    This captures monopsony power.
+
+    \item \textbf{Payoffs:} The auction winner gains PDL status and obtains 
+    the full market volume $M$ at their bid price minus the statutory wedge. 
+    The loser earns zero profit:
+\end{itemize}
+
+\[
+\pi_i =
+\begin{cases}
+M\big(b_i - c_i - \tau(M)\big) & \text{if } b_i \leq b_j, \\
+0 & \text{if } b_i > b_j.
+\end{cases}
+\]
+
+\newpage
+
+\section{Equilibrium Derivation}
+
+Suppose a symmetric Bayesian-Nash Equilibrium bidding strategy $b(c)$ exists that is strictly increasing and differentiable.
+
+\textbf{Step 1: The Probability of Winning} \vspace{1em}
+
+Suppose firm $i$ has cost $c$ but considers submitting a bid $\tilde{b}$ that corresponds to the optimal bid of a different cost type $t$ (i.e., $\tilde{b} = b(t)$). Since the bidding function $b(\cdot)$ is strictly increasing, firm $i$ wins if its bid is lower than the rival's bid $b(c_j)$:
+
+\begin{equation}
+    b(t) < b(c_j) \iff t < c_j
+\end{equation}
+The probability of winning is therefore the probability that the rival's cost is higher than $t$:
+\begin{equation}
+    \Pr(\text{win}) = \Pr(c_j > t) = 1 - F(t)
+\end{equation}
+
+\textbf{Step 2: The Optimisation Problem} \vspace{1em}
+
+The firm chooses the target type $t$ to maximise expected profit. Let $\tilde{c} = c + \tau(M)$ denote the effective cost including the statutory wedge. The maximisation problem is:
+
+\begin{equation}
+    \max_{t} \mathbb{E}[\pi(t, c)] = M(b(t) - \tilde{c})[1 - F(t)]
+\end{equation}
+Let $U(c)$ be the value function (maximum expected profit) for a firm with true cost $c$:
+\begin{equation}
+    U(c) = \max_{t} M(b(t) - c - \tau(M))[1 - F(t)]
+\end{equation}
+
+\textbf{Step 3: Applying the Envelope Theorem} \vspace{1em}
+According to the Envelope Theorem, the derivative of the value function $U(c)$ with respect to the parameter $c$ is equal to the partial derivative of the objective function evaluated at the optimal choice $t=c$ (truth-telling equilibrium).
+
+\begin{equation}
+    U'(c) = \left. \frac{\partial \mathbb{E}[\pi(t, c)]}{\partial c} \right|_{t=c}
+\end{equation}
+Taking the partial derivative of the objective function with respect to $c$:
+
+\begin{equation}
+    \frac{\partial}{\partial c} \left( M(b(t) - c - \tau(M))[1 - F(t)] \right) = -M[1 - F(t)]
+\end{equation}
+Evaluated at equilibrium ($t=c$):
+
+\begin{equation}
+    U'(c) = -M[1 - F(c)]
+\end{equation}
+
+\textbf{Step 4: Solving for Expected Profit} \vspace{1em}
+
+Integrate $U'(c)$ to recover the profit function $U(c)$:
+
+\begin{equation}
+    U(c) = U(\bar{c}) - \int_{c}^{\bar{c}} U'(u) \, du
+\end{equation}
+
+At the upper bound $\bar{c}$ (the least firm with the highest marginal cost), the firm cannot bid below its cost to win with positive probability, so $U(\bar{c}) = 0$. Substituting $U'(u) = -M[1 - F(u)]$:
+
+\begin{equation} \label{eq:value_integral}
+    U(c) = 0 - \int_{c}^{\bar{c}} -M[1 - F(u)] \, du = M \int_{c}^{\bar{c}} (1 - F(u)) \, du
+\end{equation}
+
+\textbf{Step 5: Recovering the Bidding Function} \vspace{1em}
+
+Now equate the integral expression for profit (\ref{eq:value_integral}) with definition of profit at the optimum ($t=c$):
+
+\begin{equation}
+    M(b(c) - c - \tau(M))[1 - F(c)] = M \int_{c}^{\bar{c}} (1 - F(u)) \, du
+\end{equation}
+
+Solving for $b(c)$ yields the symmetric equilibrium bidding strategy:
+
+\begin{equation} \label{eq:bid_function}
+    b(c) = c + \tau(M) + \frac{\int_{c}^{\bar{c}} (1 - F(u)) \, du}{1 - F(c)}
+\end{equation}
+
+\textit{Note:} The firm fully passes through the additive wedge $\tau(M)$ into its bid. Consequently, the ``information rent'' (net profit) in the auction depends only on the distribution of costs, not on $\tau$.
+
+\newpage
+
+\section{Equilibrium Profits (Duopoly State)}
+
+Substituting the bid back into the profit function, the ex-ante expected profit for entering the duopoly state is:
+
+\begin{equation} \label{eq:duopoly_profit}
+    \Pi^{Duopoly}(c) = M \int_{c}^{\bar{c}} (1 - F(u)) \, du
+\end{equation}
+Under a uniform distribution, this simplifies to $\Pi^{Duopoly} \propto M$. Thus, purely within the auction structure, expansion scales profits linearly.
+
+\newpage
+
+\section{The ``Incentive Trap'' Mechanism}
+To explain the decline in innovation ($\frac{de^*}{dM} < 0$), consider the \textbf{Total Expected Profit} driving the investment decision $e_i$.
+
+The firm invests effort $e_i$ primarily to secure the \textbf{Monopoly State} (where the rival fails the P\&T stage). The total expected profit is:
+
+\begin{equation}
+    \Pi^{Total} \approx \underbrace{Q_i(1-Q_j) \cdot \Pi^{Mono}}_{\text{Monopoly Incentive}} + \underbrace{Q_i Q_j \cdot \Pi^{Duopoly}}_{\text{Duopoly Incentive}}
+\end{equation}
+
+\begin{enumerate}
+    \item \textbf{Why Duopoly Rents are Secondary:} \\
+    While the auction yields positive information rents, these are second-order compared to the Monopoly prize. In the Duopoly state, firms offer clinically equivalent goods, forcing them to compete on price to win the exclusive contract. In contrast, the Monopoly state confers exclusivity without price competition, allowing the firm to capture the full surplus up to the state's reserve price. Consequently, $\Pi^{Duopoly} \ll \Pi^{Mono}$.
+
+    \item \textbf{The Mechanism (Monopoly Margin Compression):} \\
+    The statutory wedge $\tau(M)$ directly reduces the margin in the Monopoly state. Unlike the auction (where $\tau$ is passed through to bids), the Monopoly price $p^{Mono}$ is constrained by the state's maximum willingness to pay or statutory caps.
+
+    \item \textbf{The Sign Reversal Condition:} \\
+    Differentiating the dominant Monopoly term with respect to market size $M$ yields the condition for negative innovation:
+    \begin{equation}
+        \frac{d \Pi^{Mono}}{d M} < 0 \iff \underbrace{(p^{Mono} - c - \tau)}_{\text{Volume Effect (+) }} < \underbrace{M \cdot \tau'(M)}_{\text{Monopsony Effect (-) }}
+    \end{equation}
+\end{enumerate}
+
+\newpage
+
+\section{Conclusion}
+Innovation falls because the ``Monopsony Effect'' erodes the \textbf{Monopoly Prize}. Since the Monopoly state is the primary driver of R\&D investment, the volume expansion in the Duopoly state is insufficient to compensate for the loss of value in the exclusive outcome.
+
+\end{document}
