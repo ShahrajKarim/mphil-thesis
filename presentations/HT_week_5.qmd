@@ -18,7 +18,16 @@ format:
     scrollable: true
     embed-resources: true
     self-contained-math: true
+
+engine: thesis
 ---
+
+```{r}
+
+library(reticulate)
+use_condaenv("thesis", required = TRUE)
+
+```
 
 # An Introduction to the ACA 
 
@@ -93,6 +102,30 @@ Unexplored areas:
 - States designate PDLs with negotiated rebates, with some firms adopting a uniform PDL to increase bargaining power.
 - Some states join multi-state alliances to collectively negotiate deeper rebates.
 
+## The Preferred Drug List Mechanism
+
+A drug becomes preferred when it is clinically acceptable **and** offers the lowest net cost among substitutes.
+
+1. P&T committee evaluates safety, efficacy and literature on drug.
+
+2. States compare net price among clinically equivalent drugs, with price determining which eligible drugs become most preferred.
+
+```{mermaid}
+flowchart LR
+    Start["Candidate Drug"]
+    
+    Clinical["Clinical Review<br>(Safety & Efficacy)"]
+    Economic["Economic Evaluation<br>(Net Cost vs Substitutes)"]
+    
+    Start --> Clinical
+    Start --> Economic
+
+    Clinical --> Decision{"Composite<br>Decision"}
+    Economic --> Decision
+
+    Decision -->|"PASSED BOTH<br>(Clinical + Cost)"| PDL["Preferred Drug<br>(Winner)"]
+    Decision -->|"FAILED EITHER<br>(Clinical or Cost)"| NonPDL["Non-Preferred Drug<br>(Counterfactuals)"]
+```
 
 # Empirical Analysis
 
@@ -334,10 +367,8 @@ $$
 ## The puzzle
 
 - Therapeutic classes with greater Medicaid exposure experience a decline in patenting after expansion, even after controlling for PDL exposure
-
 - Market size increased
-- Access frictions controlled for
-- Innovation falls ?
+- **Innovation falls**
 
 ```{r}
 
@@ -655,7 +686,7 @@ Q'(e_i)\Big[(1-Q(e_j))V_M + Q(e_j)V_D\Big]
 k e_i
 $$
 
-## The Incentive Trap
+## Explaining the Puzzle
 
 Expansion ($M \uparrow$) changes incentives via:
 
@@ -690,7 +721,7 @@ Innovation falls even though market size increases.
 **Conclusion:**
 
 - Innovation declines because the competitive state becomes less valuable.
-- Passing P&T no longer guarantees meaningful rents.
+- Passing P&T no longer guarantees meaningful profits.
 
 # Bibliography
 
