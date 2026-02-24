@@ -1,0 +1,1032 @@
+---
+title: "MPhil Thesis: HT Week 6"
+author: "Mohammad-Shah Karim"
+date: "24 Feb 2026"
+
+bibliography: ../references/initial_ideas.bib
+
+execute:
+  dir: project
+
+format:
+  revealjs:
+    css: styles.css
+    toc: true
+    toc-depth: 1
+    slideNumber: true
+    auto: true
+    scrollable: true
+    embed-resources: true
+    self-contained-math: true
+
+---
+
+# Recap
+
+```{r}
+library(here)
+
+#exploration/HT_week1_RQ1.r
+
+
+# Load necessary libraries
+library(tidyverse)
+library(lubridate)
+library(readr)
+library(stringr)
+library(ggplot2)
+library(fixest)
+library(knitr)
+library(modelsummary)
+library(kableExtra)
+library(fixest)
+library(TwoWayFEWeights)
+library(DIDmultiplegtDYN)
+library(did)
+library(here)
+
+
+# Load FDA approval data
+
+fda_approvals <- read_csv(
+    here(
+        "processed_data/fda_approvals/fda_sdud_pdl_merged.csv"
+        )
+) |>
+rename(
+    approvals = n_approvals,
+    firm = sponsor_name
+    )
+
+# Load patent data
+
+patents <- read_csv(
+    here(
+        "processed_data/patents/patents_sdud_pdl_merged.csv"
+    )
+) |>
+    rename(
+        atc_level1 = ATC1,
+        patents = num_patents)
+
+# --- Build ex-ante demand --- #
+
+# FDA
+
+fda_ex_ante_stats <- fda_approvals |>
+    filter(approval_year <= 2013 & approval_year >= 2010) |>
+    distinct(atc_level1, approval_year, approval_quarter, prescriptions)
+
+fda_ex_ante_total_prescriptions <- fda_ex_ante_stats |>
+    summarise(
+        total_prescriptions = sum(prescriptions, na.rm = TRUE),
+        .groups = "drop"
+    ) |>
+    pull()
+
+fda_ex_ante_demand <- fda_ex_ante_stats |>
+    group_by(atc_level1) |>
+    summarise(
+        d_ex_ante = sum(prescriptions, na.rm = TRUE) / fda_ex_ante_total_prescriptions,
+        .groups = "drop"
+    )
+
+# Patents
+
+patents_ex_ante_stats <- patents |>
+    filter(patent_year <= 2013 & patent_year >= 2010) |>
+    distinct(atc_level1, patent_year, patent_quarter, prescriptions)
+
+patents_ex_ante_total_prescriptions <- patents_ex_ante_stats |>
+    summarise(
+        total_prescriptions = sum(prescriptions, na.rm = TRUE),
+        .groups = "drop"
+    ) |>
+    pull()
+
+patents_ex_ante_demand <- patents_ex_ante_stats |>
+    group_by(atc_level1) |>
+    summarise(
+        d_ex_ante = sum(prescriptions, na.rm = TRUE) / patents_ex_ante_total_prescriptions,
+        .groups = "drop"
+    )
+
+
+# --- Build ex-post demand --- #
+
+# FDA
+
+fda_ex_post_stats <- fda_approvals |>
+    filter(approval_year %in% 2014:2015) |>
+    distinct(atc_level1, approval_year, approval_quarter, prescriptions)
+
+fda_ex_post_total_prescriptions <- fda_ex_post_stats |>
+    summarise(
+        total_prescriptions = sum(prescriptions, na.rm = TRUE),
+        .groups = "drop"
+    ) |>
+    pull()
+
+fda_ex_post_demand <- fda_ex_post_stats |>
+    group_by(atc_level1) |>
+    summarise(
+        d_ex_post = sum(prescriptions, na.rm = TRUE) / fda_ex_post_total_prescriptions,
+        .groups = "drop"
+    )
+
+# Patents
+
+patents_ex_post_stats <- patents |>
+    filter(patent_year %in% 2014:2015) |>
+    distinct(atc_level1, patent_year, patent_quarter, prescriptions)
+
+patents_ex_post_total_prescriptions <- patents_ex_post_stats |>
+    summarise(
+        total_prescriptions = sum(prescriptions, na.rm = TRUE),
+        .groups = "drop"
+    ) |>
+    pull()
+
+patents_ex_post_demand <- patents_ex_post_stats |>
+    group_by(atc_level1) |>
+    summarise(
+        d_ex_post = sum(prescriptions, na.rm = TRUE) / patents_ex_post_total_prescriptions,
+        .groups = "drop"
+    )
+
+
+# --- Merge demand measures --- #
+
+fda_approvals <- fda_approvals |>
+  left_join(fda_ex_ante_demand, by = "atc_level1") |>
+  left_join(fda_ex_post_demand, by = "atc_level1") |>
+  filter(approval_year >= 2010)
+
+patents <- patents |>
+  left_join(patents_ex_ante_demand, by = "atc_level1") |>
+  left_join(patents_ex_post_demand, by = "atc_level1") |>
+  filter(patent_year >= 2010)
+
+
+# --- Run regressions for FDA data --- #
+
+fda_ex_ante_data <- fda_approvals |>
+  select(-d_ex_post) |>
+  rename(medicaid_market_share = d_ex_ante)
+
+fda_ex_post_data <- fda_approvals |>
+  select(-d_ex_ante) |>
+  rename(medicaid_market_share = d_ex_post)
+
+patents_ex_ante_data <- patents |>
+  select(-d_ex_post) |>
+  rename(medicaid_market_share = d_ex_ante)
+
+patents_ex_post_data <- patents |>
+  select(-d_ex_ante) |>
+  rename(medicaid_market_share = d_ex_post)
+
+
+```
+
+## Research Question 1: Overall innovation response to Market size
+
+$$
+\begin{aligned}
+Y_{f,c,t}
+= \alpha_{f, c} + \delta_t
++ \sum_{k \neq 2013}^{2025} \beta_k \left[ \mathbf{1}\{t = k\} \times \text{MedicaidShare}_c \right]
++ \varepsilon_{f,c,t}
+\end{aligned}
+$$
+
+## RQ1: FDA plots
+
+```{r}
+
+fda_rq1_feols_exante <- feols(
+  approvals ~ i(approval_year, medicaid_market_share, ref = 2013) |
+              firm^atc_level1 + approval_year,
+              data = fda_ex_ante_data,
+              cluster = ~ firm
+)
+
+iplot(
+  fda_rq1_feols_exante,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "FEOLS FDA approvals ex-ante exposure"
+  )
+
+rm(fda_rq1_feols_exante)
+
+fda_rq1_feols_expost <- feols(
+  approvals ~ i(approval_year, medicaid_market_share, ref = 2013) |
+              firm^atc_level1 + approval_year,
+              data = fda_ex_post_data,
+              cluster = ~ firm
+)
+
+iplot(
+  fda_rq1_feols_expost,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "FEOLS FDA approvals ex-post exposure"
+  )
+
+rm(fda_rq1_feols_expost)
+
+fda_rq1_poi_exante <- fepois(
+  approvals ~ i(approval_year, medicaid_market_share, ref = 2013) |
+              firm^atc_level1 + approval_year,
+              data = fda_ex_ante_data,
+              cluster = ~ firm
+)
+
+iplot(
+  fda_rq1_poi_exante,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "FE Poisson approvals ex-ante exposure"
+  )
+
+rm(fda_rq1_poi_exante)
+
+fda_rq1_poi_expost <- fepois(
+  approvals ~ i(approval_year, medicaid_market_share, ref = 2013) |
+              firm^atc_level1 + approval_year,
+              data = fda_ex_post_data,
+              cluster = ~ firm
+)
+
+iplot(
+  fda_rq1_poi_expost,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "FE Poisson approvals ex-post exposure"
+  )
+
+rm(fda_rq1_poi_expost)
+
+```
+
+## RQ1: Patent plots
+
+```{r}
+
+patent_rq1_feols_exante <- feols(
+  patents ~ i(patent_year, medicaid_market_share, ref = 2013) |
+              firm^atc_level1 + patent_year,
+              data = patents_ex_ante_data,
+              cluster = ~ firm
+)
+
+iplot(
+  patent_rq1_feols_exante,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "FEOLS patents ex-ante exposure"
+  )
+
+rm(patent_rq1_feols_exante)
+
+patent_rq1_feols_expost <- feols(
+  patents ~ i(patent_year, medicaid_market_share, ref = 2013) |
+              firm^atc_level1 + patent_year,
+              data = patents_ex_post_data,
+              cluster = ~ firm
+)
+
+iplot(
+  patent_rq1_feols_expost,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "FEOLS patents ex-post exposure"
+  )
+
+rm(patent_rq1_feols_expost)
+
+patent_rq1_poi_exante <- fepois(
+  patents ~ i(patent_year, medicaid_market_share, ref = 2013) |
+              firm^atc_level1 + patent_year,
+              data = patents_ex_ante_data,
+              cluster = ~ firm
+)
+
+iplot(
+  patent_rq1_poi_exante,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "NB patents ex-ante exposure"
+  )
+
+rm(patent_rq1_poi_exante)
+
+patent_rq1_poi_expost <- fepois(
+  patents ~ i(patent_year, medicaid_market_share, ref = 2013) |
+              firm^atc_level1 + patent_year,
+              data = patents_ex_post_data,
+              cluster = ~ firm
+)
+
+iplot(
+  patent_rq1_poi_expost,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "NB patents ex-post exposure"
+  )
+
+rm(patent_rq1_poi_expost)
+
+```
+
+## Research Question 2: Market Size and Pricing Pressure
+
+$$
+\begin{aligned}
+Y_{f,c,t}
+&= \alpha_{f,c} + \delta_t + \sum_{l \neq 2013}^{2025} \beta_{l}
+\left( \text{Expansion}_{l} \times \text{MedicaidShare}_c \right) \\
+&\quad + \sum_{j \neq 2013}^{2025} \gamma_{\ell}
+\left( \text{Expansion}_{j} \times \text{PDL_Exposure}_{f,c} \right) + \varepsilon_{f,c,t}
+\end{aligned}
+$$
+
+Where:
+
+$$
+\text{PDL_Exposure}_{f,c}
+=
+\frac{
+\text{Number of drugs on PDL}_{f,c}
+}{
+\text{Number of drugs}_{f,c}
+}
+$$
+
+- $\beta$ measures market size effects
+- $\gamma$ measures the effect of firms more exposed to the PDL pricing pressure
+
+- Measuring price effects is unrealistic and therefore measuring the effect of being on the market itself is worhtwhl
+
+## FDA plots
+
+```{r}
+
+fda_rq2_feols_exante <- feols(
+  approvals ~ i(approval_year, medicaid_market_share, ref = 2013) 
+            + i(approval_year, in_pdl, ref = 2013) | 
+              firm^atc_level1 + approval_year,
+              data = fda_ex_ante_data,
+              cluster = ~ firm
+)
+
+iplot(
+  fda_rq2_feols_exante,
+  i.select = 1,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "Event study: Medicaid market size (ex ante)"
+)
+
+iplot(
+  fda_rq2_feols_exante,
+  i.select = 2,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "Event study: PDL exposure (ex ante)"
+)
+
+rm(fda_rq2_feols_exante)
+
+fda_rq2_feols_expost <- feols(
+  approvals ~ i(approval_year, medicaid_market_share, ref = 2013) 
+            + i(approval_year, in_pdl, ref = 2013) |
+              firm^atc_level1 + approval_year,
+              data = fda_ex_post_data,
+              cluster = ~ firm
+)
+
+iplot(
+  fda_rq2_feols_expost,
+  i.select = 1,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "Event study: Medicaid market size (ex post)"
+)
+
+iplot(
+  fda_rq2_feols_expost,
+  i.select = 2,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "Event study: PDL exposure (ex post)"
+)
+
+rm(fda_rq2_feols_expost)
+
+```
+
+## Patent plots
+
+```{r}
+
+
+patents_ex_ante_year <- patents_ex_ante_data |>
+  group_by(firm, atc_level1, patent_year) |>
+  summarise(
+    patents = sum(patents, na.rm = TRUE),
+    medicaid_market_share = first(medicaid_market_share),
+    in_pdl = max(in_pdl, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+
+patents_ex_post_year <- patents_ex_post_data |>
+  group_by(firm, atc_level1, patent_year) |>
+  summarise(
+    patents = sum(patents, na.rm = TRUE),
+    medicaid_market_share = first(medicaid_market_share),
+    in_pdl = max(in_pdl, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+
+
+patent_rq2_feols_exante <- feols(
+  patents ~ i(patent_year, medicaid_market_share, ref = 2013)
+            + i(patent_year, in_pdl, ref = 2013) | 
+              firm^atc_level1 + patent_year,
+              data = patents_ex_ante_year,
+              cluster = ~ firm
+)
+
+iplot(
+  patent_rq2_feols_exante,
+  i.select = 1,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "Event study: Medicaid market size (ex ante)"
+)
+
+iplot(
+  patent_rq2_feols_exante,
+  i.select = 2,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "Event study: PDL exposure (ex ante)"
+)
+
+rm(patent_rq2_feols_exante)
+
+patent_rq2_feols_expost <- feols(
+  patents ~ i(patent_year, medicaid_market_share, ref = 2013)
+            + i(patent_year, in_pdl, ref = 2013) |  
+              firm^atc_level1 + patent_year,
+              data = patents_ex_post_year,
+              cluster = ~ firm
+)
+
+iplot(
+  patent_rq2_feols_expost,
+  i.select = 1,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "Event study: Medicaid market size (ex post)"
+)
+
+iplot(
+  patent_rq2_feols_expost,
+  i.select = 2,
+  ci.level = 0.95,
+  ref.line = 0,
+  xlab = "Year",
+  ylab = "Coefficient (relative to 2013)",
+  main = "Event study: PDL exposure (ex post)"
+)
+
+rm(patent_rq2_feols_expost)
+
+```
+
+## Research Question 3: Innovation portfolio
+
+$$
+\begin{aligned}
+\begin{aligned}
+Y_{f,c,t}
+&= \alpha_f + \lambda_c + \delta_t \\
+&\quad + \sum_{c \in \mathcal{C}}
+\beta_c
+\Big(
+\mathbb{1}\{t \geq 2014\}
+\times \text{MedicaidShare}_c
+\times \mathbb{1}\{\text{ATC} = c\}
+\Big)
++ \varepsilon_{f,c,t}.
+\end{aligned}
+\end{aligned}
+$$
+
+## FDA coefficients
+
+```{r}
+
+fda_ex_ante_data <- fda_ex_ante_data |>
+  mutate(post = ifelse(approval_year >= 2014, 1, 0))
+
+fda_ex_post_data <- fda_ex_post_data |>
+  mutate(post = ifelse(approval_year >= 2014, 1, 0))
+
+fda_rq3_feols_exante <- feols(
+  approvals ~ medicaid_market_share : post : i(atc_level1) | 
+  firm + atc_level1 + approval_year,
+  data = fda_ex_ante_data,
+  cluster = ~ firm
+)
+
+fda_rq3_feols_expost <- feols(
+  approvals ~ medicaid_market_share : post : i(atc_level1) | 
+  firm + atc_level1 + approval_year,
+  data = fda_ex_post_data,
+  cluster = ~ firm
+)
+
+fda_rq3_model_list <- list(
+  "FEOLS: Ex Ante"  = fda_rq3_feols_exante,
+  "FEOLS: Ex Post"  = fda_rq3_feols_expost
+)
+
+fda_rq3_models <- modelsummary(
+             fda_rq3_model_list,
+             stars = c(`*` = 0.05, `**` = 0.01, `***` = 0.001)
+             )
+
+fda_rq3_models
+
+rm(fda_rq3_feols_exante, fda_rq3_feols_expost, fda_rq3_model_list, fda_rq3_models)
+
+rm(fda_approvals)
+
+```
+
+## Patent coefficients
+
+```{r}
+
+patents_ex_ante_year <- patents_ex_ante_year |>
+  mutate(post = ifelse(patent_year >= 2014, 1, 0))
+
+patents_ex_post_year <- patents_ex_post_year |>
+  mutate(post = ifelse(patent_year >= 2014, 1, 0))
+
+patent_rq3_feols_exante <- feols(
+  patents ~ medicaid_market_share : post : i(atc_level1) | 
+  firm + atc_level1 + patent_year,
+  data = patents_ex_ante_year,
+  cluster = ~ firm
+)
+
+patent_rq3_feols_expost <- feols(
+  patents ~ medicaid_market_share : post : i(atc_level1) | 
+  firm + atc_level1 + patent_year,
+  data = patents_ex_post_year,
+  cluster = ~ firm
+)
+
+
+patent_rq3_model_list <- list(
+  "FEOLS: Ex Ante"  = patent_rq3_feols_exante,
+  "FEOLS: Ex Post"  = patent_rq3_feols_expost
+)
+
+patent_rq3_models <- modelsummary(
+             patent_rq3_model_list,
+             stars = c(`*` = 0.05, `**` = 0.01, `***` = 0.001)
+             )
+
+
+patent_rq3_models
+
+rm(patent_rq3_feols_exante, patent_rq3_feols_expost, patent_rq3_model_list, patent_rq3_models)
+
+```
+
+
+## FDA coefficients - removal of P
+
+```{r}
+
+fda_ex_ante_data <- fda_ex_ante_data |>
+  mutate(post = ifelse(approval_year >= 2014, 1, 0)) |>
+  filter(atc_level1 != "P")
+
+fda_ex_post_data <- fda_ex_post_data |>
+  mutate(post = ifelse(approval_year >= 2014, 1, 0)) |>
+  filter(atc_level1 != "P")
+
+fda_rq3_feols_exante <- feols(
+  approvals ~ medicaid_market_share : post : i(atc_level1) | 
+  firm + atc_level1 + approval_year,
+  data = fda_ex_ante_data,
+  cluster = ~ firm
+)
+
+fda_rq3_feols_expost <- feols(
+  approvals ~ medicaid_market_share : post : i(atc_level1) | 
+  firm + atc_level1 + approval_year,
+  data = fda_ex_post_data,
+  cluster = ~ firm
+)
+
+fda_rq3_model_list <- list(
+  "FEOLS: Ex Ante"  = fda_rq3_feols_exante,
+  "FEOLS: Ex Post"  = fda_rq3_feols_expost
+)
+
+fda_rq3_models <- modelsummary(
+             fda_rq3_model_list,
+             stars = c(`*` = 0.05, `**` = 0.01, `***` = 0.001)
+             )
+
+fda_rq3_models
+
+rm(fda_rq3_feols_exante, fda_rq3_feols_expost, fda_rq3_model_list, fda_rq3_models)
+
+rm(fda_approvals)
+
+```
+
+## Patent coefficients - removal of P
+
+```{r}
+
+patents_ex_ante_year <- patents_ex_ante_year |>
+  mutate(post = ifelse(patent_year >= 2014, 1, 0)) |>
+  filter(atc_level1 != "P")
+
+patents_ex_post_year <- patents_ex_post_year |>
+  mutate(post = ifelse(patent_year >= 2014, 1, 0)) |>
+  filter(atc_level1 != "P")
+
+patent_rq3_feols_exante <- feols(
+  patents ~ medicaid_market_share : post : i(atc_level1) | 
+  firm + atc_level1 + patent_year,
+  data = patents_ex_ante_year,
+  cluster = ~ firm
+)
+
+patent_rq3_feols_expost <- feols(
+  patents ~ medicaid_market_share : post : i(atc_level1) | 
+  firm + atc_level1 + patent_year,
+  data = patents_ex_post_year,
+  cluster = ~ firm
+)
+
+
+patent_rq3_model_list <- list(
+  "FEOLS: Ex Ante"  = patent_rq3_feols_exante,
+  "FEOLS: Ex Post"  = patent_rq3_feols_expost
+)
+
+patent_rq3_models <- modelsummary(
+             patent_rq3_model_list,
+             stars = c(`*` = 0.05, `**` = 0.01, `***` = 0.001)
+             )
+
+
+patent_rq3_models
+
+rm(patent_rq3_feols_exante, patent_rq3_feols_expost, patent_rq3_model_list, patent_rq3_models)
+
+```
+
+## Formalising the puzzle
+
+- Therapeutic classes with greater Medicaid exposure experience a decline in patenting after expansion, even after controlling for PDL exposure
+- Market size increased
+- Innovation falls
+
+# PDL Counterfactual Analysis
+
+## Understanding counterfactuals
+
+There are two situations by which a pharmaceutical firm gets rejected:
+
+1. **Failing the P&T stage**: The drug does not reach standards for efficacy or safety.
+
+2. **Failing the cost stage**: Some other drug exists that is cheaper for Medicaid to purchase for that state.
+
+In both cases, failing only one of these stages indicates that a firm had just missed out on being eligible for the Medicaid PDL.
+
+It's possible that incentives differ based on which stage a firm failed at.
+
+## Modelling the effect of the PDL
+
+$$
+\begin{aligned}
+Y_{f,c,t}
+&= \alpha_{f,c} + \delta_t \\
+&\quad + \beta_1 \big( PT\_Pass \times Post \big) \\
+&\quad + \beta_2 \big( Price\_Pass \times Post \big) \\
+&\quad + \beta_3 \big( \underbrace{PT\_Pass \times Price\_Pass}_{\text{In PDL}}
+\times Post \big)
++ \varepsilon_{f,c,t}
+\end{aligned}
+$$
+
+- Since $In\_PDL \approx \text{Clinical Pass} \times \text{Price Pass}$, the model is effectively a **Triple Difference** specification.
+- This isolates the value of passing each stage independently versus passing both.
+
+## Empirical Analysis
+
+```{r}
+
+rm(list = ls())
+
+# Load necessary libraries
+library(tidyverse)
+library(lubridate)
+library(readr)
+library(stringr)
+library(ggplot2)
+library(fixest)
+library(knitr)
+library(modelsummary)
+library(kableExtra)
+library(fixest)
+library(TwoWayFEWeights)
+library(DIDmultiplegtDYN)
+library(did)
+library(here)
+
+# Load patent data
+
+patents <- read_csv(
+    here(
+        "processed_data/patents/patents_sdud_pdl_merged.csv"
+    )
+) |>
+    rename(
+        atc_level1 = ATC1,
+        patents = num_patents) |>
+    filter(patent_year >= 2010)
+
+```
+
+```{r}
+
+patents <- patents |>
+    mutate(post = ifelse(patent_year >= 2014, 1, 0))
+
+
+overall_pdl_test <- feols(
+  patents ~ post : pt_stage_pass + price_stage_pass : post + in_pdl : post | 
+              firm^atc_level1 + patent_year,
+              data = patents,
+              cluster = ~ firm
+)
+
+modelsummary(overall_pdl_test,
+             stars = c(`*` = 0.05, `**` = 0.01, `***` = 0.001),
+             gof_omit = "R2 Within*|R2 Adj*|RMSE|Std.Errors|IC|Log")
+
+pt_stage_coef <- as.numeric(coefficients(overall_pdl_test)[1])
+price_stage_coef <- as.numeric(coefficients(overall_pdl_test)[2])
+in_pdl_coef <- as.numeric(coefficients(overall_pdl_test)[3])
+
+```
+
+## Interpreting the results
+
+| Firm Type | Coefficient | Estimated Effect | Interpretation |
+| --- | --- | --- | --- |
+| Pass P&T <br> Fail Price | $\beta_1$ | **`r round(pt_stage_coef, 2)`** | Innovation declines post-expansion for drugs that meet clinical standards but fail to be cheap enough. |
+| Fail P&T <br> Pass Price | $\beta_2$ | **`r round(price_stage_coef, 2)`** | Innovation declines post-expansion for drugs that are price-competitive but do not pass the clinical stage. |
+| Pass P&T <br> Pass Price | $\beta_3$ | **`r round(in_pdl_coef, 2)`** | Innovation increases post-expansion for drugs that secure both clinical approval and preferred pricing status. |
+
+# Theoretical Model
+
+## Stage 1 — Innovation Effort
+
+Firms choose R&D effort $e_i$.
+
+Clinical quality is stochastic:
+
+$$
+a_i = \ln(e_i) + \epsilon_i, 
+\qquad 
+\epsilon_i \sim N(0,\sigma^2)
+$$
+
+Effort is costly and convex:
+
+$$
+C(e_i) = \frac{1}{2} k e_i^2
+$$
+
+
+## Stage 2 — The P&T Stage
+
+A drug qualifies if it meets threshold $\bar a$.
+
+Probability of passing:
+
+$$
+Q(e_i) = \Pr(a_i \ge \bar a)
+$$
+
+Effort increases the probability of reaching the pricing stage.
+
+## Stage 3 — The Pricing Test
+
+For firm $i$:
+
+| State | Condition | Value |
+|-------|----------|-------|
+| Monopoly | $i$ passes, $j$ fails | $V_M$ |
+| Duopoly | Both pass | $V_D$ |
+| Failure | $i$ fails | $0$ |
+
+Effort $e_i$ increases probability of landing in Monopoly or Duopoly.
+
+## State A: Monopoly
+
+If only firm $i$ passes:
+
+- Firm sets monopoly price $p^M$
+- Statutory rebate $\tau(M)$
+- Market size $M$
+
+$$
+V_M = M \big(p^M - c - \tau(M)\big)
+$$
+
+Medicaid expansion affects both:
+
+- $M \uparrow$ (volume effect)
+- $\tau(M) \uparrow$ (rebate / monopsony effect)
+
+Net effect ambiguous.
+
+## State B: Duopoly (Procurement Auction)
+
+If both firms pass:
+
+- Firms submit sealed bids $b_i$
+- Lowest bid wins PDL status
+- Costs are private
+
+$$
+c_i \sim F(c) \quad \text{on } [\underline c, \bar c]
+$$
+
+Profit for firm $i$:
+
+$$
+\pi_i =
+\begin{cases}
+M(b_i - c_i - \tau(M)) & \text{if } b_i \le b_j \\
+0 & \text{otherwise}
+\end{cases}
+$$
+
+## Auction Equilibrium
+
+Under some symmetric Bayesian Nash equilibrium:
+
+$$
+b(c) = c + \tau(M) +
+\frac{\int_c^{\bar c} (1 - F(u))\,du}{1 - F(c)}
+$$
+
+Expected value in duopoly:
+
+$$
+V_D = M \int_c^{\bar c} (1 - F(u))\,du
+$$
+
+Interpretation:
+
+- Competition drives prices down
+- Only a small margin remains due to private cost differenfes
+- Duopoly profits are substantially lower relative to monopoly benchmark
+
+## The Firm’s Maximisation Problem
+
+The profits in the monopoly and duoply states are:
+
+$$
+V_M = M(p^M - c - \tau(M)),
+\qquad
+V_D = M \int_c^{\bar c}(1-F(u))du
+$$
+
+Firm $i$ chooses effort:
+
+$$
+\max_{e_i}
+\Pi_i =
+Q(e_i)[1 - Q(e_j)]V_M
++
+Q(e_i)Q(e_j)V_D
+-
+\frac{1}{2} k e_i^2
+$$
+
+First-order condition:
+
+$$
+Q'(e_i)\Big[(1-Q(e_j))V_M + Q(e_j)V_D\Big]
+=
+k e_i
+$$
+
+## Explaining the Puzzle
+
+Expansion ($M \uparrow$) changes incentives via:
+
+$$
+V_M = M(p^M - c - \tau(M)),
+\qquad
+V_D = M \int_c^{\bar c}(1-F(u))du
+$$
+
+If rebate growth dominates:
+
+$$
+\frac{d}{dM}
+\Big[(1-Q)V_M + QV_D\Big] < 0
+$$
+
+Then:
+
+$$
+\frac{d e^*}{dM} < 0
+$$
+
+Innovation falls even though market size increases.
+
+# Comments
+
+## Howard comments
+
+- Check if there's an indication that $\tau(M)$ is increasing in $M$. This will make the mechanism much stronger. If this cannot be validated, then this would need to be caveated.
+
+- Currently demand is of form $M$ and not of form $MD(p)$. Could the profit function instead be of form:
+
+$$
+MD(p)[p - c - \tau(M(p))]
+$$
+
+- Consider John Sutton's work on endogenous sunk costs, innovation and market structure. However, his work finds an increase in innvoatio in response to increases in endogenous fixed costs and a rise in market size. The set-up is fundamentally different
+
+- In the case of a descriptive model, we should consider that multiple drugs make it on the PDL due to allergies and different effectiveness levels for different patients. A logit model could be used but this assumes all drugs make it onto the list rather than 2-3 drugs:
+
+$$
+u_{i,j} = \alpha_j + \epsilon_{i,j}
+\qquad
+s_i = \frac{\exp{\alpha_i}}{\exp{\alpha_i} + \exp{\alpha_j}}
+$$
+
+- Consider investigating the FOC's to determine the slope of the best response function. This indicates whether we have strategic complements or strategic substitutes.
+
+- If opting for a descriptive model it would be better to consider a setting in which there are more than two firms. We know in the real world that multiple firms gain PDL status so could include that as well. When market size increases (as seen with Medicaid) there's also a threat of more firms entering the market which can be included in the model as well.
+
+## Next steps
+
+1. Find data for $\tau(M)$ increasing with $M$.
+2. Work on PDL data for other states to show that the data available for Texas can be used as a representative proxy of the PDL across the United States.
+3. Find a way to implement RQ3 into the thoeretical model.
+4. Move onto policy implications once theoretical model is tidied up
+5. Begin drafting thesis.
