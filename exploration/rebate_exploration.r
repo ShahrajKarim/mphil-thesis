@@ -10,6 +10,7 @@ library(here)
 library(dplyr)
 library(readr)
 library(broom)
+library(modelsummary)
 
 # Generate lists for Multi-state PDL alliances
 
@@ -23,7 +24,7 @@ top_dollar <- c("CT", "GA", "KS", "LA", "MD", "NE", "WI")
 
 # Load SDUD data
 
-SDUD <- readRDS("processed_data/state_drug_utilisation_data/SDUD_full.rds") |>
+SDUD <- readRDS(here("processed_data/state_drug_utilisation_data/SDUD_full.rds")) |>
   mutate(
     state = ifelse(state %in% ssdc, "SSDC", state),
     state = ifelse(state %in% nmpi, "NMPI", state),
@@ -55,10 +56,10 @@ SDUD <- SDUD |>
 
 # Map NDCs to ATC mapping file
 
-ndc_atc <- read_csv("aux_data/ndc_atc_mapping.csv") |>
+ndc_atc <- read_csv(here("aux_data/ndc_atc_mapping.csv")) |>
   select(ndc, atc = ATC_Level1)
 
-ndc_firm <- read_csv("aux_data/ndc_fda_firm_mapping.csv")
+ndc_firm <- read_csv(here("aux_data/ndc_fda_firm_mapping.csv"))
 
 SDUD <- SDUD |>
   mutate(labeler_code = substr(ndc, 1, 5)) |>

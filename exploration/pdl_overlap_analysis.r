@@ -14,7 +14,7 @@ library(tibble)
 
 # Load Texas PDL data
 
-texas_pdl <- read_csv("processed_data/PDL/texas_PDL_data.csv") |>
+texas_pdl <- read_csv(here("processed_data/PDL/texas_PDL_data.csv")) |>
     filter(price_stage_pass == 1 & pt_stage_pass == 1) |>
     select(labeler_ndc, product_ndc) |>
     mutate(texas_row = 1) |>
@@ -22,7 +22,7 @@ texas_pdl <- read_csv("processed_data/PDL/texas_PDL_data.csv") |>
 
 # Load New York PDL data
 
-ny_pdl <- read_csv("raw_data/PDL/NY/MedReimbDrugsFormulary.csv") |>
+ny_pdl <- read_csv(here("raw_data/PDL/NY/MedReimbDrugsFormulary.csv")) |>
   clean_names() |>
   mutate(
     labeler_ndc = substr(ndc, 1, 5),
@@ -33,7 +33,7 @@ ny_pdl <- read_csv("raw_data/PDL/NY/MedReimbDrugsFormulary.csv") |>
 
 # Load California PDL data
 
-ca_pdl <- read_xlsx("raw_data/PDL/CA/Medi-Cal_Rx_Approved_NDC_List.xlsx",
+ca_pdl <- read_xlsx(here("raw_data/PDL/CA/Medi-Cal_Rx_Approved_NDC_List.xlsx"),
                     sheet = "NDC",
                     skip = 2) |>
   clean_names() |>
@@ -49,7 +49,7 @@ ca_pdl <- read_xlsx("raw_data/PDL/CA/Medi-Cal_Rx_Approved_NDC_List.xlsx",
 
 # Load Washington PDL data
 
-wa_pdl <- read_xlsx("raw_data/PDL/WA/apple-health-preferred-drug-list.xlsx",
+wa_pdl <- read_xlsx(here("raw_data/PDL/WA/apple-health-preferred-drug-list.xlsx"),
                     sheet = "PDL",
                     skip = 3) |>
   clean_names() |>
@@ -152,7 +152,7 @@ overlap_table <- tibble(
 ) |>
   mutate(max_overlap = pmax(overlap_1, overlap_2))
 
-kable(
+overlap_table <- kable(
   overlap_table,
   digits = 3,
   col.names = c("State 1", "State 2", "Overlap 1", "Overlap 2", "Max overlap"),
