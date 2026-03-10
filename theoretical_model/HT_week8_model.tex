@@ -379,6 +379,39 @@ Because optimal effort is strictly decreasing in the cost parameter $k$, and the
 \paragraph{Implications for the Incentive Trap}
 This multi-period structure reinforces the primary mechanism of the model. If the Medicaid expansion increases the rebate wedge $\tau(M)$ such that monopoly profits $V^M$ are compressed, the policy does not merely reduce the contemporaneous incentive to innovate. By suppressing the internal cash flows required to fund future R\&D, the expansion structurally increases the future cost of effort $k(V^M)$, creating a compounded, multi-period decline in pharmaceutical innovation.
 
+\subsection{Comparative Statics}
+
+To characterise the model's predictions, equilibrium effort $e^*$ is solved numerically from the implicit first-order condition across a range of parameter values. Since no closed-form solution exists for $e^*$ in general, the comparative statics are computed by fixing baseline parameters $(\sigma, \bar{a}, \bar{p}, \bar{c}, k, \alpha, \beta)$ and varying one dimension at a time. Three functional forms for $\tau(M)$ are considered throughout: a power specification $\tau = \alpha M^\beta$, a logarithmic specification $\tau = \alpha \ln M$, and a linear specification $\tau = \alpha M$.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{HT_week8_model.png}
+    \caption{Comparative statics of equilibrium effort $e^*$. Baseline parameters: \\ $\sigma = 1.0$, $\bar{a} = 0.5$, $\bar{p} = 10$, $\bar{c} = 2$, $k = 1.5$, $\alpha = 0.02$, $\beta = 0.75$, $c \sim U[0.5, 3.5]$.}
+    \label{fig:comp_statics}
+\end{figure}
+
+\paragraph{Panel 1: Equilibrium effort and market size.}
+The first panel displays $e^*$ as a function of market size $M$ for each $\tau(M)$ specification. Under the logarithmic and power forms ($\beta = 0.75$), effort rises monotonically with $M$ indicating the the volume effect dominates the rebate effect, that is, the additional revenue from serving a larger market dominates, and firms invest more in R\&D as the market expands. The linear form, however, produces a hump-shaped profile. Effort initially increases with $M$ but subsequently declines, tracing out precisely the incentive trap mechanism. This shift occurs since the linear rebate schedule $\tau = \alpha M$ implies a constant marginal rebate rate, so the monopsony extraction grows one-for-one with market size. Once $M$ is large enough, the term $M\tau'(M) = \alpha M$ dominates the volume gain $(\bar{p} - \bar{c} - \tau)$, so $dV^M/dM < 0$ and the marginal benefit of effort falls.
+
+\paragraph{Panel 2: Equilibrium effort and rebate sensitivity.}
+The second panel holds $M$ fixed at the baseline value $M_0 = 100$ and varies the rebate scale parameter $\alpha$, therefore mapping the resulting $\tau'(M)$ against equilibrium effort $e^*$ and isolating the monopsony channel. Across all three $\tau$ specifications, equilibrium effort is strictly decreasing in $\tau'(M)$. Irrespective of functional form, the direction of the effect is unambiguous, and the magnitude is governed by how aggressively $\tau$ responds to market size. The result is consistent with the FOC, in which the marginal benefit of effort is proportional to $(1 - Q)V^M + QV^D$, and $V^M$ falls whenever the rebate extracted per unit of market size increases.
+
+The curves diverge substantially in the rate of decline. The logarithmic form exhibits the steepest collapse, while the linear and power forms sustain higher efforts across a wider range of sensitivity values before $V^M$ is fully eroded. 
+
+\paragraph{Panel 3: Equilibrium effort and the rent gap.}
+The third panel varies the price cap $\bar{p}$ to trace equilibrium effort $e^*$ as a function of the rent gap $V^M - V^D$. It shows that innovation is driven by the gap between monopoly and duopoly payoffs, rather than by the level of either payoff alone. Because the first-order condition depends on this rent differential, the relationship between $e^*$ and $V^M - V^D$ is independent of the specific rebate functional form, which is why the curves overlap. Any policy that compresses the monopoly premium - through a higher rebate wedge, a lower price cap, or stronger competition in procurement — lowers equilibrium effort. The relationship is also non-linear: effort falls sharply as the rent gap approaches zero, while larger rent gaps yield smaller marginal increases in effort.
+
+\paragraph{Panel 4: Period 2 effort by prior state.}
+The fourth panel illustrates the dynamic ranking result under the power specification $\tau(M)=\alpha M^{\beta}$. For each value of $M$, period 2 equilibrium effort is computed under three cost parameters corresponding to the three possible period 1 outcomes: a monopoly win, a duopoly win, and failure. The ranking
+\[
+e_2^*(V^M) > e_2^*(V^D) > e_2^*(0)
+\]
+holds throughout. This is consistent with the model's dynamic mechanism: firms that secure higher rents in period 1 face lower effective R\&D costs in period 2 and therefore invest more in subsequent innovation. The gaps between the three paths widen with market size, showing that the long-run innovation consequences of period 1 procurement outcomes become stronger in larger markets. In this sense, current procurement outcomes do not simply affect contemporaneous profits; they also shape the future distribution of innovative effort across firms.
+
+Taken together, the four panels provide a consistent picture of the model's predictions. The incentive trap arises once rebate growth with market size is sufficiently strong. Innovation appears to be governed by the rent gap $(V^M - V^D)$ rather than by any functional form of $\tau(M)$. The dynamic extension further shows that these effects persist over time, since weaker current rents translate into weaker future innovation incentives.
+
+
+
 \subsection{Theoretical States and Empirical Outcomes}
 To bridge the theoretical framework with the empirical PDL counterfactual analysis, the regression variables are mapped directly to the realised outcomes of the game's two-hurdle structure.  Empirically, the pharmaceutical procurement pipeline is observed through three sequential indicators: passing clinical approval, submitting a pricing bid, and ultimately gaining preferred status.  In the context of the model, these variables represent different realised ex-post paths of partial versus full success:
 
