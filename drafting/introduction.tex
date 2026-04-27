@@ -20,6 +20,12 @@
 \usepackage{enumitem}
 \pagestyle{plain}
 
+% --- Word count (requires compiling with --shell-escape) ---
+\newcommand{\wordcount}{%
+  \immediate\write18{texcount -sum -1 \jobname.tex 2>/dev/null | python3 -c "import sys; n=sys.stdin.read().strip(); print(f'{int(n):,}') if n.isdigit() else print('?')" > \jobname.wc}%
+  \input{\jobname.wc}%
+}
+
 \title{MPhil Thesis: Introduction}
 \author{Mohammad-Shah Karim}
 \date{April 2026}
@@ -27,6 +33,10 @@
 \begin{document}
 
 \maketitle
+
+\begin{center}
+  \small Word count: \wordcount
+\end{center}
 
 \section{Introduction}
 
