@@ -1,0 +1,99 @@
+\documentclass[12pt]{article}
+\usepackage{geometry}
+\geometry{a4paper, portrait, margin=1in}
+
+% --- Math Packages ---
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+
+% --- Graphics & Diagrams ---
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows, positioning}
+
+% --- Formatting ---
+\usepackage{parskip}
+\usepackage[hidelinks]{hyperref}
+\usepackage{natbib}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\pagestyle{plain}
+
+\title{MPhil Thesis: Data}
+\author{Mohammad-Shah Karim}
+\date{April 2026}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\newpage
+
+\section{Data}
+
+\subsection{Overview and Unit of Observation}
+
+The empirical analysis draws on five sources: the Medicaid State Drug Utilisation Data (SDUD) maintained by the Centers for Medicare and Medicaid Services (CMS); the Drugs@FDA database; patent bulk data files distributed by the USPTO through the PatentsView project; the Texas Vendor Drug Program formulary; and the National Library of Medicine's RxNorm and RxClass systems, which provide the therapeutic classification bridge across sources. Table~\ref{tab:data_overview} summarises the contribution of each source to the final dataset.
+
+\begin{table}[htbp]
+\centering
+\caption{Data sources and their roles in the analysis}
+\label{tab:data_overview}
+\begin{tabular}{p{0.25\textwidth} p{0.25\textwidth} p{0.40\textwidth}}
+\toprule
+Source & Key identifier & Role \\
+\midrule
+SDUD (CMS) & NDC, state, year, quarter & Medicaid and non-Medicaid prescription volumes and reimbursement \\
+Drugs@FDA & Application number, sponsor name & FDA drug approval outcomes \\
+USPTO / PatentsView & Patent ID, assignee name & Patent counts by therapeutic class \\
+Texas Vendor Drug Program & NDC, effective date & PDL status and prior authorisation indicators \\
+RxNorm / RxClass & RxCUI, ATC code & Therapeutic classification of NDC and active ingredients \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The final estimation dataset is a balanced panel at the firm $\times$ ATC Level 1 $\times$ year $\times$ quarter level, spanning 2010 to 2025. The sample period begins in 2010 because the pre-expansion Medicaid exposure measures require at least two years of pre-reform prescription data, and the SDUD is downloaded from 2005 onwards for this purpose. All datasets are harmonised to the World Health Organisation's Anatomical Therapeutic Chemical (ATC) classification system at Level 1, as described in Section~\ref{sec:atc}. The construction of treatment and outcome variables, including the Medicaid exposure measures and PDL exposure variables, is described in the Methodology section.
+
+\subsection{Medicaid State Drug Utilisation Data}
+\label{sec:sdud}
+
+The main source for Medicaid prescription demand is the State Drug Utilisation Data (SDUD), maintained by the Centers for Medicare and Medicaid Services (CMS). The SDUD was established alongside the Medicaid Drug Rebate Program and records outpatient prescription drugs reimbursed by state Medicaid programmes at the drug $\times$ state $\times$ quarter level. It covers all fifty states and the District of Columbia. Each record is identified by an 11-digit National Drug Code (NDC) and reports prescription counts, units reimbursed, and reimbursement amounts split into Medicaid and non-Medicaid components. Annual files covering 2005 to 2024 are downloaded via the Medicaid Data portal API, yielding a raw dataset of 42,031,131 records.
+
+The SDUD plays two roles in the analysis. First, it is used to construct Medicaid exposure measures at the therapeutic-class - this forms the main treatment variable for the analysis. Secondly, once merged with PDL information from the Texas Vendor Drug Program, the SDUD is used to construct exposure measures to formulary placement and pricing pressure at the firm-level.
+
+\begin{table}[htbp]
+\centering
+\caption{Key variables in the SDUD}
+\begin{tabular}{p{0.28\textwidth} p{0.62\textwidth}}
+\toprule
+Variable & Description \\
+\midrule
+NDC & 11-digit code identifying each drug product, split into a 5-digit labeler code, 4-digit product code, and 2-digit package code \\
+Drug name & Proprietary or generic name of the drug \\
+Units reimbursed & Number of units reimbursed by Medicaid in the state-year-quarter cell \\
+Number of prescriptions & Number of prescriptions filled for a given drug in the state-year-quarter cell \\
+Reimbursement amount & Total reimbursement for a given drug, split into Medicaid and non-Medicaid components \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{National Drug Code structure}
+
+The NDC is an 11-digit product identifier - this contains a 5-digit labeler code, a 4-digit product code, and a 2-digit package code. The SDUD stores the NDC as an 11-digit string without hyphens. However, throughout this analysis the labeler, product, and package components are extracted by splitting on character position (positions 1-5, 6-9, 10-11). External sources that use the hyphenated three-segment format such as the FDA NDC directory require the inverse transformation where each raw segment is zero-padded to its standard width before concatenation. This normalisation is applied uniformly across all datasets to ensure that NDC-based joins do not introduce incorrect matches due to formatting differences.
+
+\subsubsection{Firm identification}
+
+The SDUD does not record firm names, so firms are instead identified through their NDC labeler code. However, pharmaceutical firms commonly operate with the use of multiple labeler codes due to  subsidiaries or acquisition arrangements. As a result, labeler codes alone cannot be treated as a unique firm identifier in this analysis.
+
+A firm mapping is constructed from the FDA NDC directory. Each labeler code is initially linked to its registered labeler name from the FDA's product and package text files. These names are then clustered into firm-level groups using a text similarity procedure. Labeler names are standardised by converting to lowercase, removing punctuation, and stripping trailing whitespace. Unigram tokenisation is then used to construct a term frequency-inverse document frequency (TF-IDF) representation, and pairwise cosine similarity is computed across all cleaned labeler names. Pairs with a cosine similarity score above 0.85 are treated as matches and are grouped into firm clusters, so that labeler codes with sufficiently similar names are assigned to the same firm. Each cluster is assigned the name of its first member as the canonical firm identifier. Merging the resulting firm mapping into the SDUD by labeler code allow for 40,003,656 of 42,031,131 records to match, which corresponds to a match rate of 95.18\%.
+
+\subsubsection{Therapeutic classification}
+
+Each NDC in the SDUD is mapped to an ATC Level 1 class using the RxNorm API. First, each NDC is submitted to the RxNorm NDC status endpoint in order to obtain its RxCUI identifier. This is then used to retrieve ATC codes through the RxNorm ATC lookup endpoint. ATC Level 1 is defined by the first character of the ATC code, while ATC Level 2 is defined by the first three characters. This procedure classifies 96.10\% of SDUD records. Records that cannot be classified are excluded from the estimation sample. In cases where a single NDC maps to more than one ATC class, the record is duplicated so that each NDC-class combination appears separately. These duplicated records are then aggregated within class cells in the final panel.
+
+
+\end{document}
