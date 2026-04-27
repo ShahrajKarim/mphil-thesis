@@ -133,6 +133,26 @@ California & Washington & 0.384 & 0.106 \\
 
 The results indicate that 95.0\% of drugs on the Texas PDL also appear on the New York PDL, and 81.2\% also appear on the Washington PDL. Overlap with California is substantially lower at around 20\% in both directions, reflecting California's distinct formulary structure. The overlap analysis suggests that the Texas PDL shares is somewhat representative of the preferred drug lists of other large states. However, it should not be treated as a direct proxy for every state's formulary decisions, especially given the weaker overlap with California. In this thesis, the Texas PDL is used primarily to capture the two-stage clinical-and-price structure of PDL selection, rather than to measure the exact set of preferred drugs nationwide.
 
+\subsection{FDA Approval Data}
+\label{sec:fda}
+
+Approval data for drugs is obtained from the Drugs@FDA database, which records all drug applications submitted to the FDA. Three files are specifically used for the purpose of this study. Applications are used to determine the sponsor name and application number of a given drug, the submissions file provides the FDA's action taken on a given outcome, and the products file records the active ingredients and drug names associated with each application number.
+
+\subsubsection{Application types}
+
+The Drugs@FDA dataset contains three types of applications: New Drug Applications (NDAs), Abbreviated New Drug Applications (ANDAs), and Biologics License Applications (BLAs). While NDAs and ANDAs count towards approvals of novel drugs, ANDAs correspond to generic drug approvals. This paper proposes to retain ANDAs within the set of innovation applications as generic entry of drugs is a form of product approval that can affect the competitive environment within a class. The sample is restricted to approvals occurring on or after 1 January 2005 to align with the SDUD coverage window.
+
+\subsubsection{Therapeutic classification}
+
+Therapeutic classification of FDA-approved drugs occurs at the ingredient level. To do this, active ingredients strings are standardised and split to account for multi-ingredient products. Each combination of normalised ingredients are then queried against the NLM's RxClass API. This maps each ingredient to one or more ATC codes. Ingredient-level results are collapsed at the application level so that each application is linked to the union of ATC Level 1 classes associated with its active ingredients. Applications for which no ATC class can be assigned are excluded. This procedure classifies 48,143 of 50,368 application-product observations giving a match rate of 95.58\%.
+
+In cases where an application maps to multiple ATC Level 1 classes, the application is counted once within each applicable class at the aggregation stage. This is analogous to the treatment of multi-class NDCs in the SDUD.
+
+\subsubsection{Firm-NDC matching}
+
+Since the Drugs@FDA database identifies firms by their name as opposed to their NDC labeler code, an additional matching step is required. FDA sponsor names and NDC labeler names are standardised by: conversion to uppercase, removal of non-alphanumeric characters, and stripping of common corporate suffixes such as Inc, Corp, LLC. A three-stage merging procedure is then applied. In the first stage, firms are matched exactly by their cleaned name. In the second stage, unmatched FDA sponsors are linked to NDC labeler names via a root-token match, where the root is the first alphanumeric token which is at least four characters long. Finally, remaining unmatched firms are linked using Jaro-Winkler string similarity at a threshold of 0.90, with the highest-scoring NDC match being used. Under this process, a match rate of 82.26\% is achieved.
+
+
 
 
 \end{document}
