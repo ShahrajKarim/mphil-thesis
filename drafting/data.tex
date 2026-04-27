@@ -231,9 +231,27 @@ V & Various \\
 \end{tabular}
 \end{table}
 
+\subsection{Firm Harmonisation Across Sources}
+\label{sec:firmharm}
 
+The main datasets identify firms using different methods. For example, the SDUD uses NDC labeler codes, which are first grouped into firm clusters and then used as the firm universe for the analysis. The Drugs@FDA instead uses sponsor names to identify firms, while PatentsView identifies firms using their disambiguated assignee names. FDA sponsors and patent assignees are therefore linked back to NDC firm clusters. Table~\ref{tab:matchrates} summarises the match rates across the main linking steps.
 
-
-
+\begin{table}[htbp]
+\centering
+\caption{Match rates across data linking steps}
+\label{tab:matchrates}
+\begin{tabular}{lrr}
+\toprule
+Linking step & $N$ & Match rate \\
+\midrule
+SDUD labeler codes to firm clusters     & 42,031,131 & 95.18\% \\
+SDUD NDC to RxNorm ATC                  & 42,031,131 & 96.10\% \\
+Drugs@FDA applications to ATC           &     50,368 & 95.58\% \\
+Drugs@FDA sponsors to NDC firms         &      1,465 & 82.26\% \\
+Patent assignees to NDC firms           &     28,143 & 27.10\% \\
+\bottomrule
+\multicolumn{3}{p{0.7\textwidth}}{\footnotesize\textit{Note:} $N$ denotes the number of unique firm names} \\
+\end{tabular}
+\end{table}
 
 \end{document}
