@@ -95,5 +95,44 @@ A firm mapping is constructed from the FDA NDC directory. Each labeler code is i
 
 Each NDC in the SDUD is mapped to an ATC Level 1 class using the RxNorm API. First, each NDC is submitted to the RxNorm NDC status endpoint in order to obtain its RxCUI identifier. This is then used to retrieve ATC codes through the RxNorm ATC lookup endpoint. ATC Level 1 is defined by the first character of the ATC code, while ATC Level 2 is defined by the first three characters. This procedure classifies 96.10\% of SDUD records. Records that cannot be classified are excluded from the estimation sample. In cases where a single NDC maps to more than one ATC class, the record is duplicated so that each NDC-class combination appears separately. These duplicated records are then aggregated within class cells in the final panel.
 
+\subsection{Texas Preferred Drug List Data}
+
+\label{sec:texas}
+
+PDL data is taken from the Texas Vendor Drug Program, which publishes machine-readable historical records of Medicaid drug coverage decisions. Texas is selected because it is one of very few states to make its complete formulary history available in a machine-readable format with drug-level effective and end dates. Unlike many other states, whose PDL data are available only as static PDFs or current cross-sections, the Texas data allow a time-varying measure of drug-level preferred status to be constructed. The formulary file records the following fields for each listed drug: the NDC, the Medicaid coverage start and end dates, a coverage status indicator, a flag indicating whether PDL-related prior authorisation is required, and a flag indicating whether clinical prior authorisation is required.
+
+Two variables are constructed to separate the clinical and pricing margins of PDL selection. $\text{PT\_Stage\_Pass}$ captures drugs that clear the Pharmacy and Therapeutics clinical review, i.e. these are drugs which are clinically acceptable. $\text{Price\_Stage\_Pass}$ captures drugs that clear the pricing stage, meaning that their net cost after rebates is sufficiently competitive for preferred placement. A drug is therefore classified as being on the PDL when it is covered by Medicaid and clears both the clinical and pricing stages.
+
+\subsubsection{Effective date treatment}
+
+Coverage start and end dates are recorded at the month-day-year level. A drug is classed as having active coverage in a given year-quarter if its coverage start date falls prior to the end of the quarter and either no coverage end date is recorded or the end date falls after the start of the quarter. Drugs for which no end date is present, or for which the end date is in 2025 or later, are treated as currently active.
+
+\subsubsection{Linking to the SDUD}
+
+The Texas formulary is merged to the SDUD at the full 11-digit NDC level - it is matched on the labeler, product, and package codes simultaneously. NDC records without a corresponding Texas formulary entry receive missing values for their PDL indicators as opposed to being excluded. Missing PDL values are subsequently set to zero when constructing the firm-level PDL exposure measures - absence from the Texas Drug Vendor Program record likely reflects a drug that has not obtained preferred status rather than a data gap.
+
+\subsubsection{Representativeness}
+
+Since the PDL analysis relies on a single state's formulary, the extent to which the Texas PDL is representative of the Medicaid PDL choices in other states is assessed by computing pairwise overlap rates with comparison states. This representativeness analysis is limited by data availability - the majority of states do not publish machine-readable PDL records with historical coverage dates, so the comparison can only be conducted for the subset of states whose formulary data are available in a structured format. On this basis, New York, California, and Washington are used as comparison states. Overlap is measured in both directions as the share of drugs on one state's PDL that also appear on the other state's PDL, matched at the labeler and product level of the NDC.
+
+\begin{table}[htbp]
+\centering
+\caption{Pairwise overlap of state Preferred Drug Lists}
+\begin{tabular}{lllll}
+\toprule
+State 1 & State 2 & Overlap (State 1 in State 2) & Overlap (State 2 in State 1) \\
+\midrule
+New York & Texas & 0.375 & 0.950 \\
+California & Texas & 0.196 & 0.197 \\
+Washington & Texas & 0.223 & 0.812 \\
+California & New York & 0.722 & 0.230 \\
+California & Washington & 0.384 & 0.106 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The results indicate that 95.0\% of drugs on the Texas PDL also appear on the New York PDL, and 81.2\% also appear on the Washington PDL. Overlap with California is substantially lower at around 20\% in both directions, reflecting California's distinct formulary structure. The overlap analysis suggests that the Texas PDL shares is somewhat representative of the preferred drug lists of other large states. However, it should not be treated as a direct proxy for every state's formulary decisions, especially given the weaker overlap with California. In this thesis, the Texas PDL is used primarily to capture the two-stage clinical-and-price structure of PDL selection, rather than to measure the exact set of preferred drugs nationwide.
+
+
 
 \end{document}
