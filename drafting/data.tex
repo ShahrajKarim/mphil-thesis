@@ -254,4 +254,11 @@ Patent assignees to NDC firms           &     28,143 & 27.10\% \\
 \end{tabular}
 \end{table}
 
+\subsection{Panel Assembly}
+\label{sec:panel}
+
+The final panels are constructed separately for the patent and FDA approval outcomes. Both patent counts and FDA approvals are collapsed to the firm $\times$ ATC Level 1 $\times$ year $\times$ quarter level. The SDUD prescription and reimbursement variables are first aggregated to the firm $\times$ ATC Level 1 $\times$ year $\times$ quarter level and are then merged with the innovation panels. PDL variables from the Texas Vendor Drug Program are merged at the firm $\times$ ATC Level 1 level - details relating to their exact construction are described in the Methodology section.
+
+Each panel is balanced over the firm-class combinations observed in the data. In cases where no patent/approval observations for a given firm-class-year-quarter, an outcome value of zero is assigned. Class-level demand variables are calculated at the class-year-quarter observations, so that firms active in the same therapeutic class and quarter share the same class-level prescription aggregates. The estimation window is restricted to 2010 to 2025.
+
 \end{document}
