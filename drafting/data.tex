@@ -152,6 +152,55 @@ In cases where an application maps to multiple ATC Level 1 classes, the applicat
 
 Since the Drugs@FDA database identifies firms by their name as opposed to their NDC labeler code, an additional matching step is required. FDA sponsor names and NDC labeler names are standardised by: conversion to uppercase, removal of non-alphanumeric characters, and stripping of common corporate suffixes such as Inc, Corp, LLC. A three-stage merging procedure is then applied. In the first stage, firms are matched exactly by their cleaned name. In the second stage, unmatched FDA sponsors are linked to NDC labeler names via a root-token match, where the root is the first alphanumeric token which is at least four characters long. Finally, remaining unmatched firms are linked using Jaro-Winkler string similarity at a threshold of 0.90, with the highest-scoring NDC match being used. Under this process, a match rate of 82.26\% is achieved.
 
+\subsection{Patent Data}
+\label{sec:patents}
+
+Patent data is obtained from the USPTO PatentsView data files. PatentsView harmonises patent records and provides disambiguated assignee information. Specifically, for this study, five files are used: the base patent file, which provides grant dates; the current CPC classification file; the disambiguated assignee file; the CPC group title file; and the WIPO technology field classification file.
+
+\subsubsection{Filtering for relevant patents}
+
+The universe of patents is filtered in two steps. First, patents are restricted to those classified under the WIPO technology field ``Pharmaceuticals''. This provides a broad filter for patents associated with pharmaceutical products, including biological and chemical technologies. Within this set, patents are restricted to those that fall under the ``A61P'' subclass - this allows for the study to focus on patents with a stated therapeutic use. Patents classified in A61P but not in the WIPO Pharmaceuticals field are also included, as some patent-level WIPO assignments may be incomplete. The A61P covers the therapeutic activity of chemical compounds or medicinal preparations, therefore this is the most relevant CPC subclass for mapping patents to therapeutic classes. Patents classified under A61P are kept even if they are not assigned to the WIPO pharmaceutical field, since some patent-level WIPO assignments may be incomplete. This allows for the study to focus on patents that are most likely to be related to therapeutic drug innovation.
+
+It is important to note that the CPC classifications are not perfect measures of pharmaceutical invention of a patent, since CPC classes are assigned during the patent examination process. Consequently, the A61P restriction may exclude some relevant patents relating to delivery or formulation, while also retaining some patents that are classified as pharmaceutical but less directly related to new therapeutic agents.
+
+\subsubsection{Therapeutic classification}
+
+The A61P subclass is divided into CPC groups corresponding to different therapeutic uses. A manually constructed crosswalk is used map each A61P group to an ATC Level 1 class, with the crosswalk following the structure of the USPTO's A61P classification. Selected entries from this crosswalk are shown in Table~\ref{tab:a61p_atc_crosswalk}. For example, patents related to cardiovascular activity are classified under A61P9, so these are mapped to ATC class C, while patents related to nervous system activity fall under A61P25, thus they are mapped to ATC class N. In cases where a patent falls under multiple different A61P CPC groups, it is counted once within each applicable class.
+
+\begin{table}[htbp]
+\centering
+\caption{CPC A61P to ATC Level 1 crosswalk (selected entries)}
+\label{tab:a61p_atc_crosswalk}
+\begin{tabular}{lll}
+\toprule
+CPC Group & Therapeutic area & ATC Level 1 \\
+\midrule
+A61P1  & Gastrointestinal & A \\
+A61P7  & Blood & B \\
+A61P9  & Cardiovascular & C \\
+A61P17 & Dermatology & D \\
+A61P15 & Genito-urinary and sex hormones & G \\
+A61P5  & Endocrine & H \\
+A61P31 & Anti-infectives & J \\
+A61P35 & Antineoplastics & L \\
+A61P19 & Musculo-skeletal & M \\
+A61P25 & Nervous system & N \\
+A61P33 & Antiparasitic & P \\
+A61P11 & Respiratory & R \\
+A61P27 & Sensory organs & S \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Firm--NDC matching}
+
+Patent assignee names are matched to the NDC labeler firm clusters using the same three-stage procedure applied to sponsors in the Drugs@FDA dataset. Cleaned assignee names are first matched to labeler names exactly. The remaining unmatched assignees undergo root-token matching followed by a Jaro-Winkler fuzzy match at a threshold of 0.90.
+
+Out of 28,143 unique assignees, 7,566 were matched to the NDC firm universe, which corresponds to a match rate of 27.1\%. The patent assignee universe includes academic institutions, research hospitals, individual inventors, and non-pharmaceutical entities that may hold A61P patents but have no commercial presence in the Medicaid drug market. These entities do not have labeler codes within the SDUD. Additionally, pharmaceutical firms may assign patents to research subsidiaries whose names differ from the trading names under which drugs are marketed. As a result, the match rate is substantially lower than the Drugs@FDA match rate.
+
+Unmatched patent assignees are kept in the patent count data, but they cannot be linked to firm-level PDL exposure. These sponsors are therefore excluded from specifications that require firm-level linkage to the SDUD.
+
+
 
 
 
