@@ -169,6 +169,12 @@ fda_rq1_model_list <- list(
 modelsummary(
   fda_rq1_model_list,
   stars  = c(`*` = 0.05, `**` = 0.01, `***` = 0.001),
+  gof_map = tribble(
+    ~raw, ~clean, ~fmt,
+    "nobs", "Num. obs.", 0,
+    "r.squared", "R2", 3,
+    "FE", "FE", 0
+  ),
   output = here("output", "RQ1", "fda_models.tex")
 )
 
@@ -183,58 +189,100 @@ save_iplot(fda_rq1_poi_expost,   "fda_poi_expost.png",
 
 # --- Patent regressions ---------------------------------------------------
 
-patents_ex_ante_data <- patents |>
-  select(-d_ex_post) |>
-  rename(medicaid_market_share = d_ex_ante)
-
-patents_ex_post_data <- patents |>
-  select(-d_ex_ante) |>
-  rename(medicaid_market_share = d_ex_post)
-
+# FEOLS ex ante
 patent_rq1_feols_exante <- feols(
-  patents ~ i(patent_year, medicaid_market_share, ref = 2013) |
-            firm^atc_level1 + patent_year,
-  data = patents_ex_ante_data, cluster = ~ firm
+  patents ~ i(patent_year, d_ex_ante, ref = 2013) |
+    firm^atc_level1 + patent_year,
+  data = patents,
+  cluster = ~ firm
 )
 
+save_iplot(
+  patent_rq1_feols_exante,
+  "patent_feols_exante.png",
+  "FEOLS: Patents (ex-ante exposure)"
+)
+
+# FEOLS ex post
 patent_rq1_feols_expost <- feols(
-  patents ~ i(patent_year, medicaid_market_share, ref = 2013) |
-            firm^atc_level1 + patent_year,
-  data = patents_ex_post_data, cluster = ~ firm
+  patents ~ i(patent_year, d_ex_post, ref = 2013) |
+    firm^atc_level1 + patent_year,
+  data = patents,
+  cluster = ~ firm
 )
 
+save_iplot(
+  patent_rq1_feols_expost,
+  "patent_feols_expost.png",
+  "FEOLS: Patents (ex-post exposure)"
+)
+
+# Save FEOLS models
+
+patent_rq1_feols_model_list <- list(
+  "FEOLS: Ex Ante" = patent_rq1_feols_exante,
+  "FEOLS: Ex Post" = patent_rq1_feols_expost
+)
+
+modelsummary(
+  patent_rq1_feols_model_list,
+  stars  = c(`*` = 0.05, `**` = 0.01, `***` = 0.001),
+  gof_map = tribble(
+    ~raw, ~clean, ~fmt,
+    "nobs", "Num. obs.", 0,
+    "r.squared", "R2", 3,
+    "FE", "FE", 0
+  ),
+  output = here("output", "RQ1", "patent_feols_models.tex")
+)
+
+
+# FE Poisson ex ante
 patent_rq1_poi_exante <- fepois(
-  patents ~ i(patent_year, medicaid_market_share, ref = 2013) |
-            firm^atc_level1 + patent_year,
-  data = patents_ex_ante_data, cluster = ~ firm
+  patents ~ i(patent_year, d_ex_ante, ref = 2013) |
+    firm^atc_level1 + patent_year,
+  data = patents,
+  cluster = ~ firm
 )
 
+save_iplot(
+  patent_rq1_poi_exante,
+  "patent_poi_exante.png",
+  "FE Poisson: Patents (ex-ante exposure)"
+)
+
+# FE Poisson ex post
 patent_rq1_poi_expost <- fepois(
-  patents ~ i(patent_year, medicaid_market_share, ref = 2013) |
-            firm^atc_level1 + patent_year,
-  data = patents_ex_post_data, cluster = ~ firm
+  patents ~ i(patent_year, d_ex_post, ref = 2013) |
+    firm^atc_level1 + patent_year,
+  data = patents,
+  cluster = ~ firm
 )
 
-patent_rq1_model_list <- list(
-  "FEOLS: Ex Ante"  = patent_rq1_feols_exante,
-  "FEOLS: Ex Post"  = patent_rq1_feols_expost,
+save_iplot(
+  patent_rq1_poi_expost,
+  "patent_poi_expost.png",
+  "FE Poisson: Patents (ex-post exposure)"
+)
+
+
+# Save FEOLS models
+
+patent_rq1_fepois_model_list <- list(
   "FEPOIS: Ex Ante" = patent_rq1_poi_exante,
   "FEPOIS: Ex Post" = patent_rq1_poi_expost
 )
 
 modelsummary(
-  patent_rq1_model_list,
+  patent_rq1_fepois_model_list,
   stars  = c(`*` = 0.05, `**` = 0.01, `***` = 0.001),
-  output = here("output", "RQ1", "patent_models.tex")
+  gof_map = tribble(
+    ~raw, ~clean, ~fmt,
+    "nobs", "Num. obs.", 0,
+    "r.squared", "R2", 3,
+    "FE", "FE", 0
+  ),
+  output = here("output", "RQ1", "patent_fepois_models.tex")
 )
-
-save_iplot(patent_rq1_feols_exante, "patent_feols_exante.png",
-           "FEOLS: Patents (ex-ante exposure)")
-save_iplot(patent_rq1_feols_expost, "patent_feols_expost.png",
-           "FEOLS: Patents (ex-post exposure)")
-save_iplot(patent_rq1_poi_exante,   "patent_poi_exante.png",
-           "FE Poisson: Patents (ex-ante exposure)")
-save_iplot(patent_rq1_poi_expost,   "patent_poi_expost.png",
-           "FE Poisson: Patents (ex-post exposure)")
 
 # --- End of file --- #
