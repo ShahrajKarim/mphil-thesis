@@ -101,13 +101,13 @@ patents_ex_post_demand <- patents_ex_post_stats |>
 fda_approvals <- fda_approvals |>
   left_join(fda_ex_ante_demand, by = "atc_level1") |>
   left_join(fda_ex_post_demand, by = "atc_level1") |>
-  filter(approval_year >= 2010) |>
+  filter(approval_year >= 2010, atc_level1 != "P") |>
   mutate(post = ifelse(approval_year >= 2014, 1, 0))
 
 patents <- patents |>
   left_join(patents_ex_ante_demand, by = "atc_level1") |>
   left_join(patents_ex_post_demand, by = "atc_level1") |>
-  filter(patent_year >= 2010) |>
+  filter(patent_year >= 2010, atc_level1 != "P") |>
   mutate(post = ifelse(patent_year >= 2014, 1, 0))
 
 # --- FDA regressions ------------------------------------------------------
@@ -140,7 +140,13 @@ fda_rq3_model_list <- list(
 
 modelsummary(
   fda_rq3_model_list,
-  stars  = c(`*` = 0.05, `**` = 0.01, `***` = 0.001),
+  stars = c(`*` = 0.05, `**` = 0.01, `***` = 0.001),
+  gof_map = tribble(
+    ~raw, ~clean, ~fmt,
+    "nobs", "Num. obs.", 0,
+    "r.squared", "R2", 3,
+    "FE", "FE", 0
+  ),
   output = here("output", "RQ3", "fda_models.tex")
 )
 
@@ -174,7 +180,13 @@ patent_rq3_model_list <- list(
 modelsummary(
   patent_rq3_model_list,
   stars  = c(`*` = 0.05, `**` = 0.01, `***` = 0.001),
+  gof_map = tribble(
+    ~raw, ~clean, ~fmt,
+    "nobs", "Num. obs.", 0,
+    "r.squared", "R2", 3,
+    "FE", "FE", 0
+  ),
   output = here("output", "RQ3", "patent_models.tex")
 )
 
-cat("\nRQ3 outputs written to: output/RQ3/\n")
+# --- End of file --- #

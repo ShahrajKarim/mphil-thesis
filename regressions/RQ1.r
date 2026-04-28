@@ -237,4 +237,4 @@ save_iplot(patent_rq1_poi_exante,   "patent_poi_exante.png",
 save_iplot(patent_rq1_poi_expost,   "patent_poi_expost.png",
            "FE Poisson: Patents (ex-post exposure)")
 
-cat("\nRQ1 outputs written to: output/RQ1/\n")
+# --- End of file --- #

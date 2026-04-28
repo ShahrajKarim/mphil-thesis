@@ -204,4 +204,4 @@ save_iplot(patent_rq2_feols_exante, "patent_feols_exante.png",
 save_iplot(patent_rq2_feols_expost, "patent_feols_expost.png",
            "FEOLS: Patents (ex-post, with PDL)")
 
-cat("\nRQ2 outputs written to: output/RQ2/\n")
+# --- End of file --- #
