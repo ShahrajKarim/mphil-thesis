@@ -1,0 +1,601 @@
+\documentclass[12pt]{article}
+\usepackage{geometry}
+\geometry{a4paper, portrait, margin=1in}
+
+% --- Math Packages ---
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+
+% --- Graphics & Diagrams ---
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows, positioning}
+
+% --- Formatting ---
+\usepackage{parskip}
+\usepackage[hidelinks]{hyperref}
+\usepackage{natbib}
+\usepackage{enumitem}
+\usepackage{float}
+\pagestyle{plain}
+
+% --- Word count (requires compiling with --shell-escape) ---
+\newcommand{\wordcount}{%
+  \immediate\write18{texcount -sum -1 \jobname.tex 2>/dev/null | python3 -c "import sys; n=sys.stdin.read().strip(); print(f'{int(n):,}') if n.isdigit() else print('?')" > \jobname.wc}%
+  \input{\jobname.wc}%
+}
+
+% --- Theorem environments ---
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{result}{Result}
+
+\title{TT Week 1 Model}
+\author{Mohammad-Shah Karim}
+\date{April 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+  \small Word count: \wordcount
+\end{center}
+
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+
+This document outlines a game-theoretical model for pharmaceutical innovation and pricing to explain the empirical puzzle observed in the patent market following the expansion of Medicaid under the Affordable Care Act. The model captures the stochastic nature of R\&D, the specific procurement mechanism (PDL bidding) used by Medicaid under each state, and how current procurement outcomes dictate future innovation incentives.
+
+In reality, several manufacturers may compete within a therapeutic class, and more than one product may appear on a state's PDL to account for clinical variations, such as allergies. However, the game uses a two-firm simplification for illustrative purposes. The same mechanism extends to settings with more firms. The model is set up for a representative therapeutic class $c \in \mathcal{C}$, where $\mathcal{C}$ denotes the set of ATC Level 1 classes. Each class is characterised by a Medicaid market size $M_c$, a rebate function $\tau_c(M_c)$, and a degree of drug substitutability $n_c$.
+
+Figure \ref{fig:game_structure} summarises the extensive form of the game, where innovation decisions in period 1 are mapped to the pricing outcomes, subsequently determining the state a firm enters for future R\&D investment in period 2.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1.5cm and 1cm,
+        auto,
+        block/.style={rectangle, draw, fill=white, text width=4.5cm, align=center, rounded corners, minimum height=1.5cm},
+        wideblock/.style={rectangle, draw, fill=white, text width=8cm, align=center, rounded corners, minimum height=1.5cm},
+        cloud/.style={ellipse, draw, fill=gray!10, text width=3.5cm, align=center, minimum height=1.2cm},
+        arrow/.style={thick,->,>=stealth}
+    ]
+
+    % Stage 1: Innovation
+    \node [block] (stage1) {\textbf{Period 1: Innovation}\\ Firms choose effort $e_{i,c,1}$\\ \textbf{Quality:} $a_{i,c} = \ln(e_{i,c,1}) + \varepsilon_i$};
+
+    % Stage 2: P&T Stage
+    \node [cloud, below=of stage1] (pt) {\textbf{Stage 2: P\&T Stage}\\ P\&T checks: $a_{i,c} \ge \bar{a}$?\\ Determines if $i$ passes};
+    
+    % Monopoly
+    \node [block, below left=2cm and 0.5cm of pt] (mono) {\textbf{Stage 3a: Monopoly}\\ ($i$ Pass, $j$ Fail)\\ Payoff: $V_c^M$};
+    
+    % Duopoly
+    \node [block, below=2cm of pt] (duo) {\textbf{Stage 3b: Duopoly}\\ ($i$ Pass, $j$ Pass)\\ Payoff: $V_c^D$};
+    
+    % Failure
+    \node [block, below right=2cm and 0.5cm of pt] (fail) {\textbf{Stage 3c: Failure}\\ ($i$ Fail)\\ Payoff: $0$};
+
+    % Period 2
+    \node [wideblock, below=2cm of duo] (period2) {\textbf{Period 2: Future Innovation}\\ Firms choose effort $e_{i,c,2}$ \\ Cost of effort $k(\pi_{i,c,1})$ depends on Period 1 payoff};
+
+    % Connecting Lines
+    \draw [arrow] (stage1) -- (pt);
+    \draw [arrow] (pt) -- node[left, xshift=-0.5cm, font=\small] {$Q_c(1-Q_c)$} (mono);
+    \draw [arrow] (pt) -- node[font=\small] {$Q_c^2$} (duo);
+    \draw [arrow] (pt) -- node[right, xshift=0.5cm, font=\small] {$1-Q_c$} (fail);
+    
+    \draw [arrow] (mono.south) -- ++(0,-0.5) -| (period2.135);
+    \draw [arrow] (duo.south) -- (period2.north);
+    \draw [arrow] (fail.south) -- ++(0,-0.5) -| (period2.45);
+
+    \end{tikzpicture}
+    \caption{The Sequence of Play in Class $c$: Innovation, P\&T Approval, Pricing, and Future Investment}
+    \label{fig:game_structure}
+\end{figure}
+
+\newpage
+
+\section{Stage 1: The Innovation Decision (Effort)}
+
+First, firms make investment decisions for a drug they wish to market within therapeutic class $c$. Innovation is modelled to require effort, which raises the probability of clinical success while being costly.
+
+\subsection{The Production Technology}
+The realised clinical quality $a_{i,c}$ is a function of the effort exerted by the firm and a stochastic component $\varepsilon_i$:
+\begin{equation}
+    a_{i,c} = \ln(e_{i,c}) + \varepsilon_i, \qquad \varepsilon_i \sim N(0, \sigma^2)
+\end{equation}
+where $\varepsilon_i$ represents the inherent uncertainty of the R\&D process.
+
+\subsection{The Cost of Effort}
+Firms $i$ and $j$ simultaneously choose R\&D effort levels $e_{i,c} \geq 0$ within class $c$. Effort is assumed to be costly and convex:
+\begin{equation}
+    C(e_{i,c}) = \frac{1}{2} k \, e_{i,c}^2
+\end{equation}
+
+\newpage
+
+\section{Stage 2: The P\&T Stage}
+Once effort is exerted it is now a sunk cost, nature determines the quality of each firm's drug ($a_{i,c}$), and therefore if it passes the P\&T stage.
+
+\subsection{The Approval Condition}
+A drug is clinically approved (passes the P\&T stage) if its quality $a_{i,c}$ exceeds a regulatory threshold quality $\bar{a}$:
+\begin{equation}
+    \text{P\&T Stage}_{i,c} = 
+    \begin{cases} 
+        \text{Approved} & \text{if } a_{i,c} \geq \bar{a} \\
+        \text{Not Approved} & \text{if } a_{i,c} < \bar{a}
+    \end{cases}
+\end{equation}
+
+\subsection{The Probability of Success \texorpdfstring{($Q_c$)}{(Qc)}}
+Since the random idiosyncratic shock $\epsilon_i$ takes on some normal distribution, the probability of a drug passing the P\&T stage for a given class $c$ is given as:
+
+\begin{align}
+    Q_c(e_{i,c}) &= \Pr(\ln e_{i,c} + \varepsilon_i \geq \bar{a}) \\
+           &= \Pr(\varepsilon_i \geq \bar{a} - \ln e_{i,c}) \\
+           &= 1 - \Pr(\varepsilon_i < \bar{a} - \ln e_{i,c}) \\
+           &= 1 - \Phi\left(\frac{\bar{a} - \ln e_{i,c}}{\sigma}\right)
+\end{align}
+where $\Phi(\cdot)$ is the standard normal CDF. \vspace{1em}
+
+This defines the transition probabilities into Stage 3.
+
+\newpage
+
+\section{Stage 3: The Pricing Subgame}
+Firms that pass Stage 2 compete for PDL preferred status within their respective therapeutic class $c$. Each class $c$ faces three distinct characteristics:
+
+\begin{enumerate}[label=(\roman*)]
+    \item A Medicaid market size $M_c$, which increased by $\Delta M_c \geq 0$ following the Medicaid expansion. Classes with higher Medicaid market shares experience greater shocks.
+    
+    \item A rebate function $\tau_c(M_c)$ with $\tau_c' > 0$. This determines how aggressive supplemental rebates from Medicaid are. The rebate function is at a  per-unit rebate the state extracts per Medicaid prescription in dollars.
+    
+    \item A measure of therapeutic substitutability $n_c \geq 1$. Formally, this is defined as the number of clinically interchangeable drugs available within class $c$.
+\end{enumerate}
+
+The model does not impose a function form on $\tau_c$ - the only requirement is that $\tau_c' > 0$. Additionally, the steepness of the rebate schedule is linked to the degree of therapeutic substitutability, that is:
+
+\begin{equation} \label{eq:tau_steepness}
+\frac{\partial \tau_c(M_c, n_c)}{\partial n_c} > 0
+\end{equation}
+
+When the PDL committee has many clinically interchangeable drugs to choose from, it can credibly threaten to exclude any given drug unless a deeper rebate is offered. Therefore, classes with more substitutes face steeper rebate schedules.
+
+Stage 3 of the game takes on one of three mutually exclusive states.
+
+\subsection{Stage 3a: The Monopoly State}
+
+\textbf{Condition:} Firm $i$ passes the P\&T stage while firm $j$ fails:
+\begin{align*}
+    a_{i,c} \geq \bar{a} > a_{j,c}
+\end{align*}
+
+\textbf{Mechanism:} Firm $i$ is the sole player in class $c$ and negotiates directly with Medicaid.
+
+\paragraph{Setup} 
+The firm faces a class-specific market demand $M_c$ which is perfectly inelastic with respect to price. This assumption is made since Medicaid enrollees are fully insured. However, the state imposes a maximum allowable price $\bar{p}$ and the firm also pays the class-specific rebate $\tau_c(M_c)$.
+
+\paragraph{Optimisation Problem}
+The firm chooses price $p$ to maximise profits:
+\begin{equation}
+    \max_{p} \pi_{i,c} = M_c(p - c_i - \tau_c(M_c)) \quad \text{s.t.} \quad p \le \bar{p}
+\end{equation}
+Since demand is inelastic, the profit function is strictly increasing in $p$.
+
+\paragraph{Equilibrium Result}
+The firm sets the price at the binding constraint: $p^* = \bar{p}$, thus the resulting profit is:
+
+\begin{equation} \label{eq:mono_profit}
+    \pi_{i,c}^{Mono}(c_i) = M_c(\bar{p} - c_i - \tau_c(M_c))
+\end{equation}
+Since marginal costs $c_i$ are unknown until stage 3 is reached, the expected profits are calculated across  across marginal cost states:
+\begin{equation}
+V_c^M = \mathbb{E}_c[\pi_{i,c}^{Mono}]
+\end{equation}
+
+\subsection{Stage 3b: The Duopoly State (Auction)}
+\textbf{Condition:} Both firms pass the P\&T stage in class $c$:
+\begin{align*}
+    a_{i,c} \geq \bar{a}, \qquad a_{j,c} \geq \bar{a}
+\end{align*}
+
+\textbf{Mechanism:} Firms compete in a first-price sealed-bid procurement auction.
+
+\paragraph{Setup}
+Each firm independently draws a marginal cost $c_i, c_j$ from a common distribution $F(c)$ with support $[\underline{c}, \bar{c}]$. Each firm then submits a sealed bid $b_i, b_j$ which is equivalent to the price that the drug is sold to Medicaid at. The lowest bidder wins PDL status and, for that class, obtains the full Medicaid market volume $M_c$ minus the class-specific statutory wedge $\tau_c(M_c)$.
+\[
+\pi_{i,c} =
+\begin{cases}
+M_c\big(b_i - c_i - \tau_c(M_c)\big) & \text{if } b_i \leq b_j, \\
+0 & \text{if } b_i > b_j.
+\end{cases}
+\]
+
+\paragraph{Equilibrium Derivation}
+Assume that there exists a strictly increasing and differentiable symmetric Bayesian-Nash Equilibrium bidding strategy $b_c(c)$.
+
+\subparagraph{The Probability of Winning}
+Suppose firm $i$ has cost $c$ but considers submitting a bid $\tilde{b}$ corresponding to the optimal bid of type $t$ (i.e., $\tilde{b} = b_c(t)$). Firm $i$ wins if and only if its bid is lower than the rival's bid $b_c(c_j)$:
+\begin{equation}
+    b_c(t) < b_c(c_j) \iff t < c_j
+\end{equation}
+Therefore, the probability of winning the bidding game is given as:
+\begin{equation}
+    \Pr(\text{win}) = \Pr(c_j > t) = 1 - F(t)
+\end{equation}
+
+\subparagraph{The Optimisation Problem}
+The firm chooses the optimal type $t$ to maximise expected profit:
+\begin{equation}
+    \max_{t} \mathbb{E}[\pi_{i,c}(t, c)] = M_c(b_c(t) - c - \tau_c(M_c))[1 - F(t)]
+\end{equation}
+Let $U_c(c)$ be the value function (maximum expected profit) for a firm with true cost $c$ within class $c$:
+\begin{equation}
+    U_c(c) = \max_{t} M_c(b_c(t) - c - \tau_c(M_c))[1 - F(t)]
+\end{equation}
+
+\subparagraph{Applying the Envelope Theorem}
+Differentiating the value function $U_c(c)$ with respect to cost $c$ yields the derivative of the objective function evaluated at the optimal choice $t=c$, corresponding to truthful reporting:
+\begin{equation}
+    U_c'(c) = \left. \frac{\partial \mathbb{E}[\pi_{i,c}(t, c)]}{\partial c} \right|_{t=c} = -M_c[1 - F(c)]
+\end{equation}
+
+\subparagraph{Solving for Expected Profit}
+Using the fact that the highest-cost type earns zero profit, $U_c(\bar{c}) = 0$, integrating $U_c'(c)$ from $c$ to $\bar{c}$ gives:
+\begin{equation} \label{eq:value_integral}
+    U_c(c) = M_c \int_{c}^{\bar{c}} (1 - F(u)) \, du .
+\end{equation}
+
+\subparagraph{Recovering the Bidding Function}
+Equating (\ref{eq:value_integral}) with the firm's expected profit at the optimum gives the symmetric equilibrium bidding strategy:
+\begin{equation} \label{eq:bid_function}
+    b_c(c) = c + \tau_c(M_c) + \frac{\int_{c}^{\bar{c}} (1 - F(u)) \, du}{1 - F(c)} .
+\end{equation}
+
+\paragraph{Equilibrium Result}
+Since $U_c(c)$ is the firm's equilibrium expected payoff, the expected profit for a firm of type $c$ in the duopoly state is:
+\begin{equation} \label{eq:duo_profit}
+    \Pi_c^{Duo}(c) = U_c(c)
+    = M_c \int_{c}^{\bar{c}} (1 - F(u)) \, du .
+\end{equation}
+
+The expectation of the duopoly state is calculated over marginal costs, as $V_D$:
+\begin{equation}
+V_c^D = \mathbb{E}_c[\Pi_c^{Duo}] .
+\end{equation}
+
+This implies that $V_c^D$ increases linearly with $M_c$ but is not directly affected by the rebate wedge $\tau_c(M_c)$. This occurs since the rebate enters as a common cost component in the auction and is therefore reflected in equilibrium bids. Consequently, the rebate wedge reduces $V_c^M$ directly, but does not reduce $V_c^D$ in the same way.
+
+\subsection{Stage 3c: The Failure State}
+\textbf{Condition:} Firm $i$ fails in class $c$:
+\begin{align*}
+    a_{i,c} < \bar{a}
+\end{align*}
+
+The firm fails to meet the clinical threshold required for PDL consideration, therefore there is no opportunity to sell to the Medicaid market.
+
+\paragraph{Equilibrium Result}
+The firm does not enter the market and earns zero revenue.
+\begin{equation}
+    \pi_{i,c}^{Fail} = 0
+\end{equation}
+
+\newpage
+
+\section{Equilibrium Analysis}
+Solve for equilibrium effort $e^*$ within each therapeutic class $c$, and subsequently model how current procurement outcomes shape future innovation.
+
+\subsection{The Maximisation Problem}
+Within class $c$, the firm chooses effort $e_{i,c}$ to maximise total expected profit, where $\Psi_{i,c}$ is the probability-weighted sum of payoffs in each state minus the cost of effort:
+\begin{equation}
+    \max_{e_{i,c}} \Psi_{i,c} = \underbrace{Q_c(e_{i,c})[1-Q_c(e_{j,c})] V_c^M}_{\text{Stage 3a}} + \underbrace{Q_c(e_{i,c})Q_c(e_{j,c}) V_c^D}_{\text{Stage 3b}} - \frac{1}{2} k \, e_{i,c}^2
+\end{equation}
+where $V_c^M$ and $V_c^D$ are the class-specific expected profits derived in the monopoly and duopoly cases, respectively.
+
+\subsection{Optimal Effort \texorpdfstring{$(e_c^*)$}{(ec*)}}
+The First Order Condition (FOC) with respect to effort $e_{i,c}$ is derived by differentiating $\Psi_{i,c}$:
+\begin{equation}
+    \frac{\partial \Psi_{i,c}}{\partial e_{i,c}} = Q_c'(e_{i,c})(1-Q_c(e_{j,c})) V_c^M + Q_c'(e_{i,c})Q_c(e_{j,c}) V_c^D - k \, e_{i,c} = 0
+\end{equation}
+This yields the following expression, where the marginal benefit of effort is equal to the associated marginal cost:
+\begin{equation} \label{eq:FOC_final}
+    Q_c'(e_{i,c}) \left[ (1-Q_c(e_{j,c})) V_c^M + Q_c(e_{j,c}) V_c^D \right] = k \, e_{i,c}
+\end{equation}
+The term in square brackets is the expected payoff contingent on P\&T approval within class $c$. In a symmetric equilibrium where $e_{i,c} = e_{j,c} = e_c^*$, this implicitly defines the class-specific optimal effort level $e_c^*$. 
+
+For this to be a strict global maximum, the Second Order Condition (SOC) must be strictly negative. Differentiating the FOC again with respect to $e_{i,c}$ yields:
+\begin{equation}
+    \frac{\partial^2 \Psi_{i,c}}{\partial e_{i,c}^2} = Q_c''(e_{i,c}) \left[ (1-Q_c(e_{j,c})) V_c^M + Q_c(e_{j,c}) V_c^D \right] - k < 0
+\end{equation}
+Since the term in square brackets is positive and $k>0$, concavity in $Q_c$ is sufficient for a global maximum, i.e. $Q_c''(e_{i,c})<0$.
+
+\subsection{Strategic Substitutes}
+The strategic relationship between the firms' efforts within class $c$ can be determined by analysing the slope of the best response function.
+
+Let $e^*_{i,c} = BR_{i,c}(e_{j,c})$ be the implicitly defined best response function that solves the FOC:
+\begin{equation}
+    \frac{\partial \Psi_{i,c} (BR_{i,c}(e_{j,c}), e_{j,c})}{\partial e_{i,c}} = 0
+\end{equation}
+
+Totally differentiating this with respect to $e_{j,c}$ yields:
+\begin{align}
+    \frac{d}{d e_{j,c}}\left[\frac{\partial \Psi_{i,c}(BR_{i,c}(e_{j,c}),e_{j,c})}{\partial e_{i,c}}\right] &= 0 \\[0.5em]
+    \Longleftrightarrow \quad
+    \frac{\partial^2 \Psi_{i,c}}{\partial e_{i,c}^2}\frac{d BR_{i,c}(e_{j,c})}{d e_{j,c}}
+    +
+    \frac{\partial^2 \Psi_{i,c}}{\partial e_{i,c} \partial e_{j,c}} &= 0 \\[0.5em]
+    \Longleftrightarrow \quad
+    \frac{d BR_{i,c}(e_{j,c})}{d e_{j,c}}
+    &=
+    -
+    \frac{\frac{\partial^2 \Psi_{i,c}}{\partial e_{i,c} \partial e_{j,c}}}
+    {\frac{\partial^2 \Psi_{i,c}}{\partial e_{i,c}^2}}
+\end{align}
+
+Since the denomninator is the SOC (which is known to be strictly negative), the sign of the best response derivative depends purely on the sign of the cross-partial derivative:
+
+\begin{equation}
+    \frac{\partial^2 \Psi_{i,c}}{\partial e_{i,c} \partial e_{j,c}} = Q_c'(e_{i,c}) \left[ -Q_c'(e_{j,c}) V_c^M + Q_c'(e_{j,c}) V_c^D \right] = Q_c'(e_{i,c}) Q_c'(e_{j,c}) [V_c^D - V_c^M]
+\end{equation}
+
+Additionally, the monopoly value strictly exceeds the duopoly value ($V_c^M > V_c^D$), and marginal probabilities are positive ($Q_c' > 0$), thus the cross-partial derivative is strictly negative. 
+
+Given both the SOC and the cross-partial derivatives are negative, it follows that the slope of the best response function is negative ($\frac{d BR_{i,c}}{d e_{j,c}} < 0$). Consequently, within each class $c$, the R\&D efforts of the two firms can be classed as strategic substitutes. 
+
+If firm $j$ raises its effort in class $c$, it is likelier to pass clinical trials and the corresponding P\&T stage. Therefore, for any given effort level for $e_{i,c}$, the probability of both firms entering the duopoly auction stage rises, and in such a case minimal profits ($V_c^D$) are obtained. Since the expected profits shrink under such a situation, the marginal benefit of firm $i$'s effort decreases, thereby incentivising it to best-respond by lowering its own effort.
+
+\subsection{The ``Incentive Trap'' Mechanism}
+This section now aims to derive the effect of the expansion of Medicaid ($M_c \uparrow$) on innovation effort $e_c^*$ within each class. A necessary condition for a reduction in innovation within class $c$ is if the marginal benefit of effort decreases with class-specific market size.
+
+\paragraph{The Mechanism}
+\begin{enumerate}
+    \item \textbf{Stage 3a (Monopoly):} From Equation (\ref{eq:mono_profit}), the value of the monopoly state in class $c$ is $V_c^M = M_c(\bar{p} - \bar{c} - \tau_c(M_c))$. The effect of expansion on the monopoly value is:
+    \begin{equation} \label{eq:dVM}
+        \frac{d V_c^M}{d M_c} = \underbrace{(\bar{p} - \bar{c} - \tau_c)}_{\text{Volume Effect (+) }} - \underbrace{M_c \, \tau_c'(M_c)}_{\text{Monopsony Effect (-) }}
+    \end{equation}
+    \item \textbf{Stage 3b (Duopoly):} From Equation (\ref{eq:duo_profit}), $V_c^D$ increases with $M_c$, thus the expansion unambiguously raises the value of the duopoly setting.
+\end{enumerate}
+
+Define $M_c^*$ as the threshold by which the value of the monopoly state decreases with market size. This is defined implicitly by the condition:
+\begin{equation} \label{eq:dVM_threshold}
+    (\bar{p} - \bar{c} - \tau_c(M_c^*)) - M_c^* \, \tau_c'(M_c^*) = 0
+\end{equation}
+or equivalently
+\begin{equation} \label{eq:threshold}
+    (\bar{p} - \bar{c} - \tau_c(M_c^*)) = M_c^* \, \tau_c'(M_c^*)
+\end{equation}
+At $M_c^*$, the marginal benefit of selling one additional drug to Medicaid is exactly equal to the marginal rebate extraction imposed by Medicaid. A unique interior solution exists whenever margins are initially positive ($\bar{p} - \bar{c} > \tau_c(0)$) and the rebate extraction dominates as the Medicaid market grows ($\lim_{M_c \to \infty} \tau_c'(M_c) = \infty$).
+
+The incentive trap binds within class $c$ if and only if the post-expansion market size exceeds this threshold, that is:
+\begin{equation} \label{eq:trap_condition}
+    M_c^{post} \equiv M_c^{pre} + \Delta M_c > M_c^*
+\end{equation}
+
+Since the rebate function $\tau_c$ reflects the competitive structure of a therapeutic drug class, the threshold market-size $M_c$ is class-specific.
+
+\begin{result}[Substitutability lowers the threshold $M^*_c$] \label{res:subs}
+Based on \ref{eq:tau_steepnes} $\tau_c'(M_c)$ is increasing in $n_c$, so classes with more substitutes have a lower threshold $M_c^*$. Therefore, classes with more interchangeable drugs are likelier to meet the threshold market size and become trap-bound.
+\end{result}
+
+\begin{proof}
+The threshold $M_c^*$ is defined by:
+\[
+(\bar{p} - \bar{c} - \tau_c(M_c^*)) = M_c^* \tau_c'(M_c^*)
+\]
+An increase in the number of substitutes $n_c$ makes the rebate schedule steeper and therefore $\tau_c'(M_c)$ increases. This raises the marginal cost of the rebate $M_c \tau_c'(M_c)$, while also reducing remaining revenues as the stronger bargaining position allows for Medicaid to extract a larger rebate $\tau_c(M_c)$.
+
+Therefore, at any given market size $M_c$, higher substitutability makes rebate extraction larger and revenues smaller, making the threshold level reached for a lower market size $M_c$. Thus:
+\[
+\frac{dM_c^*}{dn_c} < 0
+\]
+\end{proof}
+
+\begin{result}[Larger shocks increase the probability of crossing the threshold] \label{res:shock}
+Classes with higher pre-expansion Medicaid market share experience larger increases in market size $\Delta M_c$ following the ACA expansion. This makes it likelier for these markets to cross the threshold: $M_c^{post} > M_c^*$.
+\end{result}
+
+Therefore, Results \ref{res:subs} and \ref{res:shock} imply that the decline in innovation should be concentrated in classes with high Medicaid exposure and high levels of substitutability. Specifically, high levels of Medicaid exposure raise $M_c^{post}$, while high substitutability lower $M_c^*$ by making the rebate schedule steeper. 
+
+\paragraph{Classification of therapeutic classes}
+The FOC (\ref{eq:FOC_final}) implies that equilibrium effort depends on the expected payoff contingent on passing the P\&T stage
+\[
+(1-Q_c)V_c^M + Q_c V_c^D 
+\]
+Therefore, the sign of effort in response to the ACA Medicaid expansion depends on:
+\begin{equation} \label{eq:effort_sign_full}
+\frac{de^*_c}{d\Delta M_c} = (1-Q_c)\frac{dV_c^M}{dM_c} + Q_c \frac{dV_c^D}{dM_c}
+\end{equation}
+The duopoly value will always increase optimal efforts ceteris paribus. However, when the monopoly value is much larger than the duopoly value ($V_c^M \gg V_c^D$), the direction of optimal effort response is primarily driven by the monopoly channel. In this case, the relevant threshold market size can be approximated by the point at which the monopoly value ($V_c^M$) starts to fall:
+
+\begin{equation} \label{eq:effort_sign}
+    \frac{de_c^*}{d\Delta M_c} \gtrless 0 \quad \Longleftrightarrow \quad \frac{dV_c^M}{dM_c} \gtrless 0 \quad \Longleftrightarrow \quad M_c^{post} \lessgtr M_c^*
+\end{equation}
+Technically, $M_c^*$ is the threshold market-size under the monopoly channel as opposed to the exact threshold for equilibrium effort. The effort threshold would be weakly greater than $M_c^*$ since the duopoly channel still increases with $M_c$. Therefore, the derived threshold market size below should be interpreted as exact when the monopoly channel dominates.
+
+This separates therapeutic classes into three separate categories:
+
+\begin{itemize}
+    \item \textbf{Volume-dominated classes} ($M_c^{post} < M_c^*$): The expansion increases $V_c^M$ so equilibrium effort rises - the standard market-size prediction holds.
+
+    \item \textbf{Trap-bound classes} ($M_c^{post} > M_c^*$): The expansion decreases $V_c^M$. In the case of the monopoly channel dominating the duopoly channel, equilibrium effort falls.
+
+    \item \textbf{Near-threshold classes} ($M_c^{post} \approx M_c^*$): The volume and monopsony effects offset each-other so the net effect of the expansion on innovation is insignificant.
+\end{itemize}
+
+\paragraph{The rent gap}
+The difference between monopoly and duopoly payoffs matters for innovation incentives:
+\begin{equation}
+    \Delta V_c \equiv V_c^M - V_c^D .
+\end{equation}
+
+The rent gap $\Delta V_c$ is smaller in classes where the incentive trap binds. This is because higher drug substitutability gives Medicaid a stronger position for bargaining, thereby yielding a steeper rebate schedule which can reduce $V_c^M$. Consequently, two classes with the same post-expansion market size $M_c$ can have different innovation responses - a class with more substitutes will have a smaller rent gap and lower associated levels of effort.
+
+\subsection{Institutional and Empirical Justification}
+Two crucial assumptions of this model are that the Medicaid rebate wedge, $\tau_c(M_c)$, is (i) strictly increasing in market size and (ii) its steepness is increasing within-class drug substitutability. While federal statutory rebates are fixed percentages, state-Medicaid providers negotiate `supplemental rebates' with manufacturers in exchange for PDL placement. Additionally, some states join Multi-State Purchasing Pools (such as the National Medicaid Pooling Initiative and the Sovereign States Drug Consortium), allowing them to leveraging the population under multiple states to increase their effective market size ($M_c$). These coalitions are therefore able to tie the size of their negotiated rebate to the volume of pooled lives.
+
+This assumption is tested using the SDUD. States are mapped to their multi-state purchasing pools, allowing for it to reflect the true negotiating  market size within each ATC. Per-prescription rebates are then regressed against the natural log of market size and the number of NDC's within a class $n_c$ - ATC and year fixed effects are used. 
+
+\begin{equation}
+    \text{Rebate}_{c,t} = \alpha + \beta_1 \log(M_c) + \beta_2 n_c + \lambda_c + \delta_t + \varepsilon_{c,t}.
+\end{equation}
+
+Under this specification, the coefficients on both $\log(M_c)$ and $n_c$ are positive and significant, indicating that larger Medicaid markets and drug substitutability are associated with greater rebates. Therefore, these results support the assumptions that $\tau_c'(M_c)>0$ and that the rebate schedule steepens with $n_c$.
+
+\subsection{State-Dependent Innovation}
+Empirically, firms that gain PDL placement tend to innovate more in subsequent periods. In order to capture this dynamic, the current game can be embedded in a dynamic framework where procurement outcomes influence future innovation incentives.
+
+In this setting, period 1 procurement outcomes in class $c$ determine the firm's position in Period 2. A firm may fail to gain access, gain access under competitive rents, or gain access under higher monopoly rents. A natural explanation for this state dependence is the internal-finance channel. \cite{hal2002financing} suggests that R\&D is especially exposed to financing frictions due to being risky and intangible, thus outside investors cannnot evaluate this well thereby making external finance costly. Securing preferred access on the PDL allows for additional cash-flows that can relax financing constraints, thereby lowering the effective marginal cost of future R\&D.
+
+Additionally, firms that pass the P\&T stage and negotiate rebates may gain additional regulatory and organisational knowledge. This may make future innovation less costly and therefore generate persistence - current procurement success affects future innovation not only through profits, but also through the firm's accumulated ability to navigate the Medicaid procurement process.
+
+This is consistent with dynamic models of competition. For example, \cite{budd1993model} show that a firm's current competitive position can shape future investment incentives, while \cite{aghion2001competition} show that firms in near-symmetric states may invest strongly to escape competition. In this model, firms which do not gain preferred status may still have incentives to innovate in the next period, but they do so with a cost disadvantage relative to firms that secured PDL rents.
+
+\paragraph{Formalising the Multi-Period Game} 
+Now allow the period 2 cost of effort parameter $k$ to depend on the realised payoff from period 1. Note that the potential period 1 payoffs for firm $i$ in class $c$ are:
+\begin{equation}
+    \pi_{i,c,1} \in \{V_c^M, V_c^D, 0\}
+\end{equation}
+where $V_c^M > V_c^D > 0$. 
+
+Assuming that internal cash flow and accumulated regulatory capabilities lower the effective marginal cost of future R\&D, the Period 2 effort cost function is:
+\begin{equation}
+    C_{c,2}(e_{i,c,2} ; \pi_{i,c,1}) = \frac{1}{2} k(\pi_{i,c,1}) \, e_{i,c,2}^2, \quad k'(\pi_{i,c,1}) < 0
+\end{equation}
+Higher period 1 profits strictly lower the cost parameter thus:
+\begin{equation}
+    k(V_c^M) < k(V_c^D) < k(0)
+\end{equation}
+
+In period 2, firm $i$ now solves an updated version of the FOC (Equation \ref{eq:FOC_final}), where the new cost parameter $k_{i,c} = k(\pi_{i,c,1})$ is taken as given:
+\begin{equation} \label{eq:FOC_period2}
+    Q_c'(e_{i,c,2}) \left[ (1-Q_c(e_{j,c,2})) V_c^M + Q_c(e_{j,c,2}) V_c^D \right] - k_{i,c} \, e_{i,c,2} = 0
+\end{equation}
+
+Apply the implicit function theorem in order to observe how optimal effort responds to the cost parameter $k_{i,c}$. To do this, let $\Psi_{i,c,2}$ denote firm $i$'s objective function in period 2 for therapeutic class $c$. Differentiating the first-order condition with respect to $k_{i,c}$ gives
+\begin{equation}
+    \frac{\partial e_{i,c,2}^*}{\partial k_{i,c}} = - \frac{\frac{\partial^2 \Psi_{i,c,2}}{\partial e_{i,c,2} \partial k_{i,c}}}{\frac{\partial^2 \Psi_{i,c,2}}{\partial e_{i,c,2}^2}} = - \frac{-e_{i,c,2}^*}{\frac{\partial^2 \Psi_{i,c,2}}{\partial e_{i,c,2}^2}}
+\end{equation}
+The SOC implies that $\frac{\partial^2 \Psi_{i,c,2}}{\partial e_{i,c,2}^2} < 0$, and since optimal effort is positive, it follows that:
+\begin{equation}
+    \frac{\partial e_{i,c,2}^*}{\partial k_{i,c}} < 0
+\end{equation}
+That is, optimal effort is strictly decreasing in the cost parameter.
+
+By construction, the cost parameter is strictly decreasing in period 1 profits, thus higher period 1 profits lower the cost of period 2 effort and increase optimal period 2 efforts:
+\begin{equation} \label{eq:effort_ranking}
+    e_{c,2}^*(V_c^M) > e_{c,2}^*(V_c^D) > e_{c,2}^*(0)
+\end{equation}
+
+\paragraph{Implications for the Incentive Trap}
+This two-period structure now strengthens the main result of the model. If the Medicaid expansion raises rebate extraction and lowers $V_c^M$, then it reduces both current and future innovation incentives in class $c$. The expansion effects outcomes at the time of the policy by lowering the payoff to successful innovation, while weaker internal cash flows raise the cost of future R\&D efforts. Consequently, lower current rents can lead to lower innovation in later periods, with the severity of this effect varying across classes.
+
+\begin{result}[PDL winners gain less in trap-bound classes] \label{res:dynamic}
+The advantage of PDL winners is weaker in trap-bound classes than in volume-dominated classes. To see this, consider two classes $c$ and $c'$, where $M_c^{post} > M_c^*$ and $M_{c'}^{post} < M_{c'}^*$:
+\[
+e_{c,2}^*(V_c^M) - e_{c,2}^*(0) < e_{c',2}^*(V_{c'}^M) - e_{c',2}^*(0)
+\]
+\end{result}
+
+In `trap-bound' classes, the rebate wedge lowers the value of $V_c^M$, so PDL winners receive a smaller payoff advantage over firms that fail to gain preferred status. While the cost parameter ranking $k(V_c^M) < k(V_c^D) < k(0)$ still holds, the gaps between these cost parameters narrows. Therefore, PDL winners still invest more than non-winners, but the difference in future effort is smaller. However, classes which are volume-dominated classes have a larger relative monopoly value $V_c^M$, so preferred firms retain a greater cost advantage and therefore invest more relative to their rivals.
+
+\section{Model Predictions and Empirical Mapping}
+
+\subsection{Comparative Statics} \label{sec:comp_statics}
+
+To characterise the predictions of the model, equilibrium effort is solved from the FOC's across a range of parameter values. Since no closed-form solution exists for $e_c^*$, the comparative statics are computed using fixed parameters $(\sigma, \bar{a}, \bar{p}, \bar{c}, k)$ and then varying one dimension at a time. Since the functional form of $\tau_c(M_c)$ is unknown, three functional forms are proposed for the simulations: a power specification $\tau_c = \alpha_c M_c^{\beta_c}$, a logarithmic specification $\tau_c = \alpha_c \ln M_c$, and a linear specification $\tau_c = \alpha_c M_c$. $\alpha_c$ measures the scale of each functional form with rebate and is positive, $\beta_c \in (0,1]$ represents the rebate elasticity under the power form. The resulting comparative statics are shown in Figure \ref{fig:comp_statics}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{TT_week1_model.png}
+    \caption{Comparative statics of equilibrium effort $e_c^*$. Baseline parameters: \\ $\sigma = 1.0$, $\bar{a} = 0.5$, $\bar{p} = 10$, $\bar{c} = 2$, $k = 1.0$, $\alpha_c = 0.02$, $\beta_c = 0.75$, $c \sim U[0.5, 3.5]$.}
+    \label{fig:comp_statics}
+\end{figure}
+
+\paragraph{Panel 1: Equilibrium effort and market size.}
+The first panel displays $e_c^*$ as a function of market size $M_c$ for each $\tau_c(M_c)$ specification. Under the logarithmic and power forms, effort rises monotonically with $M_c$ indicating that the volume effect dominates the rebate effect, that is, the additional revenue from selling to a larger market dominates, thus firms invest more in R\&D as the market expands. However, a hump-shaped profile is observed under the linear form. Effort initially increases with $M_c$ but declines subsequently - this gives rise to the incentive trap mechanism. The linear rebate schedule implies that Medicaid extracts revenues one-for-one with market size. Once $M_c$ is large enough, the term $M_c\tau_c'(M_c) = \alpha_c M_c$ dominates the volume gain $(\bar{p} - \bar{c} - \tau_c)$, so $dV_c^M/dM_c < 0$ and the marginal benefit of effort falls.
+
+The empirical results from the triple difference model suggest that therapeutic classes differ in their position along the market-size axis and the steepness of their rebate schedules. Classes B, H, and S appear to be in the upward-sloping, volume-dominated region. Classes D, G, J, L, and R sit closer to the peak. Classes A, C, M, and N are high-volume and therapeutically competitive, and appear to sit past the peak in the trap-bound region.
+
+\paragraph{Panel 2: Equilibrium effort and rebate sensitivity.}
+The second panel keeps $M_c$ fixed at $M_0 = 100$ and isolates the effect of Medicaid's monopsony power on equilibrium efforts by varying the rebate scale parameter $\alpha_c$. Across all three rebate specifications equilibrium effort is strictly decreasing in $\tau_c'(M_c)$. However, the curves diverge substantially in their rate of decline. The logarithmic form appears to have the steepest curve, while the linear and power forms maintain higher efforts across a wider range of sensitivity values. Classes with more therapeutic substitutes ($n_c$) face steeper rebate sensitivity and therefore correspond to lower levels of effort $e_c^*$.
+
+\paragraph{Panel 3: Equilibrium effort and the rent gap.}
+The third panel varies the price cap $\bar{p}$ to isolate the effect of the rent gap $\Delta V_c$ on incentive efforts $e_c^*$. Innovation is observed to be driven by the gap between monopoly and duopoly payoffs, rather than by the level of either payoff alone. The three curves coincide since the FOC depends on this rent differential and the relationship between $e_c^*$ and $\Delta V_c$ is independent of the specific rebate functional form. Importantly, this panel establishes that the reduction in $\Delta V_c$ is sufficient for the reduction in innovation and not the rise in market-size alone. Therefore, any policy that reduces value of the monopoly state rleative to the duopoly state lowers equilibrium effort.
+
+\paragraph{Panel 4: Period 2 effort by prior state.}
+The fourth panel displays the rankings of period 2 efforts following period 1 outcomes under the power specification $\tau_c(M_c)=\alpha_c M_c^{\beta_c}$. Equilibrium efforts are computed under three cost parameters corresponding to the three possible period 1 outcomes: a monopoly win, a duopoly win, and failure. The following effort ranking hold for all market sizes:
+\[
+e_{c,2}^*(V_c^M) > e_{c,2}^*(V_c^D) > e_{c,2}^*(0)
+\]
+This is consistent with the idea that firms securing higher profits in period 1 face lower R\&D costs in period 2 and therefore invest more in subsequent innovation. The effort gap between the three paths widen with market size, showing that the long-run innovation consequences of period 1 procurement outcomes become stronger in larger markets.
+
+\paragraph{Panel 5: Drug substitutability and effort.}
+The fifth panel displays how the relationship between market size and effort changes with drug substitutability. Three cases are shown: low substitutability ($\beta_c = 0.55$, e.g.\ H and S), intermediate substitutability ($\beta_c = 0.75$), and high substitutability ($\beta_c = 1.05$, e.g.\ N).
+
+When drug substitutability is low, effort continues to rise with market size and the incentive trap does not bind. However, as more drug substitutes become available, the threshold $M_c^*$ lowers, so the turning point for effort appears for lower Medicaid market sizes. This illustrates Result \ref{res:subs}, where higher drug substitutability lowers $M_c^*$ and makes the incentive trap more likely to bind.
+
+\paragraph{Panel 6: The class-specific threshold.}
+The sixth panel plots the threshold market-size $M_c^*$ against the rebate elasticity $\beta_c$ under the power specification. The threshold falls monotonically as elasticity increases. This indicates that classes with steeper rebate schedules require a much smaller Medicaid market size for equilibrium efforts to start lowering.
+
+\subsection{Theoretical States and Empirical Outcomes}
+
+To bridge the theoretical framework with the empirical analysis, the regression variables are mapped directly to the realised outcomes of the game.
+
+\subsubsection{Mapping to the PDL Counterfactuals}
+
+Empirically, the pharmaceutical procurement pipeline is observed through the lens of three stages: passing clinical approval, submitting a pricing bid, and gaining preferred status on the PDL. These variables represent different ex-post paths for success:
+
+\begin{itemize}
+    \item \textbf{Partial Success:} This represents firms that exert sufficient effort to clear the clinical stage ($a_{i,c} \ge \bar{a}$) but enter the duopoly bidding stage and lose due to presenting a higher price than the opposing firm. Clearing the clinical threshold provides these firms with some regulatory know-how, but failing to capture the market means that they do not receive any internal cash flows to alleviate capital market frictions. Therefore, their cost parameter remains strictly higher than that of the PDL winners and falls within the interval $k \in \left( k(V_c^D), k(0)\right)$. Once combined with rebate disincentives, this relative cost disadvantage inhibits future innovation.
+
+    \item \textbf{Medicaid Market Access:} These are firms clear both the clinical and pricing stages and capture the market $M_c$ by obtaining monopoly status or win the duopoly auction. Specifically, they benefit from both channels of state-dependent innovation: they accumulate regulatory know-how while also realising a strictly positive internal cash flow from the Medicaid market. Consequently, they their future marginal cost of future R\&D effort lowers to either $k(V_c^M)$ or $k(V_c^D)$, thereby allowing them to overcome market disincentives.
+\end{itemize}
+
+\subsubsection{Mapping to the Triple-Difference} \label{sec:rq3_mapping}
+
+The triple-difference specification estimates class-specific responses to Medicaid expansion:
+\begin{equation}
+    Y_{f,c,t} = \alpha_f + \lambda_c + \delta_t + \sum_{c \in \mathcal{C}} \beta_c \cdot \mathbf{1}\{t \geq 2014\} \cdot \text{MedicaidShare}_c \cdot \mathbf{1}\{\text{ATC} = c\} + \varepsilon_{f,c,t}
+\end{equation}
+
+$\beta_c$ specifically estimates the innovation response in class $c$ relative to that class's Medicaid exposure. The sign of $\beta_c$ is split into three categories and is listed in Table \ref{tab:regime_mapping}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{llll}
+\hline
+\textbf{Category} & \textbf{Sign of $\beta_c$} & \textbf{Condition} & \textbf{Prediction} \\
+\hline
+Volume-dominated & $\beta_c > 0$ & $M_c^{post} < M_c^*$ & $de_c^*/d\Delta M_c > 0$ \\
+Near-threshold   & $\beta_c \approx 0$ & $M_c^{post} \approx M_c^*$ & $de_c^*/d\Delta M_c \approx 0$ \\
+Trap-bound       & $\beta_c < 0$ & $M_c^{post} > M_c^*$ & $de_c^*/d\Delta M_c < 0$ \\
+\hline
+\end{tabular}
+\caption{Mapping between theoretical categories and the DDD coefficient $\beta_c$}
+\label{tab:regime_mapping}
+\end{table}
+
+Positive coefficients are consistent with the standard market-size effect, negative coefficients indicate classes where rebate extraction dominates the increased demand and insignificant coefficients suggest that the volume and monopsony effects balance each other.
+
+\section{Policy Implications}
+The proposed model identifies a trade-off in public pharmaceutical procurement. Expanding the Medicaid market strengthens the states' bargaining position, allowing them to negotiate deeper supplemental rebates thereby reducing per-unit drug expenditure. However the benefit to Medicaid is met with a cost to innovators in pharmaceutical markets - if rebate extraction lower monopoly profits sufficiently, the returns to successful innovation lower and firms' incentives to invest in R\&D fall alongside this.
+
+This trade-off is only relevant for a subset of therapeutic areas as opposed to uniformly applying across the pharmaceutical industry. In most cases, the volume effect appears to dominate or approximately offset the monopsony effect. However, in the remaining classes with high Medicaid exposure and drug substitutability the innovation response is negative. Consequently, a uniform policy response to the aggregate innovation decline would be poorly targeted. For example, limits on supplemental rebates across all classes would reduce fiscal savings in classes where the expansion does not appear to have discouraged innovation, all while not necessarily addressing the classes where the rebate effect is most severe.
+
+Based on the comparative statics, the lowering of the rent gap $\Delta V_c = V_c^M - V_c^D$ is a sufficient statistic for reduced innovation efforts. Regardless of the functional form of $\tau_c$, any policy that reduces the monopoly premium also reduces equilibrium effort. This implies that the relevant policy question is not about market size, but about how Medicaid shapes the gap in payoffs in the monopoly and competitive states.
+
+The model points towards two routes by which which procurement design could affect this trade-off in payoffs. First, policies that limit the marginal rebate rate $\tau_c'(M_c)$ or treat novel drugs differently from incumbent molecules, would raise the threshold $M_c$ and make the incentive trap less likely to bind. Second, R\&D subsidies or reductions in clinical development can lower the cost of R\&D and therefore $k$, thereby allowing innovation efforts to stay afloat even with a reduction in the rent gap $\Delta V_c$.
+
+\newpage
+
+\bibliographystyle{apalike}
+\bibliography{references}
+
+\end{document}

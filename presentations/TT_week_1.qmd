@@ -1,0 +1,192 @@
+---
+title: "MPhil Thesis: TT Week 1"
+author: "Mohammad-Shah Karim"
+date: "28 April 2026"
+
+bibliography: ../references/TT_week1.bib
+
+execute:
+  dir: project
+
+format:
+  revealjs:
+    css: styles.css
+    toc: true
+    toc-depth: 1
+    slideNumber: true
+    auto: true
+    scrollable: true
+    embed-resources: true
+    self-contained-math: true
+---
+
+# Recap
+
+## The theoretical model
+
+The previous model provided three key results:
+
+- A static **incentive trap**: when rebates rise sharply with market size, monopoly rents $V_M$ can fall from a rise in $M$
+- **Strategic substitutes** in R\&D effort across firms
+- A **dynamic extension** in which period 1 outcomes lower the future cost of effort $k(\pi_{i,1})$
+
+**This model was written for a single representative therapeutic class!**
+
+## The new puzzle from RQ3
+
+- Most classes have positive patent coefficients
+- A and N (nervous system): **insignificant**, near zero
+- Class P excluded
+
+A single representative-class model cannot reconcile a **negative aggregate** RQ1 coefficient with **mostly positive** class-level coefficients.
+
+# Adjusting the model
+
+## Summary of changes
+
+| Before | After |
+|---|---|
+| Single representative class | Class index $c \in C$ |
+| Generic $\tau(M)$ | Class-specific $\tau(M)$ with $\tau'_c >0$ |
+| No link to competitive structure | $\tau'_c(M_c)$ increasing in substitutability $n_c$ |
+
+## Class-indexing
+
+Each class $c$ is now characterised by:
+
+- A class-specific market size $M_c$ that shifts by $\Delta M_c \geq 0$
+- A class-specific rebate function $\tau_c(M_c)$ with $\tau'_c(M_c) > 0$
+- A measure of within-class substitutability $n_c \geq 1$
+
+Assume that classes with more therapeutic substitutes face steeper rebate schedules.
+
+## Why rebate steepness depends on $n_c$
+
+The rebate slope can represent competitiveness:
+
+- When the PDL committee has many interchangeable molecules to choose from, it can credibly threaten rejection unless deeper rebates are offered
+
+Therefore, we should expect:
+
+- Classes with more substitutes (high $n_c$) have steeper rebate schedules
+- Classes with fewer substitutes (low $n_c$) have flatter rebate schedules
+
+## Stage 3a — Monopoly
+
+For class $c$:
+
+$$
+V_c^M = M_c(\bar p - \bar c - \tau_c(M_c))
+$$
+
+The monopsony channel varies across classes through the slope of $\tau_c$:
+
+$$
+\frac{dV_c^M}{dM_c}
+= \underbrace{(\bar p - \bar c - \tau_c)}_{\text{Volume effect (+)}}
+\; - \;
+\underbrace{M_c \tau_c'(M_c)}_{\text{Monopsony effect (-)}}
+$$
+
+The sign depends on $\tau_c$ and $\tau_c'$
+
+## Stage 3b — Duopoly
+
+The auction equilibrium remains unchanged:
+
+$$
+b_c(c) = c + \tau_c(M_c)
++ \frac{\int_c^{\bar c}(1-F(u))\,du}{1-F(c)}
+$$
+
+$$
+V_c^D = M_c \int_c^{\bar c}(1-F(u))\,du
+$$
+
+
+# The Class-Specific Threshold
+
+## Defining $M_c^*$
+
+Setting $dV_c^M/dM_c = 0$ defines the class-specific threshold $M_c^*$ **implicitly**:
+
+$$
+\bar p - \bar c - \tau_c(M_c^*) = M_c^* \, \tau_c'(M_c^*)
+$$
+
+At $M_c^*$, the marginal volume gain exactly equals the marginal rebate extraction.
+
+A unique interior solution exists whenever:
+
+- $\tau_c(0) < \bar p - \bar c$ (margins start positive), **and**
+- $M_c \tau_c'(M_c) \to \infty$ as $M_c \to \infty$ (rebate extraction eventually dominates)
+
+The trap binds in class $c$ iff:
+
+$$
+M_c^{post} \equiv M_c^{pre} + \Delta M_c > M_c^*
+$$
+
+## Result 1 — Substitutability lowers the threshold
+
+Since $\tau_c'(M_c)$ is increasing in $n_c$, $M_c^*$ is **decreasing** in $n_c$.
+
+- Classes with more therapeutic substitutes have steeper rebate schedules
+- The monopsony channel turns negative at a smaller market size
+- The trap is likelier to bind in competitive classes.
+
+## Result 2 — Larger shocks cross the threshold more often
+
+Classes with higher pre-expansion Medicaid share receive larger absolute shocks $\Delta M_c$, making it likelier that $M_c^{post} > M_c^*$.
+
+Reductions in innovation should concentrate in classes that are **both**:
+
+- Highly Medicaid-exposed (large $\Delta M_c$)
+- Therapeutically competitive (high $n_c$, hence steep $\tau_c'$)
+
+## The rent gap as sufficient statistic
+
+Effort is governed by:
+
+$$
+\Delta V_c \equiv V_c^M - V_c^D
+$$
+
+Two classes with identical $M_c^{post}$ can have different innovation responses if they differ in $n_c$:
+
+- High-$n_c$ class $\Rightarrow$ steep $\tau_c'$ $\Rightarrow$ compressed $\Delta V_c$ $\Rightarrow$ low effort
+- Low-$n_c$ class $\Rightarrow$ flat $\tau_c'$ $\Rightarrow$ wide $\Delta V_c$ $\Rightarrow$ high effort
+
+# Mapping to the DDD Results
+
+## Predicted DDD sign under different classes
+
+| Regime | Condition | Predicted $\beta_c$ |
+|---|---|---|
+| Volume-dominated | $M_c^{post} < M_c^*$ | $> 0$ |
+| Near-threshold | $M_c^{post} \approx M_c^*$ | $\approx 0$ |
+| Trap-bound | $M_c^{post} > M_c^*$ | $< 0$ |
+
+## Empirical classification (RQ3)
+
+| Regime | $\hat{\beta_c}$ | Classes |
+|---|---|---|
+| Volume-dominated | $> 0$ | B, C, D, G, H, J, L, M, R, S |
+| Near-threshold | $\approx 0$ | A, N |
+
+Class N is particularly important:
+
+- Largest Medicaid volume
+- Highest substitutability
+- This is where the model expects the threshold
+
+## How the model resolves the puzzle
+
+- **RQ1** (negative aggregate) is key puzzle
+- **RQ3** (mostly positive, a few near-zero) shows the response is genuinely **heterogeneous** — no class actually collapses
+- **The model** explains which classes are near-threshold and why
+
+Negative coefficients may be seen under RQ1 due to negative weights.
+
+Next steps: consider different estimation methods for RQ1 and RQ2.
+
