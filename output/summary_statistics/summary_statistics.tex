@@ -1,0 +1,36 @@
+\begin{table}[!h]
+\centering
+\caption{\label{tab:source_descriptives}Source-level descriptive statistics}
+\centering
+\resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
+\begin{tabular}[t]{lrrrrr}
+\toprule
+Variable & N & Mean & SD & Min & Max\\
+\midrule
+\addlinespace[0.5em]
+\multicolumn{6}{l}{\textit{State Drug Utilisation Data}}\\
+\hspace{1em}Unique labeler codes & 1,312 & - & - & - & -\\
+\hspace{1em}Unique NDCs & 94,128 & - & - & - & -\\
+\hspace{1em}States & 53 & - & - & - & -\\
+\hspace{1em}Prescriptions & 42,031,131 & 1,025.41 & 17,933.34 & 11 & 2,519,197.00\\
+\hspace{1em}Medicaid reimbursement (\$000s) & 42,031,131 & 50.11 & 1,029.85 & 0 & 1,061,049.01\\
+\hspace{1em}Non-Medicaid reimbursement (\$000s) & 42,031,131 & 2.32 & 67.30 & 0 & 55,752.11\\
+\addlinespace[0.5em]
+\multicolumn{6}{l}{\textit{USPTO PatentsView}}\\
+\hspace{1em}Unique assignees & 27,883 & - & - & - & -\\
+\hspace{1em}Unique ATC classes & 14 & - & - & - & \vphantom{1} -\\
+\hspace{1em}Patents per firm-year-ATC & 257,484 & 4.21 & 11.02 & 1 & 540.00\\
+\addlinespace[0.5em]
+\multicolumn{6}{l}{\textit{Drugs@FDA}}\\
+\hspace{1em}Unique sponsors & 1,465 & - & - & - & -\\
+\hspace{1em}Unique ATC classes & 14 & - & - & - & -\\
+\hspace{1em}Approvals per sponsor-year-ATC & 14,055 & 7.68 & 9.46 & 1 & 180.00\\
+\addlinespace[0.5em]
+\multicolumn{6}{l}{\textit{Texas Vendor Drug Program}}\\
+\hspace{1em}Unique NDCs & 25,728 & - & - & - & -\\
+\hspace{1em}Preferred (PDL) & 25,728 & 0.54 & 0.50 & 0 & 1.00\\
+\hspace{1em}PT stage pass & 25,728 & 0.68 & 0.47 & 0 & 1.00\\
+\hspace{1em}Price stage pass & 25,728 & 0.75 & 0.43 & 0 & 1.00\\
+\bottomrule
+\end{tabular}}
+\end{table}
