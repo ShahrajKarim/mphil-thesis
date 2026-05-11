@@ -203,7 +203,7 @@ M_star_grid = np.array([M_star(P["alpha"], b) for b in beta_grid])
 # ─────────────────────────────────────────────
 fig = plt.figure(figsize=(14, 14), facecolor=STYLE["fig_bg"])
 fig.suptitle(
-    "Comparative Statics (TT Week 1): Class-Indexed Pharmaceutical Innovation",
+    "Comparative Statics: Class-Indexed Pharmaceutical Innovation",
     fontsize=13, fontweight="bold", y=0.99
 )
 
