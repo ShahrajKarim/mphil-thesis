@@ -45,7 +45,7 @@
 
 \section{Data}
 
-\subsection{Overview and Unit of Observation}
+\subsection{Overview}
 
 The empirical analysis draws on five sources: the Medicaid State Drug Utilisation Data (SDUD); the Drugs@FDA database; patent bulk data files distributed by the USPTO; the Texas Vendor Drug Program formulary; and the National Library of Medicine's RxNorm and RxClass systems. Table~\ref{tab:data_overview} summarises the contribution of each source to the final dataset.
 
@@ -66,11 +66,7 @@ RxNorm / RxClass & RxCUI, ATC code & Therapeutic classification of NDC and activ
 \end{tabular}
 \end{table}
 
-The final constructed dataset is a balanced panel at the firm $\times$ ATC Level 1 $\times$ year $\times$ quarter level, spanning 2010 to 2025. The dataset   uses observations from 2010 since the constructed pre-expansion Medicaid exposure measures utilise at least two years of pre-reform prescription data - the SDUD is downloaded from 2005 onwards for this reason. All datasets are harmonised to the World Health Organisation's Anatomical Therapeutic Chemical (ATC) classification system at Level 1, as described in Section~\ref{sec:atc}. The construction of treatment and outcome variables, including the Medicaid exposure measures and PDL exposure variables, are described in the Methodology section.
-
-\subsection{Summary Statistics}
-
-Table~\ref{tab:source_descriptives} reports source-level descriptive statistics for each of the four datasets used in the analysis.
+The final constructed dataset is a balanced panel at the firm $\times$ ATC Level 1 $\times$ year $\times$ quarter level, spanning from 2010 to 2025. The dataset uses observations from 2010 since the constructed pre-expansion Medicaid exposure measures utilise at least two years of pre-reform prescription data - the SDUD is downloaded from 2005 onwards for this reason. All datasets are harmonised to the World Health Organisation's Anatomical Therapeutic Chemical (ATC) classification system at Level 1, as described in Section~\ref{sec:atc}. Table~\ref{tab:source_descriptives} reports descriptive statistics for each of the four datasets used in the analysis.
 
 \input{../output/summary_statistics/summary_statistics.tex}
 
@@ -97,7 +93,7 @@ Reimbursement amount & Total reimbursement for a given drug, split into Medicaid
 \end{tabular}
 \end{table}
 
-\subsubsection{National Drug Code structure}
+\subsubsection{National Drug Code}
 
 The NDC is an 11-digit product identifier - this contains a 5-digit labeler code, a 4-digit product code, and a 2-digit package code. The SDUD stores the NDC as an 11-digit string without hyphens. However, throughout this analysis the labeler, product, and package components are extracted by splitting on character position (positions 1-5, 6-9, 10-11). External sources that use the hyphenated three-segment format such as the FDA NDC directory require the inverse transformation where each raw segment is zero-padded to its standard width before concatenation. This normalisation is applied uniformly across all datasets to ensure that NDC-based joins do not introduce incorrect matches due to formatting differences.
 
@@ -175,7 +171,7 @@ Since the Drugs@FDA database identifies firms by their name as opposed to their 
 
 Patent data is obtained from the USPTO PatentsView data files. PatentsView harmonises patent records and provides disambiguated assignee information. Specifically, for this study, five files are used: the base patent file, which provides grant dates; the current CPC classification file; the disambiguated assignee file; the CPC group title file; and the WIPO technology field classification file.
 
-\subsubsection{Filtering for relevant patents}
+\subsubsection{Relevant patents}
 
 The universe of patents is filtered in two steps. First, patents are restricted to those classified under the WIPO technology field ``Pharmaceuticals''. This provides a broad filter for patents associated with pharmaceutical products, including biological and chemical technologies. Within this set, patents are restricted to those that fall under the ``A61P'' subclass - this allows for the study to focus on patents with a stated therapeutic use. Patents classified in A61P but not in the WIPO Pharmaceuticals field are also included, as some patent-level WIPO assignments may be incomplete. The A61P covers the therapeutic activity of chemical compounds or medicinal preparations, therefore this is the most relevant CPC subclass for mapping patents to therapeutic classes. Patents classified under A61P are kept even if they are not assigned to the WIPO pharmaceutical field, since some patent-level WIPO assignments may be incomplete. This allows for the study to focus on patents that are most likely to be related to therapeutic drug innovation.
 
@@ -249,7 +245,7 @@ V & Various \\
 \end{tabular}
 \end{table}
 
-\subsection{Firm Harmonisation Across Sources}
+\subsection{Firm Harmonisation}
 \label{sec:firmharm}
 
 The main datasets identify firms using different methods. For example, the SDUD uses NDC labeler codes, which are first grouped into firm clusters and then used as the firm universe for the analysis. The Drugs@FDA instead uses sponsor names to identify firms, while PatentsView identifies firms using their disambiguated assignee names. FDA sponsors and patent assignees are therefore linked back to NDC firm clusters. Table~\ref{tab:matchrates} summarises the match rates across the main linking steps.
@@ -272,13 +268,20 @@ Patent assignees to NDC firms           &     28,143 & 27.10\% \\
 \end{tabular}
 \end{table}
 
-\subsection{Panel Assembly}
+\subsection{Panel Construction}
 \label{sec:panel}
 
 The final panels are constructed separately for the patent and FDA approval outcomes. Both patent counts and FDA approvals are collapsed to the firm $\times$ ATC Level 1 $\times$ year $\times$ quarter level. The SDUD prescription and reimbursement variables are first aggregated to the firm $\times$ ATC Level 1 $\times$ year $\times$ quarter level and are then merged with the innovation panels. PDL variables from the Texas Vendor Drug Program are merged at the firm $\times$ ATC Level 1 level - details relating to their exact construction are described in the Methodology section.
 
-Each panel is balanced over the firm-class combinations observed in the data. In cases where no patent/approval observations for a given firm-class-year-quarter, an outcome value of zero is assigned. Class-level demand variables are calculated at the class-year-quarter observations, so that firms active in the same therapeutic class and quarter share the same class-level prescription aggregates. Summary statistics for each of the balanced panels are reported in Table~\ref{tab:panel_descriptives}.
+Each panel is balanced over the firm-class combinations observed in the data. In cases where no patent/approval observations for a given firm-class-year-quarter, an outcome value of zero is assigned. Class-level demand variables are calculated at the class-year-quarter observations, so that firms active in the same therapeutic class and quarter share the same class-level prescription aggregates. Summary statistics for each of the balanced panels are reported in Table~\ref{tab:panel_descriptives}. Histograms for variation in constructed PDL exposure variable in the interval $(0,1]$ can be found in Figure~\ref{fig:pdl_histogram}.
 
 \input{../output/summary_statistics/panel_statistics.tex}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{../output/summary_statistics/pdl_exposure_histogram.pdf}
+  \caption{Distribution of PDL exposure in constructed panels}
+  \label{fig:pdl_histogram}
+\end{figure}
 
 \end{document}
