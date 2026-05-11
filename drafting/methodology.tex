@@ -21,7 +21,13 @@
 \usepackage{booktabs}
 \pagestyle{plain}
 
-\title{MPhil Thesis: Data and Methodology}
+% --- Word count (requires compiling with --shell-escape) ---
+\newcommand{\wordcount}{%
+  \immediate\write18{texcount -sum -1 \jobname.tex 2>/dev/null | python3 -c "import sys; n=sys.stdin.read().strip(); print(f'{int(n):,}') if n.isdigit() else print('?')" > \jobname.wc}%
+  \input{\jobname.wc}%
+}
+
+\title{MPhil Thesis: Methodology}
 \author{Mohammad-Shah Karim}
 \date{March 2026}
 
@@ -29,108 +35,43 @@
 
 \maketitle
 
+\begin{center}
+  \small Word count: \wordcount
+\end{center}
+
 \tableofcontents
 
 \newpage
 
-\section{Data}
+\section{Methodology}
 
-This section describes the data used in the empirical analysis of this thesis, the procedures used to harmonise them, and the methods used to construct the key variables. The final estimation dataset is a balanced panel containing observations for each firm at the therapeutic class $\times$ year level. Innovation is measured using patent counts and FDA drug approvals, while treatment intensity is measured using ex-post and ex-ante Medicaid utilisation shares and Preferred Drug List (PDL) variables are derived from the Texas Vendor Drug Program.
+\subsection{Empirical Strategy}
 
-\subsection{Data Sources}
+The empirical analysis takes on three stages. First, an event-study specification is utilised to estimate the aggregate innovation response to Medicaid exposure across therapeutic classes. PDL exposure is then incorporated to examine whether the innovation response differs depending on firms' exposure to Medicaid procurement mechanisms. Third, the post-expansion innovation response is allowed to vary for each therapeutic area in order to assess heterogeneity in innovation responses. The main outcomes are patent counts and FDA approvals, measured at the firm-therapeutic-class level.
 
-\subsubsection{Medicaid State Drug Utilisation Data}
+The specifications are motivated by the market-size channel in pharmaceutical innovation, where an increase in expected demand should increase the expected return to R\&D and therefore raise innovation incentives \citep{dubois2015market, finkelstein2004static}. Since the additional demand flows through a public buyer with rebate authority and formulary control, the Medicaid setting complicates this result. For this reason, the empirical analysis first aims to specifically examine whether the innovation response differs with a firm's exposure to the PDL.
 
-The main source for Medicaid prescription demand is the State Drug Utilisation Data (SDUD) maintained by the Centers for Medicare and Medicaid Services (CMS). The SDUD was established when the Medicaid Drug rebate Program started, and this records outpatient prescription drugs reimbursed by state Medicaid programmes at the drug-state-quarter level. It covers all fifty states and the District of Columbia, and spans the period 2010 to 2024 in this study. Each record is identified by an 11-digit National Drug Code (NDC) and reports prescription counts, units reimbursed, and reimbursement amounts, split into Medicaid and non-Medicaid components.
+\subsection{Identification}
 
-The SDUD plays two roles in the analysis. First, it is used to construct therapeutic-class Medicaid exposure measures, which form the main continuous treatment variable. Second, once merged with PDL information, it is used to construct firm-level measures of exposure to formulary placement and pricing pressure.
+The empirical strategy treats the ACA Medicaid expansion as a national shock to the expected profitability of drugs in therapeutic classes with different levels of pre-existing Medicaid exposure. While the expansion itself was adopted at the state level, innovation in the pharmaceutical industry is not a state-specific decision. Pharmaceutical firms develop drugs for the national markets, and as a result, the expected returns depend on anticipated sales across the United States as opposed to the realised expansion within any single expansion state. For this reason the empirical analysis does not leverage the staggered state adoption policy as the main source of variation. Instead, 2014 is treated as the relevant policy shock for innovation outcomes.
 
-\begin{table}[htbp]
-\centering
-\caption{Key variables in the SDUD}
-\begin{tabular}{p{0.22\textwidth} p{0.68\textwidth}}
-\toprule
-Variable & Description \\
-\midrule
-NDC & 11-digit code identifying each drug product, split into labeler code, product code, and package size \\
-Drug name & Proprietary or generic name of the drug \\
-Units reimbursed & Number of units reimbursed by Medicaid in the state-year-quarter \\
-Number of prescriptions & Number of prescriptions filled for a given drug in the state-year-quarter \\
-Reimbursement amount & Total reimbursement for a given drug, split into Medicaid and non-Medicaid components \\
-\bottomrule
-\end{tabular}
-\end{table}
+The expansion increased the number of individuals covered by Medicaid, and therefore increased the volume of prescriptions to be reimbursed through Medicaid. Since some therapeutic areas in Medicaid accounted for a larger share of prescriptions prior to the expansion, these areas were more exposed to the market-size shift compared with classes in which Medicaid played a smaller role. This indicates the shock did not hit all therapeutic classes equally. Therefore, the identifying variation stems from cross-class differences in pre-expansion Medicaid exposure. Firms operating in high-exposure classes are interpreted as facing a larger Medicaid demand shock after 2014. If the expansion increased expected demand in high-Medicaid classes, standard market-size models would predict a stronger innovation response in those classes after 2014 relative to less-exposed classes.
 
-The SDUD is accessed through the Medicaid API and downloaded as annual CSV files.
+The main identifying assumption for each of the research questions is parallel trends. That is, absent the ACA Medicaid expansion, innovation outcomes in high and low Medicaid-exposure classes would have followed a similar trajectory over time. In this setting, this means that patenting and FDA approvals in high-exposure classes would have evolved similarly to low-exposure classes had the Medicaid expansion not occurred.
 
-\subsubsection{Firm Identification and NDC Matching}
+This is plausible since the constructed Medicaid exposure measure is largely determined by the patient population using drugs in each therapeutic class before 2014. Some classes have higher Medicaid utilisation due to treating conditions that are more prevalent amongst lower income Medicaid-eligible populations. This does not necessarily imply that those classes were on different innovation trajectories before the reform. Instead, innovation trends are likelier to depend on factors such as scientific opportunity. Consequently, there is no reason to expect classes with different exposure levels to Medicaid to have innovation outcome divergence absent the ACA expansion.
 
-A key difficulty in the SDUD is that it does not report firm names directly. Firms are instead identified through the first 5 digits of the NDC - the labeler code, this corresponds to the entity responsible for manufacturing or distributing the drug. Typically, pharmaceutical firms operate through multiple labeler codes because of subsidiaries or acquisitions thus labeler codes cannot be treated as firm identifiers without further processing.
+Since pharmaceutical R\&D operates over long development cycles, patents and FDA approvals observed in a given year typically reflect investment decisions made several years prior. However, this could indicate that does make the identification timing more specific, as there could be a divergence in innovation trajectories prior to the expansion. The event-study specification assesses this by estimating pre-2014 coefficients - small and statistically insignificant coefficients support the parallel trends assumption further as it implies that classes with differing Medicaid exposures followed similar trajectories prior to the reform.
 
-To address this, an FDA-NDC directory is created. Each labeler code is first linked to its registered labeler name. These names are then grouped into firm clusters using a text-similarity procedure. Firm names are cleaned by converting to lowercase, removing punctuation, and stripping common corporate suffixes such as Inc, Corp, LLC, and Pharmaceuticals. A TF-IDF representation is then constructed using unigram tokenisation, and pairwise cosine similarity is computed across all cleaned labeler names. An undirected graph is formed by linking pairs with cosine similarity above 0.85, and connected components in this graph define firm clusters. Each cluster is assigned the label of its first member as the canonical firm identifier. This procedure achieves a match rate of 95.18 per cent, linking 40,003,656 of 42,031,131 SDUD records to a canonical firm.
+Identification also requires that there were no contemporaneous shocks around 2014 that differentially affected innovation in high-Medicaid-exposure classes. Year fixed effects are used to absorb shocks to the pharmaceutical industry such as FDA regulation changes or industry-wide shifts in R\&D that affect all therapeutic areas within a given year. Given the fixed-effects, a confounding shock would therefore need to occur around 2014 and affect some therapeutic classes more than others. There are no clear candidates for such a shock, and other ACA provisions, including changes to private insurance markets and coverage mandates, affected the pharmaceutical sector more broadly and their effect would be absorbed by year fixed effects.
 
-\subsubsection{Patent Data}
-
-Patent data is drawn from the United States Patent and Trademark Office (USPTO) bulk files. The analysis uses four linked tables: the base patent file, which provides grant dates and titles; CPC classification codes; disambiguated assignee records; and WIPO technology field classifications. The sample is restricted to patents assigned to the WIPO field ``Pharmaceuticals'' and further restricted to those carrying the CPC subclass A61P, which denotes the therapeutic activity of chemical compounds or medicinal preparations. This restriction is intended to isolate patents directly related to pharmaceutical innovation and to exclude process patents, formulation patents without therapeutic claims, and non-pharmaceutical biotechnology patents.
-
-Each patent is assigned to one or more ATC Level 1 therapeutic classes using a manually constructed crosswalk from CPC groups within A61P to ATC codes. For example, patents classified under A61P9 are mapped to ATC class C, while those classified under A61P25 are mapped to ATC class N. The patent year and quarter are taken from the grant date, and the disambiguated assignee organisation name is used as the firm identifier.
-
-\subsubsection{Linking Patent Firms to SDUD Firms}
-
-Since patents identify firms using assignee names while the SDUD identifies firms through NDC labeler codes, an additional crosswalk is required to merge patent outcomes into the main panel. Consequently, a three-stage matching procedure is employed. First, patent assignee names and NDC labeler names are standardised using the same cleaning rules, and exact matches on cleaned names are retained. Next, unmatched patent firms are linked to NDC firms using a root-token match, where the root token is defined as the first alphabetic token of at least four characters. Then, the remaining unmatched firms undergo pairwise Jaro-Winkler matching, with matches accepted at a threshold of 0.90 and the highest-scoring NDC firm retained for each patent firm. This procedure links patent assignees to NDC labeler codes and allows patent counts to be merged into the firm $\times$ therapeutic class $\times$ year panel.
-
-\subsubsection{FDA Drug Approval Data}
-
-Drug approval data is obtained from the Drugs@FDA database, which reports New Drug Applications (NDAs), Abbreviated New Drug Applications (ANDAs), and Biologics License Applications (BLAs). The Submissions file is used to identify the first approval date for each application, thereby giving the earliest observation with submission status ``AP''. This is merged with the Applications file to recover sponsor information and with the Products file to recover active ingredients.
-
-Therapeutic classification is carried out in two steps. First, active ingredient strings are standardised and split to account for multi-ingredient products. Second, each normalised ingredient is queried against the National Library of Medicine's RxClass API, which returns ATC codes through the ATC1--4 class type. ATC Level 1 and Level 2 classifications are recovered from the returned codes using the first character and first three characters respectively. At the application level, assignments are collapsed so that each approved drug is linked to one or more ATC Level 1 classes. This procedure classifies 48,143 of 50,368 application-product observations, corresponding to a match rate of 95.58 per cent.
-
-Sponsor names are linked to NDC labeler codes using the same three-stage matching procedure used for patents, giving an 82.26 per cent match rate to the NDC firm universe. Approval records are then collapsed to the firm $\times$ ATC Level 1 $\times$ year $\times$ quarter level.
-
-\subsubsection{Texas Preferred Drug List Data}
-
-Data on PDL status are taken from the Texas Vendor Drug Program formulary files. Texas is used because its formulary files are machine-readable and contain a historical record of drug coverage decisions, including effective dates of Medicaid coverage and indicators for both clinical and PDL-related prior authorisation. Unlike many other states, whose PDL data are available only as static PDFs or current cross-sections, the Texas data allow a time-varying measure of drug-level preferred status to be constructed.
-
-Two binary variables are derived from the formulary records. The first, \texttt{pt\_stage\_pass}, is equal to one if the drug does not require clinical prior authorisation, indicating that it has passed the clinical review stage. The second, \texttt{price\_stage\_pass}, is equal to one if the drug does not require PDL-related prior authorisation, indicating that it has passed the pricing stage. A drug is classified as being on the PDL if and only if both conditions hold.
-
-These variables are merged to the national SDUD using the labeler, product, and package components of the NDC. The merged file is then used to construct firm-level PDL measures within each therapeutic class.
-
-\subsection{Therapeutic Classification}
-
-All datasets are harmonised to the World Health Organisation's Anatomical Therapeutic Chemical (ATC) classification system at Level 1. This level groups drugs into fourteen broad anatomical or therapeutic classes. Classes are broad enough to contain a meaningful number of firms, patents, and approvals, but narrow enough that products within a class remain plausible substitutes from the perspective of Medicaid formulary management.
-
-\begin{table}[htbp]
-\centering
-\caption{ATC Level 1 therapeutic classification}
-\begin{tabular}{ll}
-\toprule
-Code & Therapeutic Area \\
-\midrule
-A & Alimentary tract and metabolism \\
-B & Blood and blood-forming organs \\
-C & Cardiovascular system \\
-D & Dermatologicals \\
-G & Genito-urinary system and sex hormones \\
-H & Systemic hormonal preparations \\
-J & Anti-infectives for systemic use \\
-L & Antineoplastic and immunomodulating agents \\
-M & Musculo-skeletal system \\
-N & Nervous system \\
-P & Antiparasitic products, insecticides and repellents \\
-R & Respiratory system \\
-S & Sensory organs \\
-V & Various \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-For the SDUD, ATC codes are assigned by mapping each NDC to its corresponding RxCUI and then to ATC using the RxNorm API. For patents, the mapping proceeds from CPC groups within A61P to ATC Level 1 using a manually constructed crosswalk. For FDA approvals, the mapping is ingredient-based using the RxClass API. In each case, the Level 1 class is defined by the first character of the ATC code.
+The specifications include firm-class fixed effects and year fixed effects. Firm-class fixed effects absorb time-invariant differences in innovation levels across firm-class pairs. This is important since firms may specialise in particular therapeutic areas - separate firm and class fixed effects may not be able to capture this source of heterogeneity. Year fixed effects absorb aggregate shocks to pharmaceutical innovation that are common across classes in a given year. Standard errors are clustered at the firm level to account for serial correlation in innovation outcomes within firms over time, since a firm's current innovation activity may influence its future innovation behaviour.
 
 \subsection{Construction of Key Variables}
 
-\subsubsection{Ex-Ante Medicaid Market Exposure}
+\subsubsection{Ex-Ante Medicaid Market Share}
 
-Following the empirical framework established by \cite{NBERw28755} in their study of Medicaid expansions, the main exposure measure in this paper is based on Medicaid prescription shares prior to the ACA Medicaid expansion. For each therapeutic class, this is calculated as:
+Following the empirical framework established by \cite{NBERw28755} in their study of Medicaid expansions, the main exposure measure in this paper is based on ex-ante Medicaid market shares, calculated using prescription shares prior to the ACA Medicaid expansion. For each therapeutic class $c$, this predetermined variable is calculated as:
 \begin{equation}
 \text{MedicaidShare}_{c}
 =
@@ -140,86 +81,51 @@ Following the empirical framework established by \cite{NBERw28755} in their stud
 \sum_{t=2010}^{2013} \text{TotalPrescriptions}_{c,t}
 }
 \end{equation}
-This measure is constructed using Medicaid State Drug Utilization Data (SDUD), aggregated to the therapeutic-class level. The advantage of the pre-period construction is that it avoids using post-treatment outcomes to define treatment intensity. Classes with higher pre-expansion Medicaid shares are interpreted as those more exposed to the demand consequences of expansion. Although therapeutic classes with high Medicaid use may differ systematically in disease burden or patient demographics, or product characteristics, these differences are likely to be persistent over time, and the firm-class fixed-effects structure absorbs such time-invariant sources of heterogeneity.
+Classes with higher pre-expansion Medicaid shares are interpreted as those more exposed to the demand consequences of expansion and ex-ante construction avoids using post-treatment outcomes to define treatment intensity. Therapeutic classes may differ systematically in patient demographics or product characteristics, but these differences are likely to be persistent over time, thus the firm-class fixed-effects structure absorbs such time-invariant sources of heterogeneity.
 
-\subsubsection{Ex-Post Medicaid Market Exposure}
+\subsubsection{Ex-Post Medicaid Market Share}
 
-As a complement to the ex-ante measure, an ex-post exposure proxy based on realised demand shifts in the early years of the reform is also calculated. This is intended to capture the extent to which a therapeutic class actually experienced increased Medicaid demand in the immediate post-expansion period. Because this measure is closer to the realised response of the market, it may better reflect the economic environment faced by firms after expansion. However, at the same time, it is difficult to justify this measure as predetermined, thus estimates using this measure can be treated as a robustness check.
+As a complement to the ex-ante measure, an ex-post exposure proxy based on realised demand shifts in the early years of the reform is also calculated. For each therapeutic class, this is constructed as:
+\begin{equation}
+\text{MedicaidShare}_{c}
+=
+\frac{
+\sum_{t=2014}^{2015} \text{MedicaidPrescriptions}_{c,t}
+}{
+\sum_{t=2014}^{2015} \text{TotalPrescriptions}_{c,t}
+}
+\end{equation}
+This captures the extent to which a therapeutic class actually experienced increased Medicaid demand in the immediate post-expansion period. Since this measure is closer to the realised response of the market, it may reflect the environment faced by firms in the Medicaid market after expansion. Given that this measure is not predetermined, estimates using this variable should be interpreted as a robustness check.
 
 \subsubsection{PDL Exposure}
 
-To examine the institutional pricing mechanisms, I construct a measure of preferred drug list exposure at the firm-by-class level:
+To examine exposure to the Medicaid pricing mechanisms, a measure of preferred drug list exposure for firm $f$ in class $c$ is constructed using the universe of drugs $d$:
 
 \begin{equation}
-\text{PDL\_Exposure}_{fc}
+\text{PDL\_Exposure}_{f,c}
 =
 \frac{
-\sum_{d} \mathbf{1}\{d \text{ is a firm } f \text{ drug in class } c \text{ and } d \in \text{PDL}\}
+\sum_{d} \mathbf{1}\{d \in f, c\} \cdot \mathbf{1}\{d \in \text{PDL}\}
 }{
-\sum_{d} \mathbf{1}\{d \text{ is a firm } f \text{ drug in class } c\}
+\sum_{d} \mathbf{1}\{d \in f, c\}
 }
 \end{equation}
 
-Higher levels of PDL exposure indicate that a larger share of the firm's portfolio in a therapeutic class is subject to formulary selection and the pricing environment associated with preferred placement. Empirically, this variable is used as a proxy for exposure to procurement institutions rather than as a direct measure of rebates or negotiated prices.
-
-In addition to this continuous measure, stage-based indicators from Texas PDL data are constructed - these distinguish between the clinical stage and price-related stages of formulary access. These indicators are used in a later counterfactual exercise to examine whether innovation outcomes differ depending on whether products pass the clinical screen, the price-related screen, or both.
+Higher levels of PDL exposure indicate that a larger share of a firm's drug portfolio in a therapeutic class is subject to formulary selection and the pricing environment associated with preferred placement on the PDL. Empirically, this variable is used as a proxy for exposure to procurement institutions rather than as a direct measure of rebates or negotiated prices.
 
 \subsubsection{PDL Counterfactual Measures}
 
-For the counterfactual analysis, I construct three baseline-period firm-level measures from the Texas formulary data: the proportion of a firm's drugs in class $c$ that pass the clinical stage, the proportion that pass the pricing stage, and the proportion that pass both stages jointly. These variables are averaged over the baseline period and interacted with a post-2014 indicator in the triple-difference specification.
+Two time-invariant firm-class measures are constructed from the Texas Vendor Drug Program formulary data for use in the counterfactual analysis specification. Each is defined as the share of a firm's NDCs in class $c$ satisfying a given PDL criterion, averaged over the baseline period 2010 to 2014:
 
-\subsection{Panel Construction and Balancing}
+\begin{equation}
+\text{PT\_Pass}_{f,c} = \frac{\sum_{d} \mathbf{1}\{d \in f, c\} \cdot \mathbf{1}\{\text{PT\_Stage\_Pass}_d = 1\}}{\sum_{d} \mathbf{1}\{d \in f, c\}}
+\end{equation}
 
-The final estimation dataset is a balanced panel at the firm $\times$ ATC Level 1 $\times$ year $\times$ quarter level, covering 2010 to 2025. After collapsing innovation outcomes and merging them with the SDUD-based demand and PDL variables, the panel is balanced by completing all firm $\times$ class $\times$ time combinations and setting missing innovation counts equal to zero. Time-invariant exposure variables are filled within firm-class cells, while aggregate class-level demand measures are filled within class-time cells.
+\begin{equation}
+\text{Price\_Pass}_{f,c} = \frac{\sum_{d} \mathbf{1}\{d \in f, c\} \cdot \mathbf{1}\{\text{Price\_Stage\_Pass}_d = 1\}}{\sum_{d} \mathbf{1}\{d \in f, c\}}
+\end{equation}
 
-For patent regressions, the panel includes firm $\times$ ATC Level 1 fixed effects and year fixed effects. The FDA approval panel is constructed analogously, replacing patent dates with approval dates. Standard errors are clustered at the firm level throughout.
-
-\subsection{Representativeness of the Texas PDL}
-
-Since the PDL counterfactual analysis relies on a single state's formulary data, it is useful to assess whether the Texas PDL is broadly representative of formulary choices elsewhere. To do so, I compute pairwise overlap rates between the Texas PDL and the current preferred drug lists of New York, California, and Washington. For each state pair, overlap is measured as the share of drugs on one state's PDL that also appear on the other state's PDL, matching on the labeler and product components of the NDC.
-
-\begin{table}[htbp]
-\centering
-\caption{Pairwise overlap of state Preferred Drug Lists}
-\begin{tabular}{lllll}
-\toprule
-State 1 & State 2 & Overlap 1 & Overlap 2 & Max overlap \\
-\midrule
-New York & Texas & 0.375 & 0.950 & 0.950 \\
-California & Texas & 0.196 & 0.197 & 0.197 \\
-Washington & Texas & 0.223 & 0.812 & 0.812 \\
-California & New York & 0.722 & 0.230 & 0.722 \\
-California & Washington & 0.384 & 0.106 & 0.384 \\
-\bottomrule
-\end{tabular}
-
-\vspace{0.5em}
-\footnotesize
-\textit{Notes:} Overlap 1 denotes the share of drugs in State 1's PDL that also appear in State 2's PDL. Overlap 2 denotes the reverse. Matching is conducted at the labeler $\times$ product NDC level.
-\end{table}
-
-The overlap rates indicate that 95.0 per cent of drugs on the Texas PDL also appear on the New York PDL, while 81.2 per cent also appear on the Washington PDL. Overlap with California is substantially lower, at 19.7 per cent in both directions, reflecting California's distinct formulary structure under Medi-Cal Rx. Taken together, the comparison suggests that the Texas PDL is not idiosyncratic, although it should not be treated as a literal proxy for every state's formulary. In this thesis, the Texas data are used primarily to identify the two-stage structure of PDL placement rather than the exact set of preferred drugs nationwide.
-
-\subsection{The Rebate Market Size Relationship}
-
-A central assumption of the theoretical framework is that the rebate wedge $\tau(M)$ is increasing in Medicaid market size. To examine this, I construct a measure of the per-prescription rebate from the SDUD using reimbursement amounts and prescription volume at the drug-state-year level. States are then assigned to their respective multi-state purchasing alliances---the Sovereign States Drug Consortium, the National Medicaid Pooling Initiative, and the Top Dollar programme---so that market size is measured at the level of the effective bargaining unit. Market size is defined as total prescription volume within the alliance-year.
-
-Regressing the per-prescription rebate on the logarithm of market size, while controlling for ATC Level 1 fixed effects and year fixed effects, yields a coefficient of 5.51 with a standard error of 0.035, significant at the 0.1 per cent level. This is consistent with the view that larger Medicaid markets extract deeper rebates, as required by the condition $\tau'(M) > 0$ in the theoretical model.
-
-
-\newpage
-
-\section{Methodology}
-
-\subsection{Empirical Strategy}
-
-This thesis investigates how the 2014 ACA Medicaid expansion affected pharmaceutical innovation across therapeutic classes. While the expansion raised public insurance coverage across the population, the magnitude of this effect was not uniform across the pharmaceutical industry. In particular, some therapeutic classes were more exposed to Medicaid demand prior to the reform and, as a result, stood to experience a larger potential change in expected market conditions after the ACA reform. This cross-class variation is exploited using event-study designs that compare innovation outcomes in classes with higher pre-expansion Medicaid exposure to those in classes with lower exposure, before and after 2014.
-
-The analysis is motivated by a central theoretical point of tension. Under standard market-size models, a positive demand shock raises the expected returns to R\&D, thereby incentivising innovation activity \citep{dubois2015market, finkelstein2004static}. However, in the Medicaid environment, the relevant buyer is a large public monopolist. Consequently, greater population coverage may also strengthen procurement leverage and intensify pricing pressure. To capure this, the empirical strategy proceeds in two steps. First,the overall aggregate innovation response to the Medicaid expansion is estimated across therapeutic classes. Second, analysis isolates the mechanism by estimating the responsiveness of innovation volume to exposure of the PDL. This second step provides a direct proxy for the extent to which firms' products are subject to formulary selection and price-related constraints.
-
-The fundamental identifying assumption for this empirical strategy is the parallel trends assumption. Specifically, in the absence of the Medicaid expansion, innovation outcomes in therapeutic classes with different levels of pre-expansion Medicaid exposure would have followed parallel trajectories. While such a counterfactual cannot be directly tested, the event-study framework allows for its plausibility to be assessed by examining pre-treatment dynamics. For this to hold, the pre-2014 coefficients should be small and statistically insignificant, indicating no systematic deviations in R\&D activity prior to the policy shock. The absence of pre-treatment divergence supports the assumption that, had the Medicaid expansion not occured, innovation would have evolved similarly across therapeutic classes, allowing low-exposure classes to serve as a valid counterfactual. 
-
-Therapeutic classes with higher Medicaid exposure may differ systematically from other classes in unobservable ways that also affect R\&D investment. To address this, the main specifications include firm-by-therapeutic-class fixed effects, which absorb all time-invariant differences in innovation levels across firms-market pairs. Additionally, year fixed effects absorb aggregate systematic shocks affecting all firms in a given year. Standard errors are clustered at the firm level to allow for serial correlation in innovation outcomes within firms over time, which may be possible since R\&D financing can depend on internal cash flow constraints which occurs at the firm level.
+These proportions are treated as time-invariant firm-class characteristics. Drugs with no match in the Texas formulary are assigned a value of zero for all three measures.
 
 \subsection{Research Questions}
 
@@ -229,19 +135,17 @@ The first research question asks whether therapeutic classes with greater Medica
 \begin{equation}
 Y_{f,c,t} = \alpha_{f,c} + \lambda_t + \sum_{\tau \neq 2013} \beta_{\tau}\left(\mathbf{1}\{t=\tau\} \times \text{MedicaidShare}_c\right) + \varepsilon_{f,c,t}
 \end{equation}
-where $Y_{f,c,t}$ is an innovation outcome for firm $f$, therapeutic class $c$, and year $t$. The main outcomes are patent counts and FDA approvals. $\text{MedicaidShare}_c$ measures pre-expansion Medicaid exposure in class $c$, $\alpha_{f,c}$ denotes firm-by-class fixed effects, and $\lambda_t$ denotes year fixed effects. Since the coefficient for 2013 is omitted, each $\beta_{\tau}$ coefficient captures the differential innovation outcome associated with Medicaid demand shock in year $\tau$, relative to 2013.
+where $Y_{f,c,t}$ is an innovation outcome for firm $f$, therapeutic class $c$, and year $t$. The main outcomes are patent counts and FDA approvals. $\text{MedicaidShare}_c$ measures pre-expansion Medicaid exposure in class $c$, $\alpha_{f,c}$ denotes firm-by-class fixed effects, and $\lambda_t$ denotes year fixed effects. Since the coefficient for 2013 is omitted, each $\beta_{\tau}$ captures the differential innovation response associated with higher pre-expansion Medicaid exposure in year $\tau$, relative to 2013.
 
-This specification is estimated using both fixed-effects ordinary least squares (FEOLS) and fixed-effects Poisson (FE-Poisson) models. The linear FEOLS model provides a transparent baselineand accommodates the event-study structure directly. By plotting the linear interaction coefficients, the FE-OLS specification provides a straightforward, visually intuitive assessment of both the parallel trends assumption and the dynamic evolution of the treatment effect over time.
+This specification is estimated using both fixed-effects ordinary least squares (FEOLS) and fixed-effects Poisson (FE-Poisson) models. The linear FEOLS model provides a baseline and accommodates the event-study structure directly. By plotting the linear interaction coefficients, the FEOLS specification provides a straightforward, visually intuitive assessment of both the parallel trends assumption and the dynamic evolution of the treatment effect over time.
 
-Innovation outcomes, such as patent grants and FDA approvals, are non-negative, and negatively skewed integer counts. Given this underlying data-generating process, the specification is also estimated using a FE Poisson model. The Poisson estimator is suitable in this setting since it can handle count data and zero-valued observations without requiring additional adjustments in functional form. Provided the conditional mean is correctly specified, the Poisson estimator provides consistent estimates even if the underlying data exhibits significant overdispersion \citep{wooldridge1999distribution}. By estimating both the linear and Poisson estimates, the analysis ensures that the main findings are robust to alternative distributional assumptions, confirming that the results are driven by the economic mechanism rather than the choice of estimator.
+Innovation outcomes, such as patent grants and FDA approvals, are non-negative, and negatively skewed integer counts. Given this underlying data-generating process, the specification is also estimated using a FE Poisson model. The Poisson estimator is suitable in this setting since it can handle count data and zero-valued observations without requiring additional adjustments in functional form, and according to \cite{wooldridge1999distribution} provided the conditional mean is correctly specified, the Poisson estimator provides consistent estimates even if the underlying data exhibits significant overdispersion. Therefore, estimating both linear and Poisson specifications allows the analysis to assess whether the main findings are sensitive to the treatment of the count nature of the outcomes.
 
-Both ex-ante and ex-post exposure measure are used to measure $\text{MedicaidShare}_{c}$. The ex-ante measure is based on pre-2014 Medicaid prescription shares and captures exposure that is predetermined with respect to the policy change. The ex-post measure instead utilises realised post-expansion demand shifts and is interpreted more cautiously, as it potentially contains the contemporaneous market response induced by the ACA.
+Both ex-ante and ex-post exposure measures are used to measure $\text{MedicaidShare}_{c}$. The ex-ante measure is based on pre-2014 Medicaid prescription shares and captures exposure that is predetermined with respect to the policy change. The ex-post measure instead utilises realised post-expansion demand shifts and is interpreted more cautiously, as it potentially contains the contemporaneous market response induced by the ACA.
 
-\subsubsection{RQ2: Market Size and PDL Pricing Pressure}
+\subsubsection{RQ2: Market Size and PDL Exposure}
 
-The second research question asks whether the innovation response to Medicaid expansion differs depending on firms' exposure to PDL institutions. The purpose of this exercise is to now separate, the role of expanded market size (and therefore demand) from the role of pricing pressures induced by Medicaid's PDL.
-
-The event-study specification takes on the form:
+The second research question asks whether the innovation response to Medicaid expansion differs depending on a firm's exposure to the PDL institutions. The event-study specification takes on form:
 
 \begin{equation}
 \begin{aligned}
@@ -256,26 +160,24 @@ Y_{f,c,t} =\;&
 \end{equation}
 
 
-where $\text{PDL\_Exposure}_{f,c}$ measures the extent to which firm $f$'s portfolio in class $c$ is exposed to pricing pressures within the PDL. This is constructed as the share of the firm's drugs in a given therapeutic-class that appear on the PDL. The coefficients on the $\text{MedicaidShare}_c$ interactions capture the response associated with Medicaid-related market size over time, while the coefficients on the $\text{PDL\_exposure}_{f,c}$ interactions capture how innovation varies with firms' exposure to procurement institutions with time following the policy shift.
+where $\text{PDL\_Exposure}_{f,c}$ measures the extent to which firm $f$'s portfolio in class $c$ is exposed to Medicaid's formulary institutions. This is constructed as the share of the firm's drugs in a given therapeutic class that appear on the PDL. The coefficients on the $\text{MedicaidShare}_c$ interactions capture how innovation varies with Medicaid demand exposure in each year relative to 2013. The coefficients on the $\text{PDL\_Exposure}_{f,c}$ interactions capture how innovation varies with firms' exposure to Medicaid formulary institutions over the same period.
 
-While this model does not provide a clean structural decomposition of market size and pricing pressures, PDL exposure is utilised as a proxy rather than a direct measure of rebate extraction, monopoly power or bargaining intensity. Nevertheless, if higher PDL exposure is associated with weaker post-expansion innovation responses, this would be consistent with the institutional setting of Medicaid attenuating the standard market-size effect.
+While this model does not provide a clean structural decomposition of market size and pricing pressures, PDL exposure is utilised as a proxy rather than a direct measure of rebate extraction or bargaining intensity. Higher PDL exposure being associated with weaker post-expansion innovation responses would be consistent with the institutional setting of Medicaid weakening the standard market-size effect.
 
 \subsubsection{RQ3: Therapeutic-Class Heterogeneity}
 
-The third research question investigates whether the effects of the Medicaid expansion differ across therapeutic classes. This is important because Medicaid exposure, market structure and even procurement intensity may vary in unobserved ways across classes.
+The third research question investigates whether the effect of the Medicaid expansion differs across therapeutic classes. This is important because Medicaid exposure, market structure, and PDL exposure may vary across therapeutic areas in ways that are not captured by the aggregate specification.
 
-To examine this, a triple-difference specification allowing for the post-expansion effect of Medicaid exposure to vary by ATC class is specified:
+To examine this, a triple-interaction specification is specified. This allows the post-expansion effect of Medicaid exposure to vary by the ATC Level 1 class:
 \begin{equation}
 Y_{f,c,t} = \alpha_f + \delta_c + \lambda_t +
-\sum_c \theta_c \left(\mathbf{1}\{t \geq 2014\} \times \text{MedicaidShare}_c \times \mathbf{1}\{ATC = c\}\right) + \varepsilon_{f,c,t}
+\sum_{a \in \mathcal{A}} \theta_a \left(\mathbf{1}\{t \geq 2014\} \times \text{MedicaidShare}_c \times \mathbf{1}\{c = a\}\right) + \varepsilon_{f,c,t}
 \end{equation}
-where $\theta_c$ captures the post-2014 differential response associated with Medicaid exposure in therapeutic class $c$. While these estimates are not the main basis for identification, they can instead provide evidence on the composition of the response and help assess whether the aggregate results are driven by particular sectors of the pharmaceutical sector.
+where $a$ is a specific ATC within the universe of ATC Level 1 therapeutic areas $\mathcal{A}$, and $\theta_a$ captures the post-2014 differential response associated with Medicaid exposure in therapeutic area $a$. These estimates provide evidence on the heterogeneity of the response to the ACA and help assess whether the aggregate results are driven by particular therapeutic areas.
 
 \subsubsection{PDL Counterfactual Analysis}
 
-To examine the innovation mechanism more directly, a counterfactual design exploiting the two-stage structure of Medicaid Preferred Drug List (PDL) placement is estimated. As discussed in the institutional background, a drug receives preferred status if and only if it clears both a clinical stage, administered through the Pharmacy and Therapeutics (P\&T) process, and a cost-competitiveness stage, determined through the pricing process. Firms that fail at only one of these stages provide informative counterfactuals, since their products come close to securing preferred placement but are excluded on a specific margin.
-
-Using Texas Medicaid vendor data, firm-level measures of stage-specific PDL exposure are calculated. These measure the proportion of a firm's drugs that pass the clinical stage, the proportion that pass the pricing stage, and the proportion that pass both stages. These variables are then interacted with a post-expansion indicator, giving rise to the following triple-difference specification:
+In  order to examine the innovation mechanism more directly, a counterfactual design is estimated by leveraging the two-stage structure of Medicaid Preferred Drug List (PDL) placement. A drug receives preferred status if and only if it clears both a clinical (P\&T) stage, and a pricing stage. Firms whose products pass only one stage provide a useful counterfactual group for examining whether innovation responses differ against firms that either pass both or none of the margins. This is tested for using the following triple-difference specification, which isolates the post-expansion innovation responses associated with passing each stage in from the response associated with securing full PDL placement:
 
 \begin{equation}
 \begin{aligned}
@@ -287,11 +189,11 @@ Y_{f,c,t} =\;&
 \end{aligned}
 \end{equation}
 
-Since preferred placement requires success at both stages, the interaction $\text{PT\_Pass}_{f,c} \times \text{Price\_Pass}_{f,c}$ provides an approximation to an indicator for full PDL placement. The specification therefore functions as a triple-difference design that separates the value of passing each stage in isolation from the value of passing both jointly.
+where $\text{PT\_Pass}_{f,c}$, $\text{Price\_Pass}_{f,c}$ are proportions measuring the share of a firm's drugs that pass the clinical stage and the pricing stage for the PDL. The triple interacted term provides the proportion of a firm's drugs within a class that pass both stages jointly.
 
-This exercise yields three counterfactual comparisons. The coefficient $\beta_1$ captures the post-expansion change in innovation for firms whose drugs satisfy clinical standards but fail to be cost-competitive. These are drugs that appear therapeutically appropriate but do not obtain preferred placement due to being too expensive for the state. The coefficient $\beta_2$ captures the post-expansion change in innovation for firms whose drugs are price-competitive but do not pass the clinical stage. These are drugs that would satisfy the pricing condition for preferred placement but do not meet the relevant clinical criteria. The coefficient $\beta_3$ captures the additional innovation response for firms whose drugs clear both hurdles and therefore secure preferred status.
+The coefficient $\beta_1$ captures the post-expansion change in innovation associated with a higher share of a firm's drugs passing the clinical stage but not securing preferred placement. $\beta_2$ measures the post-expansion change in innovation associated with a higher share of a firm's drugs passing the pricing stage but not meeting the clinical criteria for preferred placement. $\beta_3$ captures the additional innovation response associated with a higher share of drugs passing both stages and therefore securing preferred status.
 
-The purpose of this exercise is not to identify the full structural effect of the PDL process. Rather, it is intended to assess whether innovation outcomes respond more favourably when firms are able to clear both hurdles simultaneously. If so, that pattern would be consistent with the broader interpretation that the profitability relevant for innovation depends jointly on clinical acceptability and procurement terms. More generally, if the partial-success categories exhibit weaker or negative post-expansion coefficients while full PDL placement is associated with a more favourable response,MP this would support the theoretical mechanism in which expansion compresses expected profits for all but the most favourably positioned firms.
+This exercise is not intended to identify the full structural effect of the PDL process. However, it tests whether the innovation response differs across firms depending on their position within the PDL. If firms which pass both stages more often experience more favourable innovation responses, then this would suggest that preferred placement on the PDL affects the profitability of innovation.
 
 \newpage
 
