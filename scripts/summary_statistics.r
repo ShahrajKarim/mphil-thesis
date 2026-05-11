@@ -3,6 +3,8 @@
 # Builds a source-level descriptive statistics table followed by
 # summary statistics for each balanced panel.
 # Outputs output/summary_statistics/summary_statistics.tex
+#         output/summary_statistics/panel_statistics.tex
+#         output/summary_statistics/pdl_exposure_histogram.pdf
 
 # libraries
 
@@ -11,6 +13,7 @@ library(dplyr)
 library(readr)
 library(tidyr)
 library(lubridate)
+library(ggplot2)
 library(knitr)
 library(kableExtra)
 library(tibble)
@@ -145,12 +148,35 @@ pdl_stats <- bind_rows(pdl_counts, pdl_dist)
 patents_panel <- read_csv(
   here("processed_data/patents/patents_sdud_pdl_merged.csv"),
   show_col_types = FALSE
-) |>
-  mutate(medicaid_share = ifelse(
-    ATC1_medicaid_reimbursed + ATC1_non_medicaid_reimbursed > 0,
-    ATC1_medicaid_reimbursed / (ATC1_medicaid_reimbursed + ATC1_non_medicaid_reimbursed),
-    NA_real_
-  ))
+)
+
+patents_ex_ante_stats <- patents_panel |>
+  filter(patent_year >= 2010 & patent_year <= 2013) |>
+  distinct(ATC1, patent_year, patent_quarter, prescriptions)
+
+patents_ex_ante_total <- patents_ex_ante_stats |>
+  summarise(total = sum(prescriptions, na.rm = TRUE)) |>
+  pull()
+
+patents_ex_ante_demand <- patents_ex_ante_stats |>
+  group_by(ATC1) |>
+  summarise(d_ex_ante = sum(prescriptions, na.rm = TRUE) / patents_ex_ante_total, .groups = "drop")
+
+patents_ex_post_stats <- patents_panel |>
+  filter(patent_year %in% 2014:2015) |>
+  distinct(ATC1, patent_year, patent_quarter, prescriptions)
+
+patents_ex_post_total <- patents_ex_post_stats |>
+  summarise(total = sum(prescriptions, na.rm = TRUE)) |>
+  pull()
+
+patents_ex_post_demand <- patents_ex_post_stats |>
+  group_by(ATC1) |>
+  summarise(d_ex_post = sum(prescriptions, na.rm = TRUE) / patents_ex_post_total, .groups = "drop")
+
+patents_panel <- patents_panel |>
+  left_join(patents_ex_ante_demand, by = "ATC1") |>
+  left_join(patents_ex_post_demand, by = "ATC1")
 
 patents_panel_counts <- tibble(
   Variable = c("Unique firms", "Unique ATC classes", "Years covered"),
@@ -160,7 +186,7 @@ patents_panel_counts <- tibble(
 
 patents_panel_dist <- patents_panel |>
   summarise(across(
-    c(num_patents, in_pdl, medicaid_share),
+    c(num_patents, in_pdl, d_ex_ante, d_ex_post),
     list(N = ~sum(!is.na(.)), Mean = ~mean(., na.rm = TRUE), SD = ~sd(., na.rm = TRUE), Min = ~min(., na.rm = TRUE), Max = ~max(., na.rm = TRUE))
   )) |>
   pivot_longer(
@@ -171,7 +197,8 @@ patents_panel_dist <- patents_panel |>
   mutate(Variable = recode(Variable,
     "num_patents" = "Patents",
     "in_pdl" = "PDL exposure",
-    "medicaid_share" = "Medicaid share (class-level)"
+    "d_ex_ante" = "Ex Ante Medicaid Demand",
+    "d_ex_post" = "Ex Post Medicaid Demand"
   ))
 
 patents_panel_stats <- bind_rows(patents_panel_counts, patents_panel_dist)
@@ -181,12 +208,35 @@ patents_panel_stats <- bind_rows(patents_panel_counts, patents_panel_dist)
 fda_panel <- read_csv(
   here("processed_data/fda_approvals/fda_sdud_pdl_merged.csv"),
   show_col_types = FALSE
-) |>
-  mutate(medicaid_share = ifelse(
-    ATC1_medicaid_reimbursed + ATC1_non_medicaid_reimbursed > 0,
-    ATC1_medicaid_reimbursed / (ATC1_medicaid_reimbursed + ATC1_non_medicaid_reimbursed),
-    NA_real_
-  ))
+)
+
+fda_ex_ante_stats <- fda_panel |>
+  filter(approval_year >= 2010 & approval_year <= 2013) |>
+  distinct(atc_level1, approval_year, approval_quarter, prescriptions)
+
+fda_ex_ante_total <- fda_ex_ante_stats |>
+  summarise(total = sum(prescriptions, na.rm = TRUE)) |>
+  pull()
+
+fda_ex_ante_demand <- fda_ex_ante_stats |>
+  group_by(atc_level1) |>
+  summarise(d_ex_ante = sum(prescriptions, na.rm = TRUE) / fda_ex_ante_total, .groups = "drop")
+
+fda_ex_post_stats <- fda_panel |>
+  filter(approval_year %in% 2014:2015) |>
+  distinct(atc_level1, approval_year, approval_quarter, prescriptions)
+
+fda_ex_post_total <- fda_ex_post_stats |>
+  summarise(total = sum(prescriptions, na.rm = TRUE)) |>
+  pull()
+
+fda_ex_post_demand <- fda_ex_post_stats |>
+  group_by(atc_level1) |>
+  summarise(d_ex_post = sum(prescriptions, na.rm = TRUE) / fda_ex_post_total, .groups = "drop")
+
+fda_panel <- fda_panel |>
+  left_join(fda_ex_ante_demand, by = "atc_level1") |>
+  left_join(fda_ex_post_demand, by = "atc_level1")
 
 fda_panel_counts <- tibble(
   Variable = c("Unique firms", "Unique ATC classes", "Years covered"),
@@ -196,7 +246,7 @@ fda_panel_counts <- tibble(
 
 fda_panel_dist <- fda_panel |>
   summarise(across(
-    c(n_approvals, in_pdl, medicaid_share),
+    c(n_approvals, in_pdl, d_ex_ante, d_ex_post),
     list(N = ~sum(!is.na(.)), Mean = ~mean(., na.rm = TRUE), SD = ~sd(., na.rm = TRUE), Min = ~min(., na.rm = TRUE), Max = ~max(., na.rm = TRUE))
   )) |>
   pivot_longer(
@@ -207,7 +257,8 @@ fda_panel_dist <- fda_panel |>
   mutate(Variable = recode(Variable,
     "n_approvals" = "FDA approvals",
     "in_pdl" = "PDL exposure",
-    "medicaid_share" = "Medicaid share (class-level)"
+    "d_ex_ante" = "Ex Ante Medicaid Demand",
+    "d_ex_post" = "Ex Post Medicaid Demand"
   ))
 
 fda_panel_stats <- bind_rows(fda_panel_counts, fda_panel_dist)
@@ -277,3 +328,36 @@ tbl_panel <- panel_combined |>
   pack_rows("SDUD FDA approvals panel", p2, q2, bold = FALSE, italic = TRUE, latex_gap_space = "0.5em", escape = FALSE)
 
 writeLines(as.character(tbl_panel), here("output/summary_statistics/panel_statistics.tex"))
+
+# --- PDL exposure histogram --- #
+
+pdl_hist_data <- bind_rows(
+  patents_panel |> filter(in_pdl > 0) |> transmute(in_pdl, panel = "Patents panel"),
+  fda_panel |> filter(in_pdl > 0) |> transmute(in_pdl, panel = "FDA approvals panel")
+)
+
+pdl_hist <- ggplot(pdl_hist_data, aes(x = in_pdl)) +
+  geom_histogram(binwidth = 0.05, boundary = 0, fill = "#404040", colour = "white", linewidth = 0.3) +
+  facet_wrap(~panel, scales = "free_y") +
+  scale_x_continuous(breaks = seq(0, 1, 0.2), limits = c(0, 1), expand = c(0, 0)) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
+  labs(
+    x = "PDL exposure (proportion of NDCs preferred)",
+    y = "Observations"
+  ) +
+  theme_classic(base_size = 11) +
+  theme(
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold", size = 11),
+    axis.line = element_line(colour = "grey40"),
+    axis.ticks = element_line(colour = "grey40"),
+    panel.spacing = unit(1.5, "lines"),
+    plot.margin = margin(8, 12, 8, 8)
+  )
+
+ggsave(
+  here("output/summary_statistics/pdl_exposure_histogram.pdf"),
+  plot = pdl_hist,
+  width = 8,
+  height = 4
+)
