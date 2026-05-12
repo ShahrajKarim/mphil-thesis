@@ -1,0 +1,25 @@
+\begin{table}
+\centering
+\begin{talltblr}[         %% tabularray outer open
+entry=none,label=none,
+note{}={* p \num{< 0.05}, ** p \num{< 0.01}, *** p \num{< 0.001}},
+]                     %% tabularray outer close
+{                     %% tabularray inner open
+colspec={Q[]Q[]Q[]},
+column{2,3}={}{halign=c,},
+column{1}={}{halign=l,},
+hline{8}={1,2,3}{solid, black, 0.05em},
+}                     %% tabularray inner close
+\toprule
+& Patents & FDA Approvals \\ \midrule %% TinyTableHeader
+Post $\times$ P\&T Pass (Clinical Only) & \num{-11.399}*  & \num{1.002}   \\
+& (\num{4.663})   & (\num{0.633}) \\
+Post $\times$ Price Pass (Price Only)    & \num{-7.386}*** & \num{0.057}   \\
+& (\num{2.173})   & (\num{0.881}) \\
+Post $\times$ In PDL (Both Stages)       & \num{15.549}**  & \num{-0.112}  \\
+& (\num{5.215})   & (\num{1.174}) \\
+Num. obs.                                 & \num{5281696}   & \num{151200}  \\
+R2                                        & \num{0.535}     & \num{0.609}   \\
+\bottomrule
+\end{talltblr}
+\end{table}
