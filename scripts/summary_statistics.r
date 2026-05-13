@@ -176,7 +176,15 @@ patents_ex_post_demand <- patents_ex_post_stats |>
 
 patents_panel <- patents_panel |>
   left_join(patents_ex_ante_demand, by = "ATC1") |>
-  left_join(patents_ex_post_demand, by = "ATC1")
+  left_join(patents_ex_post_demand, by = "ATC1") |>
+  group_by(firm, ATC1, patent_year) |>
+  summarise(
+    num_patents = sum(num_patents, na.rm = TRUE),
+    in_pdl     = max(in_pdl, na.rm = TRUE),
+    d_ex_ante  = first(d_ex_ante),
+    d_ex_post  = first(d_ex_post),
+    .groups    = "drop"
+  )
 
 patents_panel_counts <- tibble(
   Variable = c("Unique firms", "Unique ATC classes", "Years covered"),
@@ -236,7 +244,15 @@ fda_ex_post_demand <- fda_ex_post_stats |>
 
 fda_panel <- fda_panel |>
   left_join(fda_ex_ante_demand, by = "atc_level1") |>
-  left_join(fda_ex_post_demand, by = "atc_level1")
+  left_join(fda_ex_post_demand, by = "atc_level1") |>
+  group_by(sponsor_name, atc_level1, approval_year) |>
+  summarise(
+    n_approvals = sum(n_approvals, na.rm = TRUE),
+    in_pdl      = max(in_pdl, na.rm = TRUE),
+    d_ex_ante   = first(d_ex_ante),
+    d_ex_post   = first(d_ex_post),
+    .groups     = "drop"
+  )
 
 fda_panel_counts <- tibble(
   Variable = c("Unique firms", "Unique ATC classes", "Years covered"),
