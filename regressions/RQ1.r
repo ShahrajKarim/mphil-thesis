@@ -125,6 +125,26 @@ patents <- patents |>
   left_join(patents_ex_post_demand, by = "atc_level1") |>
   filter(patent_year >= 2010)
 
+# --- Collapse to annual ---------------------------------------------------
+
+fda_approvals <- fda_approvals |>
+  group_by(firm, atc_level1, approval_year) |>
+  summarise(
+    approvals = sum(approvals, na.rm = TRUE),
+    d_ex_ante = first(d_ex_ante),
+    d_ex_post = first(d_ex_post),
+    .groups = "drop"
+  )
+
+patents <- patents |>
+  group_by(firm, atc_level1, patent_year) |>
+  summarise(
+    patents    = sum(patents, na.rm = TRUE),
+    d_ex_ante  = first(d_ex_ante),
+    d_ex_post  = first(d_ex_post),
+    .groups    = "drop"
+  )
+
 # --- FDA regressions ------------------------------------------------------
 
 fda_ex_ante_data <- fda_approvals |>
