@@ -159,3 +159,4 @@ $$
 | Generic ANDAs in FDA approvals | Generics do not count towards novel innovation and could mask the true approvals response | Remove ANDAs then re-estimate using NDAs and BLAs only |
 | Ex-ante vs ex-post exposure | Post-expansion Medicaid share could be endogenous | Use ex-post as a robustness check just to see if results align |
 | RQ3 parallel trends | Cannot formally test pre-trends at class level — DDD event study is computationally difficult | RQ1 pre-trends hold in aggregate; class-level Medicaid share is predetermined by drug chemistry |
+| Placebo test | Seems like standard practice to see if there's anticipated behaviour | Event study pre-period coefficients are insignificant — I assume placebo tests only add value for static DiD |
