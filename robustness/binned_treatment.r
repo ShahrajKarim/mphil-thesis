@@ -17,8 +17,10 @@
 # high-exposure classes respectively.
 #
 # Outputs (output/robustness/):
-#   - binned_patent_es.png        (event study: patents, ex-ante)
-#   - binned_fda_es.png           (event study: FDA approvals, ex-ante)
+#   - binned_patent_medium_es.png  (event study: patents, medium bin)
+#   - binned_patent_high_es.png    (event study: patents, high bin)
+#   - binned_fda_medium_es.png     (event study: FDA approvals, medium bin)
+#   - binned_fda_high_es.png       (event study: FDA approvals, high bin)
 #   - binned_patent_models.tex    (coefficient table: patents)
 #   - binned_fda_models.tex       (coefficient table: FDA approvals)
 
@@ -80,6 +82,20 @@ patents <- patents |>
   left_join(patents_ex_ante_demand, by = "atc_level1") |>
   filter(patent_year >= 2010)
 
+# --- Collapse patents to yearly panel -------------------------------------
+# The two i() interaction terms double the model matrix relative to a single
+# interaction spec and exhaust vector memory at the quarterly grain.
+# patent_year is the only time index in the model so aggregation is lossless.
+
+patents_year <- patents |>
+  group_by(firm, atc_level1, patent_year) |>
+  summarise(
+    patents   = sum(patents,   na.rm = TRUE),
+    d_ex_ante = first(d_ex_ante),
+    .groups   = "drop"
+  ) |>
+  mutate(firm = as.integer(as.factor(firm)))
+
 # --- Assign tercile bins --------------------------------------------------
 # Bins are computed at the ATC class level (13 classes) so that
 # assignment is not contaminated by unequal firm counts across classes.
@@ -88,7 +104,7 @@ assign_bins <- function(df) {
   class_terciles <- df |>
     distinct(atc_level1, d_ex_ante) |>
     mutate(
-      dose_bin = ntile(d_ex_ante, 3),  # 1 = Low, 2 = Medium, 3 = High
+      dose_bin   = ntile(d_ex_ante, 3),  # 1 = Low, 2 = Medium, 3 = High
       bin_medium = as.integer(dose_bin == 2),
       bin_high   = as.integer(dose_bin == 3)
       # Low (dose_bin == 1) is the omitted reference group
@@ -98,15 +114,8 @@ assign_bins <- function(df) {
   df |> left_join(class_terciles, by = "atc_level1")
 }
 
-patents      <- assign_bins(patents)
+patents_year  <- assign_bins(patents_year)
 fda_approvals <- assign_bins(fda_approvals)
-
-# Report tercile cutpoints for reference
-cat("Patent panel tercile cutpoints for d_ex_ante:\n")
-patents |>
-  distinct(atc_level1, d_ex_ante, dose_bin) |>
-  arrange(dose_bin, d_ex_ante) |>
-  print()
 
 # --- Event-study specifications -------------------------------------------
 # Y_{fct} = alpha_{fc} + lambda_t
@@ -116,16 +125,16 @@ patents |>
 #
 # Low bin is omitted; medium and high coefficients are relative to Low.
 
-# Patents
+# Patents (yearly panel)
 patent_binned <- feols(
   patents ~ i(patent_year, bin_medium, ref = 2013) +
             i(patent_year, bin_high,   ref = 2013) |
             firm^atc_level1 + patent_year,
-  data    = patents,
+  data    = patents_year,
   cluster = ~ firm
 )
 
-# FDA approvals
+# FDA approvals (quarterly — smaller so no memory issue)
 fda_binned <- feols(
   approvals ~ i(approval_year, bin_medium, ref = 2013) +
               i(approval_year, bin_high,   ref = 2013) |
@@ -134,81 +143,27 @@ fda_binned <- feols(
   cluster = ~ firm
 )
 
-# --- Plot helper ----------------------------------------------------------
-# Extracts both sets of event-study coefficients and plots on one panel.
+# --- Plots ----------------------------------------------------------------
 
-save_binned_plot <- function(model, tvar, file, title_str) {
-
-  ct <- as.data.frame(model$coeftable)
-  ct$term <- rownames(ct)
-
-  extract_bin <- function(pattern, label) {
-    ct |>
-      filter(str_detect(term, pattern)) |>
-      mutate(
-        year  = as.integer(str_extract(term, "\\d{4}")),
-        bin   = label,
-        ci_lo = Estimate - 1.96 * `Std. Error`,
-        ci_hi = Estimate + 1.96 * `Std. Error`
-      ) |>
-      select(year, bin, est = Estimate, ci_lo, ci_hi)
-  }
-
-  df <- bind_rows(
-    extract_bin("bin_medium", "Medium"),
-    extract_bin("bin_high",   "High")
+save_iplot <- function(model, file, main, i.select = 1) {
+  png(here("output", "robustness", "binned_treatment", file), width = 1600, height = 1000, res = 200)
+  iplot(
+    model,
+    i.select = i.select,
+    ci.level = 0.95,
+    ref.line = 0,
+    xlab     = "Year",
+    ylab     = "Coefficient (relative to Low bin, 2013)",
+    main     = main
   )
-
-  # Add 2013 reference rows at zero
-  ref_rows <- tibble(
-    year  = 2013L,
-    bin   = c("Medium", "High"),
-    est   = 0, ci_lo = 0, ci_hi = 0
-  )
-  df <- bind_rows(df, ref_rows) |> arrange(bin, year)
-
-  p <- ggplot(df, aes(x = year, y = est,
-                      colour = bin, fill = bin,
-                      linetype = bin, shape = bin)) +
-    geom_hline(yintercept = 0, linetype = "dashed", colour = "grey50") +
-    geom_vline(xintercept = 2013.5, linetype = "dotted", colour = "grey50") +
-    geom_ribbon(aes(ymin = ci_lo, ymax = ci_hi), alpha = 0.10,
-                colour = NA) +
-    geom_line() +
-    geom_point(size = 1.5) +
-    scale_colour_manual(values = c("Medium" = "#6e6e6e", "High" = "#1a1a1a")) +
-    scale_fill_manual(  values = c("Medium" = "#6e6e6e", "High" = "#1a1a1a")) +
-    scale_linetype_manual(values = c("Medium" = "dashed", "High" = "solid")) +
-    scale_shape_manual(   values = c("Medium" = 17, "High" = 16)) +
-    labs(
-      x        = "Year",
-      y        = "Coefficient (relative to Low bin, 2013)",
-      title    = title_str,
-      colour   = "Dose bin",
-      fill     = "Dose bin",
-      linetype = "Dose bin",
-      shape    = "Dose bin"
-    ) +
-    theme_classic(base_size = 11) +
-    theme(
-      plot.title      = element_text(size = 11),
-      legend.position = "bottom",
-      axis.line       = element_line(colour = "grey40"),
-      axis.ticks      = element_line(colour = "grey40"),
-      plot.margin     = margin(8, 12, 8, 8)
-    )
-
-  ggsave(here("output", "robustness", file),
-         plot = p, width = 8, height = 4, dpi = 200)
+  dev.off()
 }
 
-save_binned_plot(patent_binned, "patent_year",
-                 "binned_patent_es.png",
-                 "Binned event study: patents (ex-ante Medicaid exposure, Low bin omitted)")
-
-save_binned_plot(fda_binned, "approval_year",
-                 "binned_fda_es.png",
-                 "Binned event study: FDA approvals (ex-ante Medicaid exposure, Low bin omitted)")
+# i.select = 1: bin_medium; i.select = 2: bin_high
+save_iplot(patent_binned, "binned_patent_medium_es.png", "Binned Event Study: Patents — Medium Bin", i.select = 1)
+save_iplot(patent_binned, "binned_patent_high_es.png",   "Binned Event Study: Patents — High Bin",   i.select = 2)
+save_iplot(fda_binned,    "binned_fda_medium_es.png",    "Binned Event Study: FDA Approvals — Medium Bin", i.select = 1)
+save_iplot(fda_binned,    "binned_fda_high_es.png",      "Binned Event Study: FDA Approvals — High Bin",   i.select = 2)
 
 # --- Coefficient tables ---------------------------------------------------
 
@@ -220,7 +175,7 @@ modelsummary(
     "nobs",      "Num. obs.", 0,
     "r.squared", "R2",        3
   ),
-  output = here("output", "robustness", "binned_patent_models.tex")
+  output = here("output", "robustness", "binned_treatment", "binned_patent_models.tex")
 )
 
 modelsummary(
@@ -231,7 +186,7 @@ modelsummary(
     "nobs",      "Num. obs.", 0,
     "r.squared", "R2",        3
   ),
-  output = here("output", "robustness", "binned_fda_models.tex")
+  output = here("output", "robustness", "binned_treatment", "binned_fda_models.tex")
 )
 
 # --- End of file ----------------------------------------------------------
