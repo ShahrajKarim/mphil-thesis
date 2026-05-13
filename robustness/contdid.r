@@ -1,16 +1,27 @@
 # robustness/contdid.r
 #
 # Robustness: Callaway, Goodman-Bacon & Sant'Anna (2024) continuous
-# treatment DiD estimator. Relaxes the linearity-in-dose assumption
-# imposed by FEOLS by estimating ATT(d, t) nonparametrically across
-# the distribution of pre-expansion Medicaid exposure.
+# treatment DiD estimator via cont_did(). Relaxes the linearity-in-dose
+# assumption imposed by FEOLS by estimating ATT(d, t) using a
+# nonparametric B-spline model in the dose dimension.
 #
-# The dose variable is d_ex_ante (class-level ex-ante Medicaid share,
-# range 0-0.36). Units in the lowest-dose tercile serve as the
-# implicit comparison group as there are no true never-treated units.
+# Three key departures from the old att_d() script:
+#   1. Function is cont_did(), not att_d() — the API changed in the
+#      alpha release.
+#   2. The dose variable must be TIME-INVARIANT across all periods.
+#      The old code set dose = 0 pre-2014, which the README explicitly
+#      says not to do.
+#   3. A comparison group is required. Since there are no true
+#      never-treated units, the lowest-dose tercile is designated as
+#      the comparison group (G = 0). Middle and upper terciles are
+#      treated in 2014 (G = 2014). This mirrors the approach in
+#      binned_treatment.r.
 #
 # Install (if needed):
 #   devtools::install_github("bcallaway11/contdid")
+#
+# Note: biters = 199 bootstrap iterations. Expect runtime of several
+# minutes per outcome on a large panel.
 #
 # Outputs (output/robustness/):
 #   - contdid_patent_es.png   (event study: patents)
@@ -73,9 +84,7 @@ patents <- patents |>
   left_join(patents_ex_ante_demand, by = "atc_level1") |>
   filter(patent_year >= 2010)
 
-# --- Collapse patents to yearly panel -------------------------------------
-# contdid requires a balanced panel; quarterly aggregation is lossless
-# for this specification since patent_year is the only time index.
+# --- Collapse to yearly panel ---------------------------------------------
 
 patents_year <- patents |>
   group_by(firm, atc_level1, patent_year) |>
@@ -93,104 +102,198 @@ fda_year <- fda_approvals |>
     .groups   = "drop"
   )
 
-# --- Prepare contdid panel ------------------------------------------------
-# contdid requires:
-#   idname  : numeric unit identifier
-#   tname   : time variable
-#   yname   : outcome
-#   dname   : dose variable — 0 in pre-period, d_ex_ante post-2014
-#   gname   : first period of treatment (2014 for all units)
+# --- Prepare cont_did panel -----------------------------------------------
+# cont_did() requires:
+#   - dname  : time-invariant dose; same value in ALL periods (pre and post)
+#   - gname  : 0 for never-treated comparison units, 2014 for treated units
+#   - Balanced panel: every unit must appear in every time period
 #
-# Since no class has d_ex_ante = 0, the lowest-dose tercile is used
-# as the implicit comparison group by contdid internally.
+# Tercile assignment mirrors binned_treatment.r (ATC class level).
+# Lowest tercile = G = 0 (comparison group).
+# Middle + upper terciles = G = 2014 (treated in 2014).
 
-prep_contdid <- function(df, tvar) {
+prep_contdid <- function(df, tvar, yvar) {
+  # Terciles computed at ATC class level (13 classes)
+  class_terciles <- df |>
+    distinct(atc_level1, d_ex_ante) |>
+    mutate(tercile = ntile(d_ex_ante, 3))
+
   df |>
+    left_join(class_terciles |> select(atc_level1, tercile),
+              by = "atc_level1") |>
     mutate(
       unit_id = as.integer(as.factor(paste(firm, atc_level1, sep = "_"))),
-      # Dose turns on in 2014: 0 before, d_ex_ante after
-      dose    = if_else(.data[[tvar]] >= 2014, d_ex_ante, 0),
-      # All units first treated in 2014
-      G       = 2014L
-    )
+      dose    = d_ex_ante,                           # time-invariant dose
+      G       = if_else(tercile == 1, 0L, 2014L)    # 0 = comparison group
+    ) |>
+    # Balance the panel: insert zero-outcome rows for missing unit-year combos
+    complete(unit_id, !!sym(tvar),
+             fill = setNames(list(0), yvar)) |>
+    group_by(unit_id) |>
+    fill(G, dose, firm, atc_level1, tercile, .direction = "downup") |>
+    ungroup() |>
+    as.data.frame()
 }
 
-patents_cd <- prep_contdid(patents_year, "patent_year")
-fda_cd     <- prep_contdid(fda_year,    "approval_year")
+patents_cd <- prep_contdid(patents_year, "patent_year",   "patents")
+fda_cd     <- prep_contdid(fda_year,    "approval_year",  "approvals")
 
-# --- contdid estimation ---------------------------------------------------
+# --- cont_did estimation --------------------------------------------------
 
-# Patents
-patent_contdid <- att_d(
+patent_contdid <- cont_did(
   yname            = "patents",
   tname            = "patent_year",
   idname           = "unit_id",
-  gname            = "G",
   dname            = "dose",
   data             = patents_cd,
-  target_parameter = "level"   # ATT level effect; use "slope" for ACRT
+  gname            = "G",
+  target_parameter = "level",       # ATT-type; use "slope" for ACRT
+  aggregation      = "eventstudy",
+  treatment_type   = "continuous",
+  control_group    = "nevertreated",
+  biters           = 199,
+  cband            = TRUE
 )
 
-patent_contdid_es <- aggte(patent_contdid, type = "dynamic")
-
-# FDA approvals
-fda_contdid <- att_d(
+fda_contdid <- cont_did(
   yname            = "approvals",
   tname            = "approval_year",
   idname           = "unit_id",
-  gname            = "G",
   dname            = "dose",
   data             = fda_cd,
-  target_parameter = "level"
+  gname            = "G",
+  target_parameter = "level",
+  aggregation      = "eventstudy",
+  treatment_type   = "continuous",
+  control_group    = "nevertreated",
+  biters           = 199,
+  cband            = TRUE
 )
 
-fda_contdid_es <- aggte(fda_contdid, type = "dynamic")
+# --- Extract att_gt results -----------------------------------------------
+# ggcont_did() and the default aggregation rely on $egt fields which are NaN
+# when there is only one cohort (G = 2014). The group-time ATTs in $att_gt
+# are fine and are exactly the event study for a single-cohort design
+# (event_time = t - 2014). We extract them directly.
+
+extract_att_gt <- function(cd_res) {
+  ag <- cd_res$att_gt
+  data.frame(
+    group = ag$group,
+    time  = ag$t,
+    att   = ag$att,
+    se    = ag$se,
+    ci_lo = ag$att - ag$crit_val * ag$se,
+    ci_hi = ag$att + ag$crit_val * ag$se
+  ) |>
+    mutate(event_time = time - group)
+}
+
+patent_att_gt <- extract_att_gt(patent_contdid)
+fda_att_gt    <- extract_att_gt(fda_contdid)
+
+# --- Export LaTeX table ---------------------------------------------------
+# Combined talltblr table matching the modelsummary house style.
+# Patents and FDA side by side; SE in parentheses on second row.
+# hline separates pre-treatment from post-treatment periods.
+
+save_contdid_tex <- function(pat_df, fda_df, file) {
+  fmt_num <- function(x) sprintf("\\num{%.4f}", x)
+
+  fmt_col <- function(df) {
+    df |>
+      arrange(event_time) |>
+      mutate(
+        stars   = if_else(ci_lo > 0 | ci_hi < 0, "*", ""),
+        att_fmt = paste0(fmt_num(att), stars),
+        se_fmt  = paste0("(", fmt_num(se), ")")
+      )
+  }
+
+  pat <- fmt_col(pat_df)
+  fda <- fmt_col(fda_df)
+
+  combined <- full_join(
+    pat |> select(event_time, pat_att = att_fmt, pat_se = se_fmt),
+    fda |> select(event_time, fda_att = att_fmt, fda_se = se_fmt),
+    by = "event_time"
+  ) |> arrange(event_time)
+
+  # hline{n} sits above row n. Header = row 1; each event time = 2 rows.
+  # Place separator between last pre-treatment SE row and first post row.
+  n_pre      <- sum(combined$event_time < 0)
+  hline_pos  <- 1 + n_pre * 2 + 1
+
+  lines <- c(
+    "\\begin{table}",
+    "\\centering",
+    "\\begin{talltblr}[         %% tabularray outer open",
+    "entry=none,label=none,",
+    "note{}={* 95\\% uniform confidence band does not cover 0},",
+    "]                     %% tabularray outer close",
+    "{                     %% tabularray inner open",
+    "colspec={Q[]Q[]Q[]},",
+    "column{2,3}={}{halign=c,},",
+    "column{1}={}{halign=l,},",
+    sprintf("hline{%d}={1,2,3}{solid, black, 0.05em},", hline_pos),
+    "}                     %% tabularray inner close",
+    "\\toprule",
+    "Event Time & Patents & FDA Approvals \\\\ \\midrule %% TinyTableHeader"
+  )
+
+  for (i in seq_len(nrow(combined))) {
+    lines <- c(lines,
+      sprintf("%d & %s & %s \\\\",
+              combined$event_time[i],
+              combined$pat_att[i], combined$fda_att[i]),
+      sprintf("   & %s & %s \\\\",
+              combined$pat_se[i],  combined$fda_se[i])
+    )
+  }
+
+  lines <- c(lines,
+    "\\bottomrule",
+    "\\end{talltblr}",
+    "\\end{table}"
+  )
+
+  writeLines(lines, here("output", "robustness", "contdid", file))
+}
+
+save_contdid_tex(patent_att_gt, fda_att_gt, "contdid_es.tex")
 
 # --- Plot helper ----------------------------------------------------------
 
-save_contdid_plot <- function(es_obj, file, title_str) {
-  df <- data.frame(
-    t        = es_obj$egt,
-    att      = es_obj$att.egt,
-    se       = es_obj$se.egt,
-    crit_val = es_obj$crit.val.egt
-  ) |>
-    mutate(
-      ci_lo = att - crit_val * se,
-      ci_hi = att + crit_val * se
-    )
-
-  p <- ggplot(df, aes(x = t, y = att)) +
+save_contdid_plot <- function(df, file, title_str) {
+  p <- ggplot(df, aes(x = event_time, y = att)) +
     geom_hline(yintercept = 0, linetype = "dashed", colour = "grey50") +
     geom_vline(xintercept = -0.5, linetype = "dotted", colour = "grey50") +
-    geom_ribbon(aes(ymin = ci_lo, ymax = ci_hi), alpha = 0.15, fill = "#404040") +
-    geom_line(colour = "#404040") +
+    geom_errorbar(aes(ymin = ci_lo, ymax = ci_hi),
+                  width = 0.2, colour = "#404040") +
     geom_point(colour = "#404040", size = 1.5) +
     labs(
       x     = "Years relative to 2014",
       y     = "ATT (relative to 2013)",
       title = title_str
     ) +
-    theme_classic(base_size = 11) +
+    theme_bw(base_size = 11) +
     theme(
-      plot.title   = element_text(size = 11),
-      axis.line    = element_line(colour = "grey40"),
-      axis.ticks   = element_line(colour = "grey40"),
+      plot.title   = element_text(size = 11, face = "bold", hjust = 0.5),
       plot.margin  = margin(8, 12, 8, 8)
     )
 
-  ggsave(here("output", "robustness", file),
+  ggsave(here("output", "robustness", "contdid", file),
          plot = p, width = 8, height = 4, dpi = 200)
 }
 
 # --- Save plots -----------------------------------------------------------
 
-save_contdid_plot(patent_contdid_es,
+save_contdid_plot(patent_att_gt,
                   "contdid_patent_es.png",
-                  "contdid event study: patents (ex-ante Medicaid exposure)")
+                  "Continuous Treatment DiD: Patents")
 
-save_contdid_plot(fda_contdid_es,
+save_contdid_plot(fda_att_gt,
                   "contdid_fda_es.png",
-                  "contdid event study: FDA approvals (ex-ante Medicaid exposure)")
+                  "Continuous Treatment DiD: FDA Approvals")
 
 # --- End of file ----------------------------------------------------------
