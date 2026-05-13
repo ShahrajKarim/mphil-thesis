@@ -19,10 +19,14 @@
 # computational cost of handling two continuous treatments simultaneously.
 #
 # Outputs (output/robustness/):
-#   - binned_rq2_patent_medicaid_es.png
-#   - binned_rq2_patent_pdl_es.png
-#   - binned_rq2_fda_medicaid_es.png
-#   - binned_rq2_fda_pdl_es.png
+#   - binned_rq2_patent_med_medicaid_es.png
+#   - binned_rq2_patent_high_medicaid_es.png
+#   - binned_rq2_patent_med_pdl_es.png
+#   - binned_rq2_patent_high_pdl_es.png
+#   - binned_rq2_fda_med_medicaid_es.png
+#   - binned_rq2_fda_high_medicaid_es.png
+#   - binned_rq2_fda_med_pdl_es.png
+#   - binned_rq2_fda_high_pdl_es.png
 #   - binned_rq2_patent_models.tex
 #   - binned_rq2_fda_models.tex
 
@@ -93,7 +97,8 @@ patents_year <- patents |>
     d_ex_ante = first(d_ex_ante),
     in_pdl    = max(in_pdl,   na.rm = TRUE),
     .groups   = "drop"
-  )
+  ) |>
+  mutate(firm = as.integer(as.factor(firm)))
 
 fda_year <- fda_approvals |>
   group_by(firm, atc_level1, approval_year) |>
@@ -112,9 +117,10 @@ assign_medicaid_bins <- function(df) {
   class_bins <- df |>
     distinct(atc_level1, d_ex_ante) |>
     mutate(
-      medicaid_bin    = ntile(d_ex_ante, 3),
+      medicaid_bin      = ntile(d_ex_ante, 3),
       bin_med_medicaid  = as.integer(medicaid_bin == 2),
       bin_high_medicaid = as.integer(medicaid_bin == 3)
+      # Low (medicaid_bin == 1) is the omitted reference group
     ) |>
     select(atc_level1, medicaid_bin, bin_med_medicaid, bin_high_medicaid)
 
@@ -134,27 +140,33 @@ assign_pdl_bins <- function(df, tvar) {
 
   pdl_bins <- pre_pdl |>
     mutate(
-      pdl_bin        = ntile(in_pdl_pre, 3),
-      bin_med_pdl    = as.integer(pdl_bin == 2),
-      bin_high_pdl   = as.integer(pdl_bin == 3)
+      pdl_bin      = ntile(in_pdl_pre, 3),
+      bin_med_pdl  = as.integer(pdl_bin == 2),
+      bin_high_pdl = as.integer(pdl_bin == 3)
+      # Low (pdl_bin == 1) is the omitted reference group
     ) |>
     select(firm, atc_level1, pdl_bin, bin_med_pdl, bin_high_pdl)
 
   df |> left_join(pdl_bins, by = c("firm", "atc_level1"))
 }
 
-patents_year  <- patents_year  |> assign_medicaid_bins() |> assign_pdl_bins("patent_year")
-fda_year      <- fda_year      |> assign_medicaid_bins() |> assign_pdl_bins("approval_year")
+patents_year <- patents_year |>
+  assign_medicaid_bins() |>
+  assign_pdl_bins("patent_year") |>
+  select(firm, atc_level1, patent_year, patents,
+         bin_med_medicaid, bin_high_medicaid, bin_med_pdl, bin_high_pdl)
+
+fda_year <- fda_year |>
+  assign_medicaid_bins() |>
+  assign_pdl_bins("approval_year") |>
+  select(firm, atc_level1, approval_year, approvals,
+         bin_med_medicaid, bin_high_medicaid, bin_med_pdl, bin_high_pdl)
 
 # --- Event-study specifications -------------------------------------------
-# Y_{fct} = alpha_{fc} + lambda_t
-#   + sum_tau beta_tau^{M,med}  (1{t=tau} x bin_med_medicaid_c)
-#   + sum_tau beta_tau^{M,high} (1{t=tau} x bin_high_medicaid_c)
-#   + sum_tau beta_tau^{P,med}  (1{t=tau} x bin_med_pdl_{fc})
-#   + sum_tau beta_tau^{P,high} (1{t=tau} x bin_high_pdl_{fc})
-#   + eps_{fct}
-#
-# Low bin is omitted for both sets of interactions.
+# Single model with all four dummy interactions. Binary dummies keep Low as
+# the natural omitted group. Formula order:
+#   i=1 bin_med_medicaid, i=2 bin_high_medicaid,
+#   i=3 bin_med_pdl,      i=4 bin_high_pdl
 
 patent_binned_rq2 <- feols(
   patents ~ i(patent_year, bin_med_medicaid,  ref = 2013) +
@@ -177,101 +189,45 @@ fda_binned_rq2 <- feols(
 )
 
 # --- Plot helper ----------------------------------------------------------
+# i.select = c(1,2) shows Medicaid Med + High on one plot;
+# i.select = c(3,4) shows PDL Med + High on one plot.
 
-save_binned_rq2_plot <- function(model, pattern_med, pattern_high,
-                                  file, title_str) {
-  ct        <- as.data.frame(model$coeftable)
-  ct$term   <- rownames(ct)
-
-  extract_bin <- function(pattern, label) {
-    ct |>
-      filter(str_detect(term, pattern)) |>
-      mutate(
-        year  = as.integer(str_extract(term, "\\d{4}")),
-        bin   = label,
-        ci_lo = Estimate - 1.96 * `Std. Error`,
-        ci_hi = Estimate + 1.96 * `Std. Error`
-      ) |>
-      select(year, bin, est = Estimate, ci_lo, ci_hi)
-  }
-
-  df <- bind_rows(
-    extract_bin(pattern_med,  "Medium"),
-    extract_bin(pattern_high, "High")
-  ) |>
-    bind_rows(
-      tibble(year = 2013L, bin = c("Medium", "High"),
-             est = 0, ci_lo = 0, ci_hi = 0)
-    ) |>
-    arrange(bin, year)
-
-  ggplot(df, aes(x = year, y = est,
-                 colour = bin, fill = bin,
-                 linetype = bin, shape = bin)) +
-    geom_hline(yintercept = 0, linetype = "dashed", colour = "grey50") +
-    geom_vline(xintercept = 2013.5, linetype = "dotted", colour = "grey50") +
-    geom_ribbon(aes(ymin = ci_lo, ymax = ci_hi), alpha = 0.10,
-                colour = NA) +
-    geom_line() +
-    geom_point(size = 1.5) +
-    scale_colour_manual(values = c("Medium" = "#6e6e6e", "High" = "#1a1a1a")) +
-    scale_fill_manual(  values = c("Medium" = "#6e6e6e", "High" = "#1a1a1a")) +
-    scale_linetype_manual(values = c("Medium" = "dashed", "High" = "solid")) +
-    scale_shape_manual(   values = c("Medium" = 17,       "High" = 16)) +
-    labs(
-      x        = "Year",
-      y        = "Coefficient (relative to Low bin, 2013)",
-      title    = title_str,
-      colour   = "Dose bin", fill     = "Dose bin",
-      linetype = "Dose bin", shape    = "Dose bin"
-    ) +
-    theme_classic(base_size = 11) +
-    theme(
-      plot.title      = element_text(size = 11),
-      legend.position = "bottom",
-      axis.line       = element_line(colour = "grey40"),
-      axis.ticks      = element_line(colour = "grey40"),
-      plot.margin     = margin(8, 12, 8, 8)
-    ) |>
-    (\(p) ggsave(here("output", "robustness", file),
-                 plot = p, width = 8, height = 4, dpi = 200))()
+save_iplot_rq2 <- function(model, file, main, i.select) {
+  png(here("output", "robustness", "binned_treatment_rq2", file), width = 1600, height = 1000, res = 200)
+  iplot(
+    model,
+    i.select = i.select,
+    ci.level = 0.95,
+    ref.line = 0,
+    xlab     = "Year",
+    ylab     = "Coefficient (relative to Low bin, 2013)",
+    main     = main
+  )
+  dev.off()
 }
 
-# Patents: Medicaid bins
-save_binned_rq2_plot(
-  patent_binned_rq2,
-  pattern_med  = "bin_med_medicaid",
-  pattern_high = "bin_high_medicaid",
-  file         = "binned_rq2_patent_medicaid_es.png",
-  title_str    = "Binned RQ2 event study: patents — Medicaid exposure bins (PDL controlled)"
-)
+# i=1 bin_med_medicaid, i=2 bin_high_medicaid,
+# i=3 bin_med_pdl,      i=4 bin_high_pdl
 
-# Patents: PDL bins
-save_binned_rq2_plot(
-  patent_binned_rq2,
-  pattern_med  = "bin_med_pdl",
-  pattern_high = "bin_high_pdl",
-  file         = "binned_rq2_patent_pdl_es.png",
-  title_str    = "Binned RQ2 event study: patents — PDL exposure bins (Medicaid controlled)"
-)
+# Patents
+save_iplot_rq2(patent_binned_rq2, "binned_rq2_patent_med_medicaid_es.png",
+               "Binned Event Study: Patents — Medicaid Medium", i.select = 1)
+save_iplot_rq2(patent_binned_rq2, "binned_rq2_patent_high_medicaid_es.png",
+               "Binned Event Study: Patents — Medicaid High",   i.select = 2)
+save_iplot_rq2(patent_binned_rq2, "binned_rq2_patent_med_pdl_es.png",
+               "Binned Event Study: Patents — PDL Medium",      i.select = 3)
+save_iplot_rq2(patent_binned_rq2, "binned_rq2_patent_high_pdl_es.png",
+               "Binned Event Study: Patents — PDL High",        i.select = 4)
 
-# FDA: Medicaid bins
-save_binned_rq2_plot(
-  fda_binned_rq2,
-  pattern_med  = "bin_med_medicaid",
-  pattern_high = "bin_high_medicaid",
-  file         = "binned_rq2_fda_medicaid_es.png",
-  title_str    = "Binned RQ2 event study: FDA approvals — Medicaid exposure bins (PDL controlled)"
-)
-
-# FDA: PDL bins
-save_binned_rq2_plot(
-  fda_binned_rq2,
-  pattern_med  = "bin_med_pdl",
-  pattern_high = "bin_high_pdl",
-  file         = "binned_rq2_fda_pdl_es.png",
-  title_str    = "Binned RQ2 event study: FDA approvals — PDL exposure bins (Medicaid controlled)"
-)
+# FDA approvals
+save_iplot_rq2(fda_binned_rq2, "binned_rq2_fda_med_medicaid_es.png",
+               "Binned Event Study: FDA Approvals — Medicaid Medium", i.select = 1)
+save_iplot_rq2(fda_binned_rq2, "binned_rq2_fda_high_medicaid_es.png",
+               "Binned Event Study: FDA Approvals — Medicaid High",   i.select = 2)
+save_iplot_rq2(fda_binned_rq2, "binned_rq2_fda_med_pdl_es.png",
+               "Binned Event Study: FDA Approvals — PDL Medium",      i.select = 3)
+save_iplot_rq2(fda_binned_rq2, "binned_rq2_fda_high_pdl_es.png",
+               "Binned Event Study: FDA Approvals — PDL High",        i.select = 4)
 
 # --- Coefficient tables ---------------------------------------------------
 
@@ -279,22 +235,22 @@ modelsummary(
   list("Patents: Binned RQ2" = patent_binned_rq2),
   stars   = c(`*` = 0.05, `**` = 0.01, `***` = 0.001),
   gof_map = tribble(
-    ~raw, ~clean, ~fmt,
+    ~raw,        ~clean,      ~fmt,
     "nobs",      "Num. obs.", 0,
     "r.squared", "R2",        3
   ),
-  output = here("output", "robustness", "binned_rq2_patent_models.tex")
+  output = here("output", "robustness", "binned_treatment_rq2", "binned_rq2_patent_models.tex")
 )
 
 modelsummary(
   list("FDA Approvals: Binned RQ2" = fda_binned_rq2),
   stars   = c(`*` = 0.05, `**` = 0.01, `***` = 0.001),
   gof_map = tribble(
-    ~raw, ~clean, ~fmt,
+    ~raw,        ~clean,      ~fmt,
     "nobs",      "Num. obs.", 0,
     "r.squared", "R2",        3
   ),
-  output = here("output", "robustness", "binned_rq2_fda_models.tex")
+  output = here("output", "robustness", "binned_treatment_rq2", "binned_rq2_fda_models.tex")
 )
 
 # --- End of file ----------------------------------------------------------
