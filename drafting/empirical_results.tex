@@ -89,11 +89,6 @@
 \end{figure}
 
 \clearpage
-\begingroup\footnotesize
-\input{../output/RQ1/patent_models.tex}
-\endgroup
-
-\clearpage
 
 The pre-expansion coefficients between 2010-2012 are small and statistically insignificant across all four specifications, which is consistent with the assumption of parallel trends in firm patenting behaviour between areas with differential Medicaid market shares. Under the FEOLS specification with ex-ante exposure, the post-expansion coefficient is insignificant in 2014 and then becomes significant in 2015 at $-0.086$ and then begins to grow more significantly negative over time with a peak of $-0.252$ in 2024. Since the exposure to Medicaid is measured as a therapeutic classes market share within Medicaid, the estimated coefficients corresponds to a one-hundred percentage point increase in Medicaid share. Consequently, a therapeutic class with a 10 percentage-point higher Medicaid market share would be associated with $0.025$ fewer patents per firm-class-year by 2024, this corresponds to about 16 percent of the sample mean patent count ($0.16$). Noticeably, the coefficients stabilise between 2020 and 2025 in the range of $-0.220$ to $-0.252$, indicating that the negative response persists as opposed to reverting.
 
@@ -132,11 +127,6 @@ The FE Poisson estimates are consistent with this result where the negative tren
   \caption{FE Poisson event study: FDA approvals, ex-post Medicaid exposure}
   \label{fig:rq1_fda_poi_expost}
 \end{figure}
-
-\clearpage
-\begingroup\footnotesize
-\input{../output/RQ1/fda_models.tex}
-\endgroup
 
 \clearpage
 
@@ -183,11 +173,8 @@ This is consistent with \citet{NBERw28755}, who study the response of clinical t
 \end{figure}
 
 \clearpage
-\begingroup\footnotesize
-\input{../output/RQ2/patent_models.tex}
-\endgroup
 
-The Medicaid exposure coefficients in the joint specification are consistent with the findings of the previous research question, with insignificant pre-period estimates and negative post-expansion coefficients growing from $-0.086$ in 2015 to $-0.252$ by 2024. Controlling for firm exposure to the PDL formulary yields larger Medicaid exposure coefficient estimates. This suggests that the RQ1 Medicaid coefficient partially absorbed the procurement channel when PDL exposure was omitted - separating for the two allows the demand channel to be estimated more cleanly. Since PDL exposure is a proxy for procurement exposure rather than a direct measure of rebate extraction, the estimates should not be interpreted as a full decomposition of the demand and pricing channels.
+The Medicaid exposure coefficients in the joint specification are consistent with the findings of the previous research question, with insignificant pre-period estimates and negative post-expansion coefficients growing from $-0.086$ in 2015 to $-0.252$ by 2024. Controlling for firm exposure to the PDL formulary yields larger Medicaid exposure coefficient estimates. This suggests that the RQ1 Medicaid coefficient partially absorbed variation associated with procurement exposure when PDL exposure was omitted. Including both measures therefore provides a cleaner comparison between the Medicaid demand response and the additional response associated with firms' exposure to PDL institutions. Since PDL exposure is a proxy for procurement exposure rather than a direct measure of rebate extraction, the estimates should not be interpreted as a full decomposition of the demand and pricing channels.
 
 The PDL exposure coefficients point towards an additional source for the decline in post-expansion patenting. The pre-expansion PDL coefficients are positive but insignificant, providing support for the parallel trends assumption. The isolated positive estimate in 2014 is not persistent and should not be interpreted as a full effect of the ACA. From 2016 onwards, the PDL coefficients turn negative and become significant from 2019 onwards and grow to $-6.925$ by 2023. This indicates that firms with greater formulary exposure experienced an additional decline in patenting relative to the Medicaid demand effect. The ex-ante and ex-post specifications produce nearly identical results throughout.
 
@@ -226,9 +213,6 @@ This result should not be interpreted as showing that preferred placement itself
 \end{figure}
 
 \clearpage
-\begingroup\footnotesize
-\input{../output/RQ2/fda_models.tex}
-\endgroup
 
 Both the Medicaid exposure and PDL exposure coefficients for FDA approvals are statistically insignificant throughout the post-expansion period. There are isolated exceptions for this, with 2017 and 2018 for the Medicaid coefficients and 2019 and 2021 for the PDL coefficients, but these do not form a sustained pattern. Although a significant significant PDL effect is recorded for patents, the absence of a corresponding effect on FDA approvals is consistent with the broader interpretation that the innovation response first appears in upstream R\&D activity and has not yet propagated to the final stage of the R\&D pipeline.
 
@@ -246,6 +230,12 @@ Both the Medicaid exposure and PDL exposure coefficients for FDA approvals are s
 \endgroup
 \end{center}
 
+The triple-difference estimates reveal substantial heterogeneity across therapeutic areas. Significant negative responses are observed in patenting behaviour for alimentary tract and metabolism, cardiovascular, musculo-skeletal, and nervous system drugs. Since RQ1 identifies an aggregate decline in patenting following the Medicaid expansion, these classes appear to drive that overall result. These are among the highest-volume therapeutic areas within Medicaid and cover widely prescribed drug categories such as diabetes and gastrointestinal medications, anti-inflammatories and antidepressants. As shown later in the theoretical model, and in the NDC counts in Table~\ref{tab:class_substitutability}, these classes typically have greater therapeutic substitutability, consistent with stronger formulary competition and rebate pressure. Consequently, this combination of high prescription volumes and stronger substitutability is consistent with the procurement channel driving deeper innovation reductions in these areas.
+
+Positive patenting responses are observed for blood and blood-forming organs, hormonal preparations, and sensory organs. This indicates that the standard market size prediction holds for these therapeutic classes suggesting the demand effect outweighs the disincentives associated with Medicaid's procurement channel. Insignificant coefficients are observed for the remaining therapeutic classes suggesting the demand and procurement effects offset one another, or the expansion may be unimportant for patenting decisions in these areas. The ex-post specification yields comparable results
+
+The presence of positive class-level estimates indicates that some therapeutic areas experience a demand-driven innovation response, suggesting that the standard market-size effect is not absent in the Medicaid setting. Instead, the aggregate negative patenting response identified in RQ1 is concentrated in therapeutic classes where high prescription volumes and therapeutic substitutability strengthen the procurement channel. Therefore, the overall decline in patenting reflects the two  opposing forces operating differentially across therapeutic areas, rather than a uniform reduction in pharmaceutical innovation.
+
 \subsection{FDA Approvals}
 
 \begin{center}
@@ -253,6 +243,12 @@ Both the Medicaid exposure and PDL exposure coefficients for FDA approvals are s
 \input{../output/RQ3/fda_models.tex}
 \endgroup
 \end{center}
+
+The FDA approval results contrast starkly from the patent pattern. Significant positive responses are observed for alimentary tract and metabolism, dermatologicals, and sensory organs, while no therapeutic class exhibits a significant negative response. The coefficient for sensory organs is large in magnitude but imprecisely estimated given the small number of approvals in that class.
+
+Despite a strong negative patenting response in alimentary tract and metabolism classes, positive FDA approval coefficients are observed in these areas in response to the ACA. This divergence is consistent with the pipeline interpretation, where FDA approvals observed during the post-expansion period most likely reflect R\&D investments made prior to the Medicaid expansion, so the upstream patent decline has not yet propagated to the approval stage. Additionally, dermatologicals have a positive approval response while having an insignificant patent coefficient, indicating that approval estimates do not cleanly map onto patent responses within therapeutic areas. Both patents and FDA approvals have positive coefficients for pharmaceuticals relating to sensory organs, but the large standard errors suggest that this pattern should be interpreted with caution.
+
+Several therapeutic classes display negative point estimates, but none reach statistical significance. This reinforces the earlier finding that the upstream decline in innovation has not yet reached the end stage of approvals. Consequently, the therapeutic-level heterogeneity identified in patenting has not yet been reflected in regulatory approvals,  consistent with the long development horizons separating early-stage innovation from drug approval.
 
 \clearpage
 
@@ -270,5 +266,51 @@ Both the Medicaid exposure and PDL exposure coefficients for FDA approvals are s
 
 \bibliographystyle{apalike}
 \bibliography{references}
+
+\clearpage
+\appendix
+
+% -----------------------------------------------------------------------
+\section{Regression Tables}
+% -----------------------------------------------------------------------
+
+\subsection{RQ1: Overall Innovation Response}
+
+\begingroup\footnotesize
+\input{../output/RQ1/patent_models.tex}
+\endgroup
+
+\clearpage
+
+\begingroup\footnotesize
+\input{../output/RQ1/fda_models.tex}
+\endgroup
+
+\clearpage
+
+\subsection{RQ2: Medicaid Demand and PDL Exposure}
+
+\begingroup\footnotesize
+\input{../output/RQ2/patent_models.tex}
+\endgroup
+
+\clearpage
+
+\begingroup\footnotesize
+\input{../output/RQ2/fda_models.tex}
+\endgroup
+
+\clearpage
+
+% -----------------------------------------------------------------------
+\section{Therapeutic-Class Substitutability}
+% -----------------------------------------------------------------------
+
+\begingroup
+\makeatletter
+\renewenvironment{table}[1][tbp]{\@float{table}[#1]}{\end@float}
+\makeatother
+\input{../output/rebate_exploration/class_substitutability.tex}
+\endgroup
 
 \end{document}
