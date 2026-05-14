@@ -128,6 +128,16 @@ patents <- patents |>
 
 # --- FDA regressions ------------------------------------------------------
 
+fda_approvals <- fda_approvals |>
+  group_by(firm, atc_level1, approval_year) |>
+  summarise(
+    approvals  = sum(approvals, na.rm = TRUE),
+    in_pdl     = max(in_pdl, na.rm = TRUE),
+    d_ex_ante  = first(d_ex_ante),
+    d_ex_post  = first(d_ex_post),
+    .groups    = "drop"
+  )
+
 fda_ex_ante_data <- fda_approvals |>
   select(-d_ex_post) |>
   rename(medicaid_market_share = d_ex_ante)
