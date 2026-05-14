@@ -1,0 +1,24 @@
+\begin{table}[H]
+\centering
+\begin{talltblr}[         %% tabularray outer open
+entry=none,label=tab:rebate_regression,
+caption={Prescription rebate regressions},
+note{}={* p \num{< 0.05}, ** p \num{< 0.01}, *** p \num{< 0.001}},
+]                     %% tabularray outer close
+{                     %% tabularray inner open
+colspec={Q[]Q[]Q[]},
+column{2,3}={}{halign=c,},
+column{1}={}{halign=l,},
+hline{6}={1,2,3}{solid, black, 0.05em},
+}                     %% tabularray inner close
+\toprule
+& Rebate & Rebate \\ \midrule %% TinyTableHeader
+Log market size & \num{5.513}*** & \num{4.836}*** \\
+& (\num{0.035})  & (\num{0.053})  \\
+NDCs in class   &                 & \num{0.001}*** \\
+&                 & (\num{0.000})  \\
+Num. obs.       & \num{11305354} & \num{11305354} \\
+R2              & \num{0.046}    & \num{0.046}    \\
+\bottomrule
+\end{talltblr}
+\end{table}
