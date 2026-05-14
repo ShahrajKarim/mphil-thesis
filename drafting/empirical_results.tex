@@ -95,6 +95,14 @@
 
 \clearpage
 
+The pre-expansion coefficients between 2010-2012 are small and statistically insignificant across all four specifications, which is consistent with the assumption of parallel trends in firm patenting behaviour between areas with differential Medicaid market shares. Under the FEOLS specification with ex-ante exposure, the post-expansion coefficient is insignificant in 2014 and then becomes significant in 2015 at $-0.086$ and then begins to grow more significantly negative over time with a peak of $-0.252$ in 2024. Since the exposure to Medicaid is measured as a therapeutic classes market share within Medicaid, the estimated coefficients corresponds to a one-hundred percentage point increase in Medicaid share. Consequently, a therapeutic class with a 10 percentage-point higher Medicaid market share would be associated with $0.025$ fewer patents per firm-class-year by 2024, this corresponds to about 16 percent of the sample mean patent count ($0.16$). Noticeably, the coefficients stabilise between 2020 and 2025 in the range of $-0.220$ to $-0.252$, indicating that the negative response persists as opposed to reverting.
+
+The gradual onset of the effect is expected given that patent outcomes are recorded by the date of award rather than the application date. Thus, patents observed shortly after 2014 may include applications prior to the ACA, so the timing should not be interpreted as the exact timing of underlying R\&D decisions. Additionally, the effect also reflects transition dynamics when making R\&D decisions. Firms would not immediately adjust their innovation decisions in response to policy shifts, and pricing in the new Medicaid market conditions into R\&D plans may take time given the long development horizons involved in pharmaceutical innovation. Both of these factors therefore contribute towards the increasing magnitude of the coefficients where stabilisation is seen between 2020 and 2025.
+
+The FE Poisson estimates are consistent with this result where the negative trend is observed post-ACA with the estimate peaking at $-1.474$ by 2024 under ex-ante exposure and then stabilising by 2025. Specifically, in 2024 a ten percentage point increase in Medicaid exposure corresponds to approximately a $14.74$ percent decrease in expected patents. The ex-ante and ex-post specifications produce similar results throughout, suggesting that the qualitative findings are not driven by the construction of the exposure measure.
+
+\clearpage
+
 \subsection{FDA Approvals}
 
 \begin{figure}[!h]
@@ -129,6 +137,14 @@
 \begingroup\footnotesize
 \input{../output/RQ1/fda_models.tex}
 \endgroup
+
+\clearpage
+
+The results from FDA approvals contrast with the patent findings. Across all specifications, the post-expansion coefficients are statistically insignificant with wide confidence intervals. Whereas the patent FEOLS estimates grow monotonically from $-0.086$ in 2015 to $-0.252$ in 2024, the FDA FEOLS estimates fluctuate between $-0.321$ and $1.421$ without a sustained direction, with isolated significance in 2017 and 2018 that is consistent with sampling variation given the number of post-expansion periods tested. The FE Poisson estimates are uniformly negative but individually insignificant. The two specifications therefore point in opposite directions while agreeing on insignificance, indicating that the ACA expansion had inconclusive effects on FDA approvals.
+
+The difference between the patent and FDA results is consistent with the innovation response emerging earlier in the R\&D pipeline. Pharmaceutical development spans over a decade from molecule discovery to drug approval (SOURCE), and patenting activity captures an earlier stage of this process than regulatory approval. Therefore, the ACA policy shock may plausibly affect patenting without yet generating a response in FDA approvals. Changes in patenting decisions would feed through into drugs under active development, subsequently appear in clinical trial activity, and once the affected drug cohort reaches the end of the regulatory process would it feed into FDA approvals. Under this interpretation, the insignificant response of FDA approvals reflects that insufficient time has passed for the upstream adjustment to result in detectable changes at the approval stage as opposed to contradicting the patent findings.
+
+This is consistent with \citet{NBERw28755}, who study the response of clinical trial activity two-year post Medicaid expansion and find an insignificant innovation response. Clinical trial activity generally occurs later in the development process than early patenting activity, and given that the patent event-study displays a gradual build up over nearly a decade, a two-year window is likely too short to detect a response even at the clinical trial stage.
 
 \clearpage
 
@@ -171,6 +187,12 @@
 \input{../output/RQ2/patent_models.tex}
 \endgroup
 
+The Medicaid exposure coefficients in the joint specification are consistent with the findings of the previous research question, with insignificant pre-period estimates and negative post-expansion coefficients growing from $-0.086$ in 2015 to $-0.252$ by 2024. Controlling for firm exposure to the PDL formulary yields larger Medicaid exposure coefficient estimates. This suggests that the RQ1 Medicaid coefficient partially absorbed the procurement channel when PDL exposure was omitted - separating for the two allows the demand channel to be estimated more cleanly. Since PDL exposure is a proxy for procurement exposure rather than a direct measure of rebate extraction, the estimates should not be interpreted as a full decomposition of the demand and pricing channels.
+
+The PDL exposure coefficients point towards an additional source for the decline in post-expansion patenting. The pre-expansion PDL coefficients are positive but insignificant, providing support for the parallel trends assumption. The isolated positive estimate in 2014 is not persistent and should not be interpreted as a full effect of the ACA. From 2016 onwards, the PDL coefficients turn negative and become significant from 2019 onwards and grow to $-6.925$ by 2023. This indicates that firms with greater formulary exposure experienced an additional decline in patenting relative to the Medicaid demand effect. The ex-ante and ex-post specifications produce nearly identical results throughout.
+
+This result should not be interpreted as showing that preferred placement itself reduces innovation incentives. The PDL exposure measure instead depicts the pre-expansion share of a firm's portfolio already on the PDL prior to Medicaid expansion, thus the negative coefficient indicates that firms more deeply embedded in Medicaid's formulary system before the reform experienced a stronger negative innovation response once Medicaid demand increased. This is consistent with these firms being more exposed to the procurement pressures that intensified following the expansion, even though securing preferred placement remains beneficial relative to failing one of the PDL stages.
+
 \clearpage
 
 \subsection{FDA Approvals}
@@ -207,6 +229,8 @@
 \begingroup\footnotesize
 \input{../output/RQ2/fda_models.tex}
 \endgroup
+
+Both the Medicaid exposure and PDL exposure coefficients for FDA approvals are statistically insignificant throughout the post-expansion period. There are isolated exceptions for this, with 2017 and 2018 for the Medicaid coefficients and 2019 and 2021 for the PDL coefficients, but these do not form a sustained pattern. Although a significant significant PDL effect is recorded for patents, the absence of a corresponding effect on FDA approvals is consistent with the broader interpretation that the innovation response first appears in upstream R\&D activity and has not yet propagated to the final stage of the R\&D pipeline.
 
 \clearpage
 
