@@ -19,6 +19,10 @@
 \usepackage{natbib}
 \usepackage{enumitem}
 \usepackage{float}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{tabularray}
+\UseTblrLibrary{booktabs, siunitx}
 \pagestyle{plain}
 
 % --- Word count (requires compiling with --shell-escape) ---
@@ -432,20 +436,22 @@ The difference between monopoly and duopoly payoffs matters for innovation incen
 The rent gap $\Delta V_c$ is smaller in classes where the incentive trap binds. This is because higher drug substitutability gives Medicaid a stronger position for bargaining, thereby yielding a steeper rebate schedule which can reduce $V_c^M$. Consequently, two classes with the same post-expansion market size $M_c$ can have different innovation responses - a class with more substitutes will have a smaller rent gap and lower associated levels of effort.
 
 \subsection{Institutional and Empirical Justification}
-Two crucial assumptions of this model are that the Medicaid rebate wedge, $\tau_c(M_c)$, is (i) strictly increasing in market size and (ii) its steepness is increasing within-class drug substitutability. While federal statutory rebates are fixed percentages, state-Medicaid providers negotiate `supplemental rebates' with manufacturers in exchange for PDL placement. Additionally, some states join Multi-State Purchasing Pools (such as the National Medicaid Pooling Initiative and the Sovereign States Drug Consortium), allowing them to leveraging the population under multiple states to increase their effective market size ($M_c$). These coalitions are therefore able to tie the size of their negotiated rebate to the volume of pooled lives.
+Two crucial assumptions of this model are that the Medicaid rebate wedge, $\tau_c(M_c)$, is (i) strictly increasing in market size and (ii) its steepness is increasing within-class drug substitutability. While federal statutory rebates are fixed percentages, state-Medicaid providers negotiate supplemental rebates with manufacturers in exchange for PDL placement. Additionally, some states join Multi-State Purchasing Pools (such as the National Medicaid Pooling Initiative and the Sovereign States Drug Consortium), allowing them to leverage the population under multiple states to increase their effective market size ($M_c$). These coalitions are therefore able to tie the size of their negotiated rebate to the volume of pooled lives.
 
-This assumption is tested using the SDUD. States are mapped to their multi-state purchasing pools, allowing for it to reflect the true negotiating  market size within each ATC. Per-prescription rebates are then regressed against the natural log of market size and the number of NDC's within a class $n_c$ - ATC and year fixed effects are used. 
+This assumption is tested using the SDUD. States are mapped to their multi-state purchasing pools to reflect the true negotiating market size within each ATC. Per-prescription rebates are regressed against the natural log of market size with and without the inclusion of the number of distinct NDCs within a class $n_c$, class and year fixed effects are included:
 
 \begin{equation}
-    \text{Rebate}_{c,t} = \alpha + \beta_1 \log(M_c) + \beta_2 n_c + \lambda_c + \delta_t + \varepsilon_{c,t}.
+    \text{Rebate}_{c,t} = \alpha + \beta_1 \log(M_c) + \beta_2 n_c + \lambda_c + \delta_t + \varepsilon_{c,t}
 \end{equation}
 
-Under this specification, the coefficients on both $\log(M_c)$ and $n_c$ are positive and significant, indicating that larger Medicaid markets and drug substitutability are associated with greater rebates. Therefore, these results support the assumptions that $\tau_c'(M_c)>0$ and that the rebate schedule steepens with $n_c$.
+Table~\ref{tab:rebate_regression} shows that the coefficients on both $\log(M_c)$ and $n_c$ are positive and significant, indicating that larger Medicaid markets and a greater number of distinct drugs within a class are both associated with higher rebates. These results support the assumptions that $\tau_c'(M_c)>0$ and that the rebate schedule steepens with $n_c$.
+
+\input{../output/rebate_exploration/rebate_regression.tex}
 
 \subsection{State-Dependent Innovation}
 Empirically, firms that gain PDL placement tend to innovate more in subsequent periods. In order to capture this dynamic, the current game can be embedded in a dynamic framework where procurement outcomes influence future innovation incentives.
 
-In this setting, period 1 procurement outcomes in class $c$ determine the firm's position in Period 2. A firm may fail to gain access, gain access under competitive rents, or gain access under higher monopoly rents. A natural explanation for this state dependence is the internal-finance channel. \cite{hal2002financing} suggests that R\&D is especially exposed to financing frictions due to being risky and intangible, thus outside investors cannnot evaluate this well thereby making external finance costly. Securing preferred access on the PDL allows for additional cash-flows that can relax financing constraints, thereby lowering the effective marginal cost of future R\&D.
+In this setting, period 1 procurement outcomes in class $c$ determine the firm's position in Period 2. A firm may fail to gain access, gain access under competitive rents, or gain access under higher monopoly rents. A natural explanation for this state dependence is the internal-finance channel. \cite{hal2002financing} suggests that R\&D is especially exposed to financing frictions due to being risky and intangible, thus outside investors cannot evaluate this well thereby making external finance costly. Securing preferred access on the PDL allows for additional cash-flows that can relax financing constraints, thereby lowering the effective marginal cost of future R\&D.
 
 Additionally, firms that pass the P\&T stage and negotiate rebates may gain additional regulatory and organisational knowledge. This may make future innovation less costly and therefore generate persistence - current procurement success affects future innovation not only through profits, but also through the firm's accumulated ability to navigate the Medicaid procurement process.
 
@@ -521,7 +527,7 @@ The empirical results from the triple difference model suggest that therapeutic 
 The second panel keeps $M_c$ fixed at $M_0 = 100$ and isolates the effect of Medicaid's monopsony power on equilibrium efforts by varying the rebate scale parameter $\alpha_c$. Across all three rebate specifications equilibrium effort is strictly decreasing in $\tau_c'(M_c)$. However, the curves diverge substantially in their rate of decline. The logarithmic form appears to have the steepest curve, while the linear and power forms maintain higher efforts across a wider range of sensitivity values. Classes with more therapeutic substitutes ($n_c$) face steeper rebate sensitivity and therefore correspond to lower levels of effort $e_c^*$.
 
 \paragraph{Panel 3: Equilibrium effort and the rent gap.}
-The third panel varies the price cap $\bar{p}$ to isolate the effect of the rent gap $\Delta V_c$ on incentive efforts $e_c^*$. Innovation is observed to be driven by the gap between monopoly and duopoly payoffs, rather than by the level of either payoff alone. The three curves coincide since the FOC depends on this rent differential and the relationship between $e_c^*$ and $\Delta V_c$ is independent of the specific rebate functional form. Importantly, this panel establishes that the reduction in $\Delta V_c$ is sufficient for the reduction in innovation and not the rise in market-size alone. Therefore, any policy that reduces value of the monopoly state rleative to the duopoly state lowers equilibrium effort.
+The third panel varies the price cap $\bar{p}$ to isolate the effect of the rent gap $\Delta V_c$ on incentive efforts $e_c^*$. Innovation is observed to be driven by the gap between monopoly and duopoly payoffs, rather than by the level of either payoff alone. The three curves coincide since the FOC depends on this rent differential and the relationship between $e_c^*$ and $\Delta V_c$ is independent of the specific rebate functional form. Importantly, this panel establishes that the reduction in $\Delta V_c$ is sufficient for the reduction in innovation and not the rise in market-size alone. Therefore, any policy that reduces value of the monopoly state relative to the duopoly state lowers equilibrium effort.
 
 \paragraph{Panel 4: Period 2 effort by prior state.}
 The fourth panel displays the rankings of period 2 efforts following period 1 outcomes under the power specification $\tau_c(M_c)=\alpha_c M_c^{\beta_c}$. Equilibrium efforts are computed under three cost parameters corresponding to the three possible period 1 outcomes: a monopoly win, a duopoly win, and failure. The following effort ranking hold for all market sizes:
