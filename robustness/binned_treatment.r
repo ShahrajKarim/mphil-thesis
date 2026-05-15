@@ -11,10 +11,14 @@
 # coefficients. Non-monotone or non-proportional patterns indicate
 # nonlinearity in the dose-response.
 #
-# Note on scale: d_ex_ante ranges 0-0.36 since class shares sum to 1
-# across all ATC Level 1 categories. Tercile cutpoints therefore sit
-# at approximately 0.12 and 0.24, capturing near-zero, moderate, and
-# high-exposure classes respectively.
+# Bin assignment is explicit at the ATC class level rather than via
+# ntile() because N (0.363) and C (0.215) are starkly separated from the
+# rest of the distribution. R (0.085) and A (0.068) sit closer to the
+# low-exposure cluster than to J/D, and including them in the Medium bin
+# induces a pre-trend violation, so they are assigned to Low.
+#   High   = N, C
+#   Medium = J, D
+#   Low    = R, A, M, H, L, G, S, B, V, P
 #
 # Outputs (output/robustness/):
 #   - binned_patent_medium_es.png  (event study: patents, medium bin)
@@ -82,10 +86,10 @@ patents <- patents |>
   left_join(patents_ex_ante_demand, by = "atc_level1") |>
   filter(patent_year >= 2010)
 
-# --- Collapse patents to yearly panel -------------------------------------
+# --- Collapse to yearly panel ---------------------------------------------
 # The two i() interaction terms double the model matrix relative to a single
-# interaction spec and exhaust vector memory at the quarterly grain.
-# patent_year is the only time index in the model so aggregation is lossless.
+# interaction spec and exhaust vector memory at the quarterly grain. The
+# year is the only time index in the model so aggregation is lossless.
 
 patents_year <- patents |>
   group_by(firm, atc_level1, patent_year) |>
@@ -96,26 +100,40 @@ patents_year <- patents |>
   ) |>
   mutate(firm = as.integer(as.factor(firm)))
 
-# --- Assign tercile bins --------------------------------------------------
-# Bins are computed at the ATC class level (13 classes) so that
-# assignment is not contaminated by unequal firm counts across classes.
+fda_year <- fda_approvals |>
+  group_by(firm, atc_level1, approval_year) |>
+  summarise(
+    approvals = sum(approvals, na.rm = TRUE),
+    d_ex_ante = first(d_ex_ante),
+    .groups   = "drop"
+  ) |>
+  mutate(firm = as.integer(as.factor(firm)))
+
+# --- Assign exposure bins -------------------------------------------------
+# Bins are hard-coded at the ATC class level. N and C are separated from
+# the rest of the distribution, so they form the High bin alone. The next
+# four classes form the Medium bin, and the remaining low-exposure
+# classes form the Low (omitted) bin.
+
+atc_high   <- c("N", "C")
+atc_medium <- c("J", "D")
 
 assign_bins <- function(df) {
-  class_terciles <- df |>
-    distinct(atc_level1, d_ex_ante) |>
+  df |>
     mutate(
-      dose_bin   = ntile(d_ex_ante, 3),  # 1 = Low, 2 = Medium, 3 = High
+      dose_bin = case_when(
+        atc_level1 %in% atc_high   ~ 3L,
+        atc_level1 %in% atc_medium ~ 2L,
+        TRUE                       ~ 1L
+      ),
       bin_medium = as.integer(dose_bin == 2),
       bin_high   = as.integer(dose_bin == 3)
       # Low (dose_bin == 1) is the omitted reference group
-    ) |>
-    select(atc_level1, dose_bin, bin_medium, bin_high)
-
-  df |> left_join(class_terciles, by = "atc_level1")
+    )
 }
 
-patents_year  <- assign_bins(patents_year)
-fda_approvals <- assign_bins(fda_approvals)
+patents_year <- assign_bins(patents_year)
+fda_year     <- assign_bins(fda_year)
 
 # --- Event-study specifications -------------------------------------------
 # Y_{fct} = alpha_{fc} + lambda_t
@@ -134,12 +152,12 @@ patent_binned <- feols(
   cluster = ~ firm
 )
 
-# FDA approvals (quarterly — smaller so no memory issue)
+# FDA approvals (yearly panel)
 fda_binned <- feols(
   approvals ~ i(approval_year, bin_medium, ref = 2013) +
               i(approval_year, bin_high,   ref = 2013) |
               firm^atc_level1 + approval_year,
-  data    = fda_approvals,
+  data    = fda_year,
   cluster = ~ firm
 )
 
