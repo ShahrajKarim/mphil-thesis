@@ -1,47 +1,49 @@
-\begin{table}
+\begin{table}[H]
 \centering
+\caption{Continuous DiD event-study estimates}
+\label{tab:contdid_es}
 \begin{talltblr}[         %% tabularray outer open
 entry=none,label=none,
 note{}={* 95\% uniform confidence band does not cover 0},
 ]                     %% tabularray outer close
 {                     %% tabularray inner open
-colspec={Q[]Q[]Q[]},
+width=\linewidth,
+colspec={Q[]X[]X[]},
 column{2,3}={}{halign=c,},
 column{1}={}{halign=l,},
-hline{8}={1,2,3}{solid, black, 0.05em},
 }                     %% tabularray inner close
 \toprule
-Event Time & Patents & FDA Approvals \\ \midrule %% TinyTableHeader
--3 & \num{0.0038} & \num{-0.0368} \\
-   & (\num{0.0034}) & (\num{0.0602}) \\
--2 & \num{0.0023} & \num{0.0361} \\
-   & (\num{0.0037}) & (\num{0.0576}) \\
--1 & \num{0.0002} & \num{-0.0326} \\
-   & (\num{0.0050}) & (\num{0.0632}) \\
-0 & \num{-0.0025} & \num{-0.0506} \\
-   & (\num{0.0044}) & (\num{0.0731}) \\
-1 & \num{-0.0126} & \num{-0.0092} \\
-   & (\num{0.0055}) & (\num{0.0706}) \\
-2 & \num{-0.0181}* & \num{0.0646} \\
-   & (\num{0.0062}) & (\num{0.0721}) \\
-3 & \num{-0.0165} & \num{0.2233} \\
-   & (\num{0.0069}) & (\num{0.1018}) \\
-4 & \num{-0.0189} & \num{0.1568} \\
-   & (\num{0.0073}) & (\num{0.0930}) \\
-5 & \num{-0.0271}* & \num{0.0861} \\
-   & (\num{0.0080}) & (\num{0.0866}) \\
-6 & \num{-0.0313}* & \num{0.1151} \\
-   & (\num{0.0082}) & (\num{0.0846}) \\
-7 & \num{-0.0315}* & \num{0.0223} \\
-   & (\num{0.0084}) & (\num{0.1022}) \\
-8 & \num{-0.0333}* & \num{0.0579} \\
-   & (\num{0.0083}) & (\num{0.1086}) \\
-9 & \num{-0.0348}* & \num{0.1329} \\
-   & (\num{0.0084}) & (\num{0.1056}) \\
-10 & \num{-0.0358}* & \num{0.0404} \\
-   & (\num{0.0085}) & (\num{0.0921}) \\
-11 & \num{-0.0324}* & \num{-0.0213} \\
-   & (\num{0.0091}) & (\num{0.0919}) \\
+& Patents & FDA Approvals \\ \midrule
+2011 & \num{0.0038}    & \num{-0.0368}  \\
+     & (\num{0.0034})  & (\num{0.0602}) \\
+2012 & \num{0.0023}    & \num{0.0361}   \\
+     & (\num{0.0037})  & (\num{0.0576}) \\
+2013 & \num{0.0002}    & \num{-0.0326}  \\
+     & (\num{0.0050})  & (\num{0.0632}) \\
+2014 & \num{-0.0025}   & \num{-0.0506}  \\
+     & (\num{0.0044})  & (\num{0.0731}) \\
+2015 & \num{-0.0126}   & \num{-0.0092}  \\
+     & (\num{0.0055})  & (\num{0.0706}) \\
+2016 & \num{-0.0181}*  & \num{0.0646}   \\
+     & (\num{0.0062})  & (\num{0.0721}) \\
+2017 & \num{-0.0165}   & \num{0.2233}   \\
+     & (\num{0.0069})  & (\num{0.1018}) \\
+2018 & \num{-0.0189}   & \num{0.1568}   \\
+     & (\num{0.0073})  & (\num{0.0930}) \\
+2019 & \num{-0.0271}*  & \num{0.0861}   \\
+     & (\num{0.0080})  & (\num{0.0866}) \\
+2020 & \num{-0.0313}*  & \num{0.1151}   \\
+     & (\num{0.0082})  & (\num{0.0846}) \\
+2021 & \num{-0.0315}*  & \num{0.0223}   \\
+     & (\num{0.0084})  & (\num{0.1022}) \\
+2022 & \num{-0.0333}*  & \num{0.0579}   \\
+     & (\num{0.0083})  & (\num{0.1086}) \\
+2023 & \num{-0.0348}*  & \num{0.1329}   \\
+     & (\num{0.0084})  & (\num{0.1056}) \\
+2024 & \num{-0.0358}*  & \num{0.0404}   \\
+     & (\num{0.0085})  & (\num{0.0921}) \\
+2025 & \num{-0.0324}*  & \num{-0.0213}  \\
+     & (\num{0.0091})  & (\num{0.0919}) \\
 \bottomrule
 \end{talltblr}
 \end{table}
