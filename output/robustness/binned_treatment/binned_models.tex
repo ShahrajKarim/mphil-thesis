@@ -1,0 +1,51 @@
+\begin{table}
+\centering
+\begin{talltblr}[         %% tabularray outer open
+entry=none,label=none,
+note{}={* p \num{< 0.05}, ** p \num{< 0.01}, *** p \num{< 0.001}},
+]                     %% tabularray outer close
+{                     %% tabularray inner open
+width=\linewidth,
+colspec={Q[]X[]X[]X[]X[]},
+column{2,3,4,5}={}{halign=c,},
+column{1}={}{halign=l,},
+hline{33}={1,2,3,4,5}{solid, black, 0.05em},
+}                     %% tabularray inner close
+\toprule
+& \SetCell[c=2]{c} Patents && \SetCell[c=2]{c} FDA Approvals & \\
+& Medium Bin & High Bin & Medium Bin & High Bin \\ \midrule
+2010 & \num{-0.008}    & \num{-0.029}    & \num{0.042}   & \num{0.085}   \\
+     & (\num{0.006})   & (\num{0.017})   & (\num{0.055}) & (\num{0.140}) \\
+2011 & \num{-0.005}    & \num{-0.025}    & \num{0.058}   & \num{-0.064}  \\
+     & (\num{0.006})   & (\num{0.016})   & (\num{0.065}) & (\num{0.105}) \\
+2012 & \num{0.009}     & \num{-0.003}    & \num{0.042}   & \num{0.033}   \\
+     & (\num{0.006})   & (\num{0.012})   & (\num{0.077}) & (\num{0.121}) \\
+2014 & \num{0.015}**   & \num{-0.002}    & \num{0.047}   & \num{-0.091}  \\
+     & (\num{0.005})   & (\num{0.011})   & (\num{0.067}) & (\num{0.130}) \\
+2015 & \num{0.002}     & \num{-0.027}*   & \num{0.006}   & \num{-0.005}  \\
+     & (\num{0.005})   & (\num{0.013})   & (\num{0.073}) & (\num{0.148}) \\
+2016 & \num{0.007}     & \num{-0.058}*** & \num{0.158}   & \num{0.070}   \\
+     & (\num{0.006})   & (\num{0.014})   & (\num{0.101}) & (\num{0.130}) \\
+2017 & \num{0.005}     & \num{-0.047}**  & \num{0.239}*  & \num{0.326}   \\
+     & (\num{0.006})   & (\num{0.015})   & (\num{0.114}) & (\num{0.181}) \\
+2018 & \num{-0.009}    & \num{-0.075}*** & \num{0.185}*  & \num{0.213}   \\
+     & (\num{0.006})   & (\num{0.017})   & (\num{0.093}) & (\num{0.155}) \\
+2019 & \num{-0.004}    & \num{-0.092}*** & \num{0.071}   & \num{0.206}   \\
+     & (\num{0.007})   & (\num{0.017})   & (\num{0.077}) & (\num{0.162}) \\
+2020 & \num{-0.003}    & \num{-0.108}*** & \num{0.012}   & \num{0.141}   \\
+     & (\num{0.006})   & (\num{0.018})   & (\num{0.092}) & (\num{0.142}) \\
+2021 & \num{-0.005}    & \num{-0.118}*** & \num{0.127}   & \num{-0.048}  \\
+     & (\num{0.006})   & (\num{0.018})   & (\num{0.105}) & (\num{0.182}) \\
+2022 & \num{-0.010}    & \num{-0.129}*** & \num{0.101}   & \num{0.040}   \\
+     & (\num{0.006})   & (\num{0.018})   & (\num{0.075}) & (\num{0.184}) \\
+2023 & \num{-0.011}    & \num{-0.141}*** & \num{0.152}   & \num{0.154}   \\
+     & (\num{0.006})   & (\num{0.019})   & (\num{0.087}) & (\num{0.182}) \\
+2024 & \num{-0.005}    & \num{-0.142}*** & \num{0.037}   & \num{0.070}   \\
+     & (\num{0.010})   & (\num{0.019})   & (\num{0.066}) & (\num{0.146}) \\
+2025 & \num{-0.020}**  & \num{-0.155}*** & \num{0.010}   & \num{0.032}   \\
+     & (\num{0.006})   & (\num{0.019})   & (\num{0.067}) & (\num{0.153}) \\
+Num. obs. & \SetCell[c=2]{c} \num{5281696} && \SetCell[c=2]{c} \num{151200} & \\
+R2        & \SetCell[c=2]{c} \num{0.534}   && \SetCell[c=2]{c} \num{0.609}  & \\
+\bottomrule
+\end{talltblr}
+\end{table}
