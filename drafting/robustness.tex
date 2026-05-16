@@ -193,6 +193,15 @@ Taken together, the results from the sensitivity analysis show that the main fin
 
 \subsubsection{Ex-Post Medicaid Exposure}
 
+The second specification jointly estimates the innovation response to Medicaid demand exposure and exposure to the PDL. Like RQ1, an ex-post market share measure is used to determine whether the estimates are sensitive to the construction of the exposure variable.
+
+Once again, the ex-post Medicaid exposure coefficients for patents are nearly identical to the baseline results. The same reductions in Medicaid market share coefficients is observed, with the PDL exposure coefficient path also coinciding with the ex-ante model which saw negative coefficients from 2016 with significance from 2019. The pre-expansion coefficients for both the Medicaid and PDL measures remain small and statistically insignificant, supporting the parallel trends assumption even under the ex-post exposure construction.
+
+The FDA approval coefficients are largely under the ex-post specification are statistically insignificant for both the Medicaid and PDL exposure measures, with isolated incidences of significance in a small number of post-expansion years. This aligns with the baseline finding that the innovation response has not yet reached the final stage of the R\&D pipeline. The agreement between the ex-ante and ex-post results therefore indicates that the decomposition into Medicaid demand and PDL exposure is not sensitive to the construction of exposure to Medicaid.
+
+The FE Poisson, binned treatment, and continuous difference-in-differences estimators are not applied to the RQ2 specification. The joint estimation of two exposure variables under these alternative specifications is computationally demanding, and could not be completed with the device used for this study. Given this constraint, the alternative estimators are only used for the RQ1 specification where they are most informative for the aggregate response to the policy.
+
+\clearpage
 
 \begin{figure}[!h]
   \centering
@@ -226,13 +235,13 @@ Taken together, the results from the sensitivity analysis show that the main fin
 
 \clearpage
 
-
 % -----------------------------------------------------------------------
 \subsection{RQ3: Therapeutic-Class Heterogeneity}
 % -----------------------------------------------------------------------
 
 \subsubsection{Ex-Post Medicaid Exposure}
 
+The RQ3 specification allows for heterogeneity in innovation behaviour to vary at ATC Level 1 therapeutic class. The ex-post exposure measure of Medicaid exposure is used as a robustness check.
 
 \begin{center}
 \begingroup\footnotesize
@@ -241,10 +250,15 @@ Taken together, the results from the sensitivity analysis show that the main fin
 \end{center}
 
 
+The ex-post estimates are broadly consistent with the ex-ante baseline. Therapeutic classes that exhibited significant negative patent responses under ex-ante exposure, continue to display significant negative coefficients under the ex-post measure. Additionally, positive patent responses are still observed for therapeutic classes relating to blood related drugs, hormonal preparations, and sensory organs. Simiarly, the FDA approval coefficients are aligned with their ex-ante results - significant positive responses for alimentary tract and dermatologicals, and no class are recorded to have a significant reduction in approvals. The results aligning between the two exposure measures indicates that the baseline class-level heterogeneity in innovation response is not driven by the choice of exposure measure.
 
 \subsubsection{Parallel Trends}
 
+The RQ3 triple-difference specification does not take the form of an event study, as the estimation of class-specific dynamic coefficients would be computationally intensive. Consequently, pre-trends coefficients cannot be estimated directly, so the parallel trends assumption cannot be tested for in the same manner as RQ1 and RQ2. Since ATC class V is the omitted from the regressions, it is the reference group for the DDD models. In this context, this specifically indicates that absent the ACA, the relationship between Medicaid exposure and changes in innovation outcomes would have evolved similarly across therapeutic classes relative to class V. The results from earlier the earlier analyses and the model structure can provide evidence to support the plausibility of this assumption.
 
+First, the RQ1 and RQ2 event studies consistently display small and statistically insignificant pre-expansion coefficients across all specifications, including FEOLS, FE Poisson, binned treatment and the continuous DiD approach. Therefore, therapeutic classes with differing levels of Medicaid exposure followed similar innovation trajectories prior to the ACA expansion. Since the same Medicaid exposure measure and firm-class panels are used for RQ3, the evidence for parallel trends from RQ1 and RQ2 provide support for the key identifying assumption of RQ3.
+
+Third, as discussed in the methodology, a violation of parallel trends would require an additional shock around 2014 that differentially affected innovation within therapeutic classes such that it was correlated with exposure to Medicaid. There are no clear candidates for such a confounding shock.
 
 \clearpage
 
