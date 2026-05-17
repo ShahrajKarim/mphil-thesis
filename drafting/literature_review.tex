@@ -1,29 +1,90 @@
-\section{Related Literature}
+\documentclass[12pt]{article}
+\usepackage{geometry}
+\geometry{a4paper, portrait, margin=1in}
 
-This thesis relates to three strands of literature: public procurement and pharmaceutical pricing, the relationship between market size and innovation, and the dynamic determinants of firm innovation incentives.
+% --- Math Packages ---
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsthm}
 
-\subsection{Public Procurement and Pharmaceutical Pricing}
+% --- Graphics & Diagrams ---
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows, positioning}
 
-This thesis first relates to the literature on public insurance and pharmaceutical procurement. A large body of work studies how public payers shape drug prices, utilisation, and firm behaviour through reimbursement rules, formulary design, and bargaining institutions. In the Medicaid setting, this is especially important because statutory and supplemental rebates mean that public coverage expansion affects not only demand, but also the prices manufacturers ultimately receive.
+% --- Formatting ---
+\usepackage{parskip}
+\usepackage[hidelinks]{hyperref}
+\usepackage{natbib}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{siunitx}
+\usepackage{tabularray}
+\UseTblrLibrary{booktabs, siunitx}
+\pagestyle{plain}
 
-The institutional foundation of this thesis builds on early work demonstrating how Medicaid's pricing rules distort the broader pharmaceutical market. For instance, \cite{duggan2006} show that the Medicaid "best price" rules fundamentally alter firms' pricing strategies, while \cite{ellison2010} highlight the role of countervailing buyer power in allowing large purchasers to extract steep discounts from pharmaceutical suppliers. More recently, empirical work has evaluated how states aggressively utilise Preferred Drug Lists (PDLs) and multi-state purchasing pools to maximise their monopsony power and extract supplemental rebates in exchange for market access.
+% --- Word count (requires compiling with --shell-escape) ---
+\newcommand{\wordcount}{%
+  \immediate\write18{texcount -sum -1 \jobname.tex 2>/dev/null | python3 -c "import sys; n=sys.stdin.read().strip(); print(f'{int(n):,}') if n.isdigit() else print('?')" > \jobname.wc}%
+  \input{\jobname.wc}%
+}
 
-This literature establishes that Medicaid and related public programmes do not simply expand insurance coverage; they also fundamentally alter the terms on which drugs are purchased. However, much of this work focuses on the static consequences of public bargaining power for prices and state expenditures. By contrast, this thesis examines how these specific procurement institutions may also affect firms' intertemporal innovation incentives.
+\title{MPhil Thesis: Literature Review}
+\author{Mohammad-Shah Karim}
+\date{May 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+  \small Word count: \wordcount
+\end{center}
+
+\tableofcontents
+
+\newpage
+
+\section{Literature Review}
+
+This thesis sits at the intersection of the literature on pharmaceutical innovation and how the institutional settings behind public reimbursement shape firm incentives. It also draws on work examining the timing of innovation measures across the drug-development pipeline
+
+Before turning to these areas, it is beneficial to understand the current studies on the ACA Medicaid expansion. The reform yielded large gains in concentrated in states that chose to expand access to Medicaid, with the gaps in racial and ethnic coverage narrowing as a result \citep{courtemanche2020impact, frean2017premium, miller2019four}. These states saw increased affordability indicating reductions in the cost barriers for accessing healthcare \citep{miller2017health}, alongside declines in medical debt and bankruptcy from healthcare \citep{brevoort2017medicaid, HU201899}. These increases in access and financial welfare were accompanies with improvements in self-reported health and reductions in adult mortality \citep{miller2021medicaid, miller2017health}. However, evidence on labour market effects has been more limited, where no no significant changes were recorded in employment outcomes or physician hours \citep{duggan2019effects, dague2017effect, neprash2021effect}. This thesis studies a less explored dimension of the Medicaid expansion - its effects on pharmaceutical innovation.
 
 \subsection{Market Size and Pharmaceutical Innovation}
 
-The thesis also relates to the foundational literature linking market size to innovation. A standard result in the economics of innovation is that larger markets increase the expected return to successful R\&D, thereby stimulating investment. This principle of directed technical change \citep{acemoglu2002} has been robustly supported by empirical work in the health economics literature. \cite{finkelstein2004} demonstrates that policies increasing the potential market for vaccines spurred a significant increase in new clinical trials, while \cite{dubois2015} show that larger potential market sizes lead to a proportionally higher number of new pharmaceutical entities being introduced. 
 
-This thesis builds on that literature but studies an important institutional qualification. In the Medicaid setting, market expansion does not operate solely through a larger sales base. It also strengthens the bargaining position of the public buyer. As the state leverages its expanded market share to extract deeper supplemental rebates, the monopoly rents associated with successful innovation may be compressed. 
 
-The thesis therefore studies a setting in which the usual market-size effect—the "pull" incentive for innovation—may be weakened, offset, or even reversed by procurement-induced reductions in post-approval profits. In a public procurement environment, the link between market size and innovation depends critically on how much of the additional surplus is captured by the buyer.
+\subsection{Medicaid Expansion and Pharmaceutical Innovation}
 
-\subsection{Dynamic Innovation Incentives}
+The most closely related study to this thesis is \cite{NBERw28755}, which examines the impact of the ACA Medicaid expansion on clinical trial activity. With the use of disease condition Medicaid market shares as a proxy for Medicaid exposure, they find no evidence of a significant innovation response through to 2016. They propose that this null result may reflect the lower expected returns associated with Medicaid relative to reforms such as Medicare Part D, due to manufacturer revenue being constrained by the rebates and price controls embedded within the programme.
 
-Finally, the thesis relates to work on the dynamic determinants of innovation incentives. A broad literature argues that a firm's R\&D investment depends not only on current market conditions, but also on its financial position, its competitive state, and the continuation value generated by past success.
+While this finding is an important starting point to address the question, their analysis leaves several gaps which this thesis addresses. First, the post-expansion window is constrained by both the innovation outcome studied and the length of the post-expansion window. \citeauthor{NBERw28755} investigated clinical trial activity through to 2016, so their estimates only capture the first two years of the Medicaid demand shock. This is short relative to the development horizon for pharmaceutical drug development, which can span between five to twenty years \citep{brown2022clinical}. As a result, the absence of a response in clinical trials cannot distinguish between an innovation effect that is genuinely absent, or one that has affected early stage R\&D decisions but has not reached the clinical trials stage.
 
-A key friction in pharmaceutical R\&D is the cost of capital. \cite{hal2002financing} argues that R\&D is particularly sensitive to financing frictions because it is risky, intangible, and opaque to outside investors; therefore, internal cash flow materially affects innovative capability. Furthermore, models of dynamic industry competition \citep{ericson1995markov} and step-by-step innovation \citep{budd1993model, aghion2001competition} demonstrate that a firm's current competitive position heavily dictates its future investment incentives. 
+Second, the absence of an aggregate clinical-trial response does not confirm whether the innovation effect differs across therapeutic classes. \citet{sutton1998technology} argues that pharmaceutical R\&D is organised around narrow chemically related drug groups rather than broad therapeutic categories, and finds limited persistence in firms' major follow-on successes within these groups. This suggests that therapeutic-class-level aggregates may conceal meaningful heterogeneity in how firms adjust innovation activity. Instead, an insignificant aggregate relationship may be driven by heterogeneous responses across drug classes. Positive R\&D responses may have occurred in classes where the market-size channel dominated, but the aggregate effect may have been offset by negative clinical-trial responses in areas where the expansion weakened innovation incentives.
 
-The dynamic extension of the theoretical model draws on these ideas by treating procurement outcomes as state variables for future innovation. In particular, securing PDL placement affects future R\&D by providing the internal cash flows required to bypass capital market frictions, while also building accumulated organisational and regulatory capability. In this sense, the thesis connects the literature on dynamic innovation incentives directly to the institutional setting of public pharmaceutical procurement. The empirical finding that firms securing PDL placement innovate more in subsequent periods is highly consistent with this state-dependent mechanism, demonstrating how contemporary procurement outcomes shape the future distribution of innovative effort across firms.
+Third, while \citeauthor{NBERw28755} propose that the lower returns to the Medicaid market may explain the contrast with earlier market-size studies that find positive innovation responses, this explanation lies outside of their empirical design. Specifically, their analysis does not control for the procurement institutions that may affect manufacturer profits, including rebate pressures and formulary placement on Medicaid's PDL.
+
+This thesis addresses these gaps by extending the analysis across the innovation pipeline, across time, and across therapeutic markets. First, this thesis constructs novel panels linking firms to their drugs in Medicaid's State Drug Utilisation Data, and then to their patenting and FDA approval activity. These innovation outcomes bracket the clinical-trial stage examined by \citeauthor{NBERw28755}, allowing earlier and later innovation responses to be considered separately. Second, the impact of the reform is investigated over a substantially longer post-expansion period, with outcome data extending to 2025, whereas \citeauthor{NBERw28755} used data ending in 2016. This extension allows delayed innovation responses to be captured more clearly, which is particularly important given the long development horizon in pharmaceutical R\&D. Third, class-level heterogeneous responses are examined to determine whether the expansion generated different innovation incentives across the therapeutic markets in which firms operated in, rather than restricting the analysis to an average therapeutic-area effect.
+
+\citeauthor{NBERw28755} cite the Medicaid procurement mechanism as a potential reason for the inconclusive results, thus this thesis addresses this paper directly in the empirical analysis with the use of firm-class exposure to Medicaid's PDL. This is complemented by a counterfactual analysis of the clinical and pricing stages of preferred placement on the PDL, alongside a theoretical model in which market expansion interacts with rebates and placement on Medicaid's formulary to shape innovation incentives.
+
+\subsection{Medicaid Pricing and Manufacturer Incentives}
+
+Medicaid prescriptions are subject to statutory rebates under the MDRP, and each state can negotiate supplemental rebates with manufacturers in exchange for preferred placement on the PDL. \cite{duggan2006distortionary} show that these rules create incentives for manufacturers to raise prices for non-Medicaid consumers, since drug prices and reimbursement offered to Medicaid is linked to the prices charged in the private market. Consequently, the results highlight that manufacturers segment drug demand separately for the Medicaid and private markets, amd the ACA may have intensified this distortion by raising the statutory rebate from 15.1\% to 23.1\% of AMP. \cite{feng2023profiting} find that the higher statutory rebates relaxed the constraints imposed by Medicaid's most favoured customer clause allowing private customers to benefit with lower prices and lower drug spending by 2.5\%. Together, these findings show that Medicaid's rebate rules have spillover effects on pricing incentives outside of Medicaid, but the direction of the effect depends on the institutional channel through which the rebate structure operates.
+
+Related structural work shows that pharmaceutical pricing rules can alter manufacturers' pricing behaviour to offset reductions in per prescription revenues. \cite{dubois2022bargaining} show that firms adjust pricing and bargaining behaviour when price regulations in one market can impact profits elsewhere, indicating that the effect of pricing institutions on manufacturer returns depend on how firms respond strategically across markets.
+
+However, \cite{inderst2007buyer} show that larger buyers can raise incentives for incremental forms of product innovation, while weakening incentives for more substantial novel R\&D. This distinction is crucial in the Medicaid setting, where the expansion increases market size, while also raising exposure to the formulary selection, which may weaken incentives for more inventive forms of innovation. Therefore, this is addressed empirically in the Medicaid setting by studying patent applications, which capture early stage R\&D behaviour undertaken in anticipation of future returns. FDA approvals are used to assess whether any upstream innovation response is eventually reflected in regulatory outcomes.
+
+\subsection{Innovation Pipeline Timing}
+
+
+\clearpage
+
+\bibliographystyle{apalike}
+\bibliography{references}
 
 \end{document}
