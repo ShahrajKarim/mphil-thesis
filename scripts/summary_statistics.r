@@ -20,7 +20,8 @@ library(tibble)
 
 # --- SDUD --- #
 
-sdud <- readRDS(here("processed_data/state_drug_utilisation_data/SDUD_full.rds"))
+sdud <- readRDS(here("processed_data/state_drug_utilisation_data/SDUD_full.rds")) |>
+  filter(state != "XX")
 
 sdud_counts <- tibble(
   Variable = c("Unique labeler codes", "Unique NDCs", "States"),
