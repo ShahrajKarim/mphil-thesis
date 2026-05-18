@@ -56,7 +56,7 @@
 
 This section outlines a game-theoretical model for pharmaceutical innovation and pricing to explain the empirical puzzle observed in the patent market following the expansion of Medicaid under the Affordable Care Act. The model captures the stochastic nature of R\&D, the specific procurement mechanism (PDL bidding) used by Medicaid under each state, and how current procurement outcomes dictate future innovation incentives.
 
-In reality, several manufacturers may compete within a therapeutic class, and more than one product may appear on a state's PDL to account for clinical variations, such as allergies. However, the game uses a two-firm simplification for illustrative purposes. The same mechanism extends to settings with more firms. The model is set up for a representative therapeutic class $c \in \mathcal{C}$, where $\mathcal{C}$ denotes the set of ATC Level 1 classes. Each class is characterised by a Medicaid market size $M_c$, a rebate function $\tau_c(M_c)$, and a degree of drug substitutability $n_c$.
+In reality, several manufacturers may compete within a therapeutic class, and more than one product may appear on a state's PDL to account for clinical variations, such as allergies. However, the game uses a two-firm simplification for illustrative purposes. The same mechanism extends to settings with more firms. The model is set up for a representative therapeutic class $c \in \mathcal{C}$, where $\mathcal{C}$ denotes the set of ATC Level 1 classes. This class-specific segregation is consistent with \citeauthor{sutton1998technology}'s (\citeyear{sutton1998technology}) characterisation of pharmaceutical R\&D as operating across distinct therapeutic areas with limited knowledge spillovers across groups. Each class is characterised by a Medicaid market size $M_c$, a rebate function $\tau_c(M_c)$, and a degree of drug substitutability $n_c$.
 
 Figure \ref{fig:game_structure} summarises the extensive form of the game, where innovation decisions in period 1 are mapped to the pricing outcomes, subsequently determining the state a firm enters for future R\&D investment in period 2.
 
@@ -108,7 +108,7 @@ Figure \ref{fig:game_structure} summarises the extensive form of the game, where
 
 \section{Stage 1: The Innovation Decision (Effort)}
 
-First, firms make investment decisions for a drug they wish to market within therapeutic class $c$. Innovation is modelled to require effort, which raises the probability of clinical success while being costly.
+First, firms make investment decisions for a drug they wish to market within therapeutic class $c$. Innovation is modelled to require effort, which raises the probability of clinical success while being costly, consistent with \citeauthor{sutton1998technology} characterising pharmaceutical R\&D as a search process where greater research effort raises the likelihood of success.
 
 \subsection{The Production Technology}
 The realised clinical quality $a_{i,c}$ is a function of the effort exerted by the firm and a stochastic component $\varepsilon_i$:
@@ -140,10 +140,10 @@ A drug is clinically approved (passes the P\&T stage) if its quality $a_{i,c}$ e
 Since the random idiosyncratic shock $\epsilon_i$ takes on some normal distribution, the probability of a drug passing the P\&T stage for a given class $c$ is given as:
 
 \begin{align}
-    Q_c(e_{i,c}) &= \Pr(\ln e_{i,c} + \varepsilon_i \geq \bar{a}) \\
-           &= \Pr(\varepsilon_i \geq \bar{a} - \ln e_{i,c}) \\
-           &= 1 - \Pr(\varepsilon_i < \bar{a} - \ln e_{i,c}) \\
-           &= 1 - \Phi\left(\frac{\bar{a} - \ln e_{i,c}}{\sigma}\right)
+    Q_c(e_{i,c}) &= \Pr \left(\ln(e_{i,c}) + \varepsilon_i \geq \bar{a} \right) \\
+           &= \Pr \left( \varepsilon_i \geq \bar{a} - \ln(e_{i,c}) \right) \\
+           &= 1 - \Pr  \left(\varepsilon_i < \bar{a} - \ln(e_{i,c}) \right) \\
+           &= 1 - \Phi\left(\frac{\bar{a} - \ln(e_{i,c})}{\sigma}\right)
 \end{align}
 where $\Phi(\cdot)$ is the standard normal CDF. \vspace{1em}
 
@@ -451,9 +451,9 @@ Table~\ref{tab:rebate_regression} shows that the coefficients on both $\log(M_c)
 \subsection{State-Dependent Innovation}
 Empirically, firms that gain PDL placement tend to innovate more in subsequent periods. In order to capture this dynamic, the current game can be embedded in a dynamic framework where procurement outcomes influence future innovation incentives.
 
-In this setting, period 1 procurement outcomes in class $c$ determine the firm's position in Period 2. A firm may fail to gain access, gain access under competitive rents, or gain access under higher monopoly rents. A natural explanation for this state dependence is the internal-finance channel. \cite{hal2002financing} suggests that R\&D is especially exposed to financing frictions due to being risky and intangible, thus outside investors cannot evaluate this well thereby making external finance costly. Securing preferred access on the PDL allows for additional cash-flows that can relax financing constraints, thereby lowering the effective marginal cost of future R\&D.
+In this setting, period 1 procurement outcomes in class $c$ determine the firm's position in Period 2. A firm may fail to gain access, gain access under competitive rents, or gain access under higher monopoly rents. A natural explanation for this state dependence is the internal-finance channel. \cite{hal2002financing} shows that R\&D is especially exposed to financing frictions because it is risky and intangible, making external finance costly. This concern is amplified in pharmaceuticals, where drug development involves substantial sunk costs, highly variable returns, and informational asymmetries that disadvantage firms with limited internal resources \citep{sutton1998technology}. Securing preferred access on the PDL generates additional cash flows that relax financing constraints, thereby lowering the effective marginal cost of future R\&D.
 
-Additionally, firms that pass the P\&T stage and negotiate rebates may gain additional regulatory and organisational knowledge. This may make future innovation less costly and therefore generate persistence - current procurement success affects future innovation not only through profits, but also through the firm's accumulated ability to navigate the Medicaid procurement process.
+Additionally, firms that pass the P\&T stage and negotiate rebates may gain organisational knowledge specific to navigating Medicaid procurement. This lowers the effective cost of future innovation without relying on pharmaceutical discovery itself accumulating across research trajectories. This modelling choice is supported by \citeauthor{sutton1998technology} (\citeyear{sutton1998technology}), who documents limited persistence in firms' follow-on drug successes. This makes cash flow and procurement-related capabilities a more appropriate basis for state-dependent innovation than persistent dominance in drug discovery.
 
 This is consistent with dynamic models of competition. For example, \cite{budd1993model} show that a firm's current competitive position can shape future investment incentives, while \cite{aghion2001competition} show that firms in near-symmetric states may invest strongly to escape competition. In this model, firms which do not gain preferred status may still have incentives to innovate in the next period, but they do so with a cost disadvantage relative to firms that secured PDL rents.
 
@@ -513,8 +513,8 @@ To characterise the predictions of the model, equilibrium effort is solved from 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{../theoretical_model/TT_week1_model.png}
-    \caption{Comparative statics of equilibrium effort $e_c^*$. Baseline parameters: \\ $\sigma = 1.0$, $\bar{a} = 0.5$, $\bar{p} = 10$, $\bar{c} = 2$, $k = 1.0$, $\alpha_c = 0.02$, $\beta_c = 0.75$, $c \sim U[0.5, 3.5]$.}
+    \includegraphics[width=\textwidth]{../output/theoretical_model/comparative_statics.png}
+    \caption{Comparative statics of equilibrium effort $e_c^*$. Baseline parameter values are reported in Table~\ref{tab:parameters}.}
     \label{fig:comp_statics}
 \end{figure}
 
@@ -569,15 +569,19 @@ $\beta_c$ specifically estimates the innovation response in class $c$ relative t
 
 \begin{table}[h]
 \centering
-\begin{tabular}{llll}
-\hline
-\textbf{Category} & \textbf{Sign of $\beta_c$} & \textbf{Condition} & \textbf{Prediction} \\
-\hline
+\begin{tblr}{
+    width = \textwidth,
+    colspec = {X[l] X[c] X[c] X[c]},
+    row{1} = {halign=c}
+}
+\toprule
+Category & Sign of $\beta_c$ & Condition & Prediction \\
+\midrule
 Volume-dominated & $\beta_c > 0$ & $M_c^{post} < M_c^*$ & $de_c^*/d\Delta M_c > 0$ \\
 Near-threshold   & $\beta_c \approx 0$ & $M_c^{post} \approx M_c^*$ & $de_c^*/d\Delta M_c \approx 0$ \\
 Trap-bound       & $\beta_c < 0$ & $M_c^{post} > M_c^*$ & $de_c^*/d\Delta M_c < 0$ \\
-\hline
-\end{tabular}
+\bottomrule
+\end{tblr}
 \caption{Mapping between theoretical categories and the DDD coefficient $\beta_c$}
 \label{tab:regime_mapping}
 \end{table}
@@ -597,4 +601,14 @@ The model points towards two routes by which which procurement design could affe
 
 \bibliographystyle{apalike}
 \bibliography{references}
+
+\newpage
+\appendix
+
+\section{Baseline Model Parameters} \label{app:parameters}
+
+Table~\ref{tab:parameters} reports the baseline parameter values used to generate Figure~\ref{fig:comp_statics}. Parameters that are not varied are held at these baseline values.
+
+\input{../output/theoretical_model/parameters.tex}
+
 \end{document}

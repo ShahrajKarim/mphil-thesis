@@ -2,20 +2,24 @@
 \centering
 \caption{Baseline parameter values used for comparative statics simulations}
 \label{tab:parameters}
-\begin{tabular}{lll}
+\begin{tblr}{
+    width = \textwidth,
+    colspec = {X[c,0.8] X[l,3.4] X[c,1.2]},
+    row{1} = {halign=c}
+}
 \toprule
-\textbf{Parameter} & \textbf{Description} & \textbf{Baseline Value} \\
+Parameter & Description & Baseline Value \\
 \midrule
-$\sigma$      & Std.\ dev.\ of the innovation shock $\varepsilon_i$                    & $1.0$           \\
-$\bar{a}$     & Clinical quality threshold (P\&T approval bar)                         & $0.5$           \\
-$\bar{p}$     & Regulatory price cap                                                   & $10.0$          \\
-$\bar{c}$     & Expected marginal cost                                                 & $2.0$           \\
-$k$           & Effort cost scaling parameter                                          & $1.0$           \\
-$\alpha_c$    & Rebate scale parameter                                                 & $0.02$          \\
-$\beta_c$     & Rebate elasticity under power form $\tau_c = \alpha_c M_c^{\beta_c}$  & $0.75$          \\
-$c$           & Marginal cost distribution in the duopoly auction                      & $U[0.5,\, 3.5]$ \\
-$M_0$         & Reference market size                                                  & $100$           \\
-$\delta$      & Period 2 cost reduction factor                                         & $0.7$           \\
+$\sigma$      & Std.\ dev.\ of the innovation shock $\varepsilon_i$                   & $1.0$           \\
+$\bar{a}$     & Clinical quality threshold (P\&T approval bar)                        & $0.5$           \\
+$\bar{p}$     & Regulatory price cap                                                  & $10.0$          \\
+$\bar{c}$     & Expected marginal cost                                                & $2.0$           \\
+$k$           & Effort cost scaling parameter                                         & $1.0$           \\
+$\alpha_c$    & Rebate scale parameter                                                & $0.02$          \\
+$\beta_c$     & Rebate elasticity under power form $\tau_c = \alpha_c M_c^{\beta_c}$ & $0.75$          \\
+$c$           & Marginal cost distribution in the duopoly auction                     & $U[0.5,\, 3.5]$ \\
+$M_0$         & Reference market size                                                 & $100$           \\
+$\delta$      & Period 2 cost reduction factor                                        & $0.7$           \\
 \bottomrule
-\end{tabular}
+\end{tblr}
 \end{table}
