@@ -44,18 +44,19 @@
 
 \begin{document}
 
+\ifdefined\isdraft\else
 \maketitle
-
 \begin{center}
   \small Word count: \wordcount
 \end{center}
-
 \tableofcontents
-
 \newpage
+\fi
+
+\section{Empirical Results}
 
 % -----------------------------------------------------------------------
-\section{RQ1: Overall Innovation Response}
+\subsection{RQ1: Overall Innovation Response}
 % -----------------------------------------------------------------------
 
 \begin{figure}[!h]
@@ -89,7 +90,7 @@ This is consistent with \citet{NBERw28755}, who study the response of clinical t
 \clearpage
 
 % -----------------------------------------------------------------------
-\section{RQ2: Medicaid Demand and PDL Exposure}
+\subsection{RQ2: Medicaid Demand and PDL Exposure}
 % -----------------------------------------------------------------------
 
 \begin{figure}[!h]
@@ -136,7 +137,7 @@ Both the Medicaid exposure and PDL exposure coefficients for FDA approvals are s
 \clearpage
 
 % -----------------------------------------------------------------------
-\section{RQ3: Therapeutic-Class Heterogeneity}
+\subsection{RQ3: Therapeutic-Class Heterogeneity}
 % -----------------------------------------------------------------------
 
 \begin{center}
@@ -160,7 +161,7 @@ Several therapeutic classes display negative point estimates, but none reach sta
 \clearpage
 
 % -----------------------------------------------------------------------
-\section{PDL Counterfactual Analysis}
+\subsection{PDL Counterfactual Analysis}
 % -----------------------------------------------------------------------
 
 The estimates from the PDL counterfactual specification introduced in Section 4 are presented below, where the omitted baseline corresponds to a firm-class pair whose drugs do not pass either PDL stage.
@@ -184,14 +185,16 @@ The FDA approval results from the counterfactual specification do not mirror pat
 \bibliographystyle{apalike}
 \bibliography{references}
 
+\ifdefined\isdraft\else
+
 \clearpage
 \appendix
 
 % -----------------------------------------------------------------------
-\section{Regression Tables}
+\subsection{Regression Tables}
 % -----------------------------------------------------------------------
 
-\subsection{RQ1: Overall Innovation Response}
+\subsubsection{RQ1: Overall Innovation Response}
 
 \begingroup\footnotesize
 \input{../output/RQ1/feols_exante_models.tex}
@@ -199,7 +202,7 @@ The FDA approval results from the counterfactual specification do not mirror pat
 
 \clearpage
 
-\subsection{RQ2: Medicaid Demand and PDL Exposure}
+\subsubsection{RQ2: Medicaid Demand and PDL Exposure}
 
 \begingroup\footnotesize
 \input{../output/RQ2/feols_exante_models.tex}
@@ -209,7 +212,7 @@ The FDA approval results from the counterfactual specification do not mirror pat
 
 
 % -----------------------------------------------------------------------
-\section{Therapeutic-Class Substitutability}
+\subsection{Therapeutic-Class Substitutability}
 % -----------------------------------------------------------------------
 
 \begingroup
@@ -218,5 +221,7 @@ The FDA approval results from the counterfactual specification do not mirror pat
 \makeatother
 \input{../output/rebate_exploration/class_substitutability.tex}
 \endgroup
+
+\fi
 
 \end{document}

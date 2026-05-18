@@ -33,15 +33,14 @@
 
 \begin{document}
 
+\ifdefined\isdraft\else
 \maketitle
-
 \begin{center}
   \small Word count: \wordcount
 \end{center}
-
 \tableofcontents
-
 \newpage
+\fi
 
 \section{Methodology}
 
@@ -166,7 +165,7 @@ While this model does not provide a clean structural decomposition of market siz
 
 \subsubsection{RQ3: Therapeutic-Class Heterogeneity}
 
-The third research question investigates whether the effect of the Medicaid expansion differs across therapeutic classes. This is important because Medicaid exposure, market structure, and PDL exposure may vary across therapeutic areas in ways that are not captured by the aggregate specification.
+The third research question investigates whether the effect of the Medicaid expansion differs across therapeutic classes. Pharmaceutical R\&D is not organised around a single uniform innovation process across the industry. \citet{sutton1998technology} suggests that the drug discovery process operates across distinct product areas, with chemically related groups displaying limited persistence in innovation successes. This implies that the aggregate response to the Medicaid expansion recorded in RQ1 and RQ2 may conceal heterogeneous responses across the therapeutic markets. This is particularly relevant within this framework as the underlying market structure may vary across therapeutic areas in ways that are unobserved by the pooled specification.
 
 To examine this, a triple-interaction specification is specified. This allows the post-expansion effect of Medicaid exposure to vary by the ATC Level 1 class:
 \begin{equation}

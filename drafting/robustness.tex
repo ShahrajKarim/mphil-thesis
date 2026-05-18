@@ -41,15 +41,14 @@
 
 \begin{document}
 
+\ifdefined\isdraft\else
 \maketitle
-
 \begin{center}
   \small Word count: \wordcount
 \end{center}
-
 \tableofcontents
-
 \newpage
+\fi
 
 % -----------------------------------------------------------------------
 \section{Robustness and Sensitivity Analysis}
@@ -265,6 +264,8 @@ Third, as discussed in the methodology, a violation of parallel trends would req
 \bibliographystyle{apalike}
 \bibliography{references}
 
+\ifdefined\isdraft\else
+
 \clearpage
 \appendix
 
@@ -335,5 +336,7 @@ Third, as discussed in the methodology, a violation of parallel trends would req
 \begingroup\footnotesize
 \input{../output/RQ2/feols_expost_models.tex}
 \endgroup
+
+\fi
 
 \end{document}
