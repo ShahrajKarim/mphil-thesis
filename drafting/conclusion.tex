@@ -1,0 +1,82 @@
+\documentclass[12pt]{article}
+\usepackage{geometry}
+\geometry{a4paper, portrait, margin=1in}
+
+% --- Math Packages ---
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+
+% --- Graphics & Diagrams ---
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows, positioning}
+
+% --- Formatting ---
+\usepackage{parskip}
+\usepackage[hidelinks]{hyperref}
+\usepackage{natbib}
+\usepackage{enumitem}
+\pagestyle{plain}
+
+% --- Word count (requires compiling with --shell-escape) ---
+\newcommand{\wordcount}{%
+  \immediate\write18{texcount -sum -1 \jobname.tex 2>/dev/null | python3 -c "import sys; n=sys.stdin.read().strip(); print(f'{int(n):,}') if n.isdigit() else print('?')" > \jobname.wc}%
+  \input{\jobname.wc}%
+}
+
+\title{MPhil Thesis: Conclusion}
+\author{Mohammad-Shah Karim}
+\date{May 2026}
+
+\begin{document}
+
+\ifdefined\isdraft\else
+\maketitle
+\begin{center}
+  \small Word count: \wordcount
+\end{center}
+\fi
+
+\section{Directions for Further Research}
+
+The empirical and theoretical analysis presented in this thesis is subject to several limitations. This section discusses the most important of these and identifies directions in which future work could extend the analysis.
+
+\subsection{Clinical Trial Outcomes}
+
+This thesis chooses to study patenting and drug approvals to capture the innovation stages before and after clinical-trials studied by \citet{NBERw28755}. Clinical trials are an intermediate position between these two outcomes; incorporating clinical-trial data would complete the pipeline comparison, thereby allowing the analysis to trace the innovation response across all three stages. Given the scope of this study, this extension was not feasible within the scope of the present study. \citeauthor{NBERw28755} utilise a proprietary clinical trial data supplied by Cortellis. Constructing a comparable panel from ClinicalTrials.gov would require substantial work. The wording of study titles vary substantially and do not always identify the relevant disease area explicitly. Mapping these records to therapeutic-classes would therefore require imperfect text-based classification. Future work utilising Cortellis could assess whether the negative patenting response identified in this thesis is mirrored at the trial stage.
+
+\subsection{PDL Measurement}
+
+The PDL exposure measure used in this thesis is constructed from the Texas Vendor Drug Program, as this is the only state that has made the full formulary history available in a machine-readable format. While the representativeness analysis indicates that the Texas PDL shares substantial overlap with the New York and Washington, overlap with California is considerably weaker, reflecting differences in state-level formulary structures. This introduces measurement error into the PDL exposure variable, since firms classified as having heavy exposure to the PDL in Texas may be less exposed to it in other states. Consequently, the estimated innovations response to PDL exposure is likely to be attenuated towards zero, and should be interpreted as a plausible lower bound. Further work could construct a multi-state PDL exposure measure using additional records to provide a more representative measure of firm-class exposure to Medicaid's PDL.
+
+\subsection{Therapeutic Classification}
+
+The analysis aggregates all outcomes to a coarse clinical outcome - ATC Level 1. This can contain drugs with substantially different clinical profiles and competitive environments, so within-class innovation heterogeneity may be masked. This is particularly relevant for the heterogeneity analysis in RQ3, where differences in innovation responses may remain hidden even where the ATC Level 1 estimates appear null or weak. Finer classification such as ATC Levels 2 or 3 may allow the analysis to distinguish between sub-therapeutic areas, but would come at the cost of an increase in panel dimensionality and therefore computational demands. Patents are classified using a CPC-to-ATC crosswalk, and extending to more granular ATC levels would require a mapping that may be noisy.
+
+\subsection{Alternative Estimators for the Joint Specification}
+
+The FE Poisson, binned-treatment, and continuous DiD estimators are applied to the RQ1 specification but not the RQ2 specification separating the innovation responses to both Medicaid and PDL exposure. Extending these estimators to the joint specification exceeded the computational power of the device used for this thesis, due to the size of the firm-class panels and the additional interactions required. The RQ2 estimates are instead supported by the ex-ante and ex-post exposure comparison with the use of FEOLS, but were not subject to equivalent estimator-level sensitivity analysis. Future work could therefore use greater computational capacity to assess whether the decomposition of demand and PDL exposure is robust alternative models.
+
+\subsection{The Theoretical Model}
+
+The theoretical model developed is an illustrative simplification designed to formalise how the Medicaid expansion can reduce innovation incentives through the procurement design. The model restricts competition to two firms competing for access within each therapeutic class, and assumes that the winner of the price stage receives the entire Medicaid market. In reality, several manufacturers compete for PDL authorisation within a therapeutic class, and multiple products may receive preferred placement. The model therefore abstracts from an oligopolistic structure to a duopoly setting in order to isolate the interaction between market size, rebate extraction, and the rent gap rather than the exact number of firms. An $N$-firm extension would allow for the examination of how rebate pressure scales with the number of clinically viable competitors, and whether the Medicaid expansion causes marginal firms to exit Medicaid-relevant therapeutic areas entirely rather than simply reducing innovation effort.
+
+\section{Conclusion}
+
+This thesis has examined whether the ACA Medicaid expansion raised pharmaceutical innovation, and whether the response depended on firms' exposure to Medicaid's procurement institutions. Conventionally, an expansion in expected demand should increase the expected return to R\&D \citep{finkelstein2004static, dubois2015market}. However, the Medicaid setting alters this prediction, as the additional demand is subject to statutory rebates, supplemental rebate negotiations, and drug-list bargaining. To study this question, the analysis constructed novel firm-therapeutic-class panels linking both patent records and FDA drug approvals to Medicaid prescription data, and PDL placement over 2010-2025.
+
+The main empirical finding is that therapeutic classes with greater exposure to Medicaid experienced a persistent decline in patenting following the 2014 reform, while FDA approvals had an inconclusive response. The divergence between patents and FDA approvals is consistent with the changes in patenting behaviour appearing earlier in the R\&D pipeline, with insufficient time passing for changes in drug development to reach the approval stage. This interpretation explains the null effect documented in clinical trials by \citet{NBERw28755}.
+
+A decomposition of innovation behaviour by demand and PDL exposure revealed that firms with greater exposure to Medicaid's PDL experienced additional declines in patenting beyond the demand channel. The PDL counterfactual analysis provides further suggestive support for this where firms securing The aggregate decline in patenting is not uniform across the pharmaceutical industry, with the declines being concentrated in classes with higher exposure to Medicaid and greater levels of drug substitutability. However, classes with lower drug substitutability instead saw innovation responses consistent with the standard market-size prediction, with a rise in patent applications. The PDL counterfactual adds further to this nuanced mechanism, where firms passing only one stage of the PDL selection process experience the largest declines in patenting, while firms securing full preferred placement exhibited declines, albeit smaller ones.
+
+The theoretical model formalises this procurement-based interpretation. Since rebate extraction strengthened with the Medicaid market expansion, additional demand can lower expected returns to R\&D. This effect is likelier to hold for more clinically substitutable drugs, where Medicaid's bargaining position for deeper rebates is stronger. Notably, the model identifies the gap between monopoly and competitive profits as the key object linking pricing pressure to innovation incentives. Policies that shrink this gap therefore reduce equilibrium effort immediately and in the future period through an internal-financing channel.
+
+Taken together, the findings of this thesis suggest that the consequences of public demand expansions on innovation depend on the interaction between institutions governing how firms capture surpluses and market conditions, such as within-therapeutic-class drug substitutability. The findings speak more broadly to reforms that leverage government purchasing power to place downward pressure on drug prices, including debates surrounding Medicare price negotiation under the 2022 Inflation Reduction Act. Crucially, the analysis suggests that the innovation consequences of such reforms should be evaluated on a class-by-class basis, since the same demand shock may encourage R\&D in some therapeutic areas while weakening incentives in others.
+
+\newpage
+\bibliographystyle{apalike}
+\bibliography{references}
+
+\end{document}
