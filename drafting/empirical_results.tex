@@ -20,6 +20,7 @@
 \usepackage{enumitem}
 \usepackage{booktabs}
 \usepackage{caption}
+\usepackage{float}
 \usepackage{siunitx}
 \usepackage{tabularray}
 \UseTblrLibrary{booktabs, siunitx}
@@ -140,11 +141,11 @@ Both the Medicaid exposure and PDL exposure coefficients for FDA approvals are s
 \subsection{RQ3: Therapeutic-Class Heterogeneity}
 % -----------------------------------------------------------------------
 
-\begin{center}
 \begingroup\footnotesize
+%TC:ignore
 \input{../output/RQ3/feols_exante_models.tex}
+%TC:endignore
 \endgroup
-\end{center}
 
 The triple-difference estimates reveal substantial heterogeneity across therapeutic areas. Significant negative responses are observed in patenting behaviour for alimentary tract and metabolism, cardiovascular, musculo-skeletal, and nervous system drugs. RQ1 identifies an aggregate decline in patenting following the Medicaid expansion and these classes appear to account for a significant share of the overall response. Several of these classes rank highly in the annual NDC count averages reported in Table~\ref{tab:class_substitutability}. Additionally, these classes also cover widely prescribed drug categories, such as diabetes and gastrointestinal medications, cardiovascular therapies, and antidepressants. This pattern is consistent with the procurement mechanism developed in the theoretical model, where therapeutic areas with greater drug substitutability are exposed to more intense formulary competition and rebate pressure. Consequently, the procurement channel may more strongly offset the standard market-size incentive in these classes.
 
@@ -166,11 +167,11 @@ Several therapeutic classes display negative point estimates, but none reach sta
 
 The estimates from the PDL counterfactual specification introduced in Section 4 are presented below, where the omitted baseline corresponds to a firm-class pair whose drugs do not pass either PDL stage.
 
-\begin{center}
 \begingroup\footnotesize
+%TC:ignore
 \input{../output/PDL_counterfactual/pdl_counterfactual_models.tex}
+%TC:endignore
 \endgroup
-\end{center}
 
 The patent results indicate that the innovation response to the ACA differs depending on a firm's pre-existing position within the PDL process. Firms that only pass one of the clinical and pricing stages experience reductions in patenting activity. Notably, the decline is larger for firms only passing the clinical stage, with a coefficient of $-11.399$, compared with firms that only pass the pricing stage that have a coefficient of $-7.386$. This indicates that exposure to either stage in isolation is associated with a post-expansion decline in patenting. Specifically, firms that only pass the clinical stage develop pharmaceutical products which meet the standards for safety and efficacy but do not secure preferred placement. However, firms which only pass the pricing stage are price-competitive but do not meet clinical criterion. In both cases, the expanded Medicaid market raises the value of PDL placement without granting these firms access to the associated demand.
 
@@ -190,6 +191,8 @@ The FDA approval results from the counterfactual specification do not mirror pat
 \clearpage
 \appendix
 
+\section{Empirical Results}
+
 % -----------------------------------------------------------------------
 \subsection{Regression Tables}
 % -----------------------------------------------------------------------
@@ -197,7 +200,9 @@ The FDA approval results from the counterfactual specification do not mirror pat
 \subsubsection{RQ1: Overall Innovation Response}
 
 \begingroup\footnotesize
+%TC:ignore
 \input{../output/RQ1/feols_exante_models.tex}
+%TC:endignore
 \endgroup
 
 \clearpage
@@ -205,7 +210,9 @@ The FDA approval results from the counterfactual specification do not mirror pat
 \subsubsection{RQ2: Medicaid Demand and PDL Exposure}
 
 \begingroup\footnotesize
+%TC:ignore
 \input{../output/RQ2/feols_exante_models.tex}
+%TC:endignore
 \endgroup
 
 \clearpage
@@ -217,9 +224,11 @@ The FDA approval results from the counterfactual specification do not mirror pat
 
 \begingroup
 \makeatletter
-\renewenvironment{table}[1][tbp]{\@float{table}[#1]}{\end@float}
+\renewenvironment{table}[1][H]{\@float{table}[H]}{\end@float}
 \makeatother
+%TC:ignore
 \input{../output/rebate_exploration/class_substitutability.tex}
+%TC:endignore
 \endgroup
 
 \fi
