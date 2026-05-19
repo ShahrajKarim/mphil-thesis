@@ -65,16 +65,18 @@ RxNorm / RxClass & RxCUI, ATC code & Therapeutic classification of NDC and activ
 \end{tabular}
 \end{table}
 
-The final constructed dataset is a balanced panel at the firm $\times$ ATC Level 1 $\times$ year $\times$ quarter level, spanning from 2010 to 2025. The dataset uses observations from 2010 since the constructed pre-expansion Medicaid exposure measures utilise at least two years of pre-reform prescription data - the SDUD is downloaded from 2005 onwards for this reason. All datasets are harmonised to the World Health Organisation's Anatomical Therapeutic Chemical (ATC) classification system at Level 1, as described in Section~\ref{sec:atc}. Table~\ref{tab:source_descriptives} reports descriptive statistics for each of the four datasets used in the analysis.
+The final constructed dataset is a balanced panel at the firm $\times$ ATC Level 1 $\times$ year level, spanning from 2005 to 2025. The empirical analysis uses observations from 2010 onwards, providing a four year pre-expansion period, while avoiding reliance on prescription patterns that are distant from the 2014 reform. All datasets are harmonised to the Level 1 Anatomical Therapeutic Chemical (ATC) classification system, which is described in Section~\ref{sec:atc}. Table~\ref{tab:source_descriptives} reports descriptive statistics for each of the four datasets used in the analysis.
 
+%TC:ignore
 \input{../output/summary_statistics/summary_statistics.tex}
+%TC:endignore
 
 \subsection{Medicaid State Drug Utilisation Data}
 \label{sec:sdud}
 
-The main source for Medicaid prescription demand is the State Drug Utilisation Data (SDUD), which is maintained by the Centers for Medicare and Medicaid Services (CMS). The SDUD was established alongside the Medicaid Drug Rebate Program and records outpatient prescription drugs reimbursed by state Medicaid programmes at the drug $\times$ state $\times$ quarter level. It covers all fifty states and the District of Columbia. Each observation is identified by an 11-digit National Drug Code (NDC) and reports prescription counts, units reimbursed, and reimbursement amounts split into Medicaid and non-Medicaid components. Annual files between 2005 and 2024 are downloaded via the Medicaid Data portal API, yielding a raw dataset of 42,031,131 observations.
+The main source for Medicaid prescription demand is the State Drug Utilisation Data (SDUD), which is maintained by the Centers for Medicare and Medicaid Services (CMS). The SDUD was established alongside the Medicaid Drug Rebate Program and records outpatient prescription drugs reimbursed by state Medicaid programmes at the drug $\times$ state $\times$ quarter level. It covers all fifty states, the District of Columbia and Puerto Rico. Each observation is identified by an 11-digit National Drug Code (NDC) and reports prescription counts, units reimbursed, and reimbursement amounts split into Medicaid and non-Medicaid components. Annual files between 2005 and 2024 are downloaded via the Medicaid Data portal API, yielding a raw dataset of 42,031,131 observations.
 
-The SDUD plays two roles in the analysis. First, it is used to construct Medicaid exposure measures at the therapeutic-class - this forms the main treatment variable for the analysis. Secondly, once merged with PDL information from the Texas Vendor Drug Program, the SDUD is used to construct exposure measures to formulary placement and pricing pressure at the firm-level.
+The SDUD plays two roles in the analysis. First, it is used to construct Medicaid exposure measures at the therapeutic-class, which forms the main treatment variable for the analysis. Secondly, once merged with PDL information from the Texas Vendor Drug Program, the SDUD is used to construct exposure measures to formulary placement and pricing pressure at the firm-level.
 
 \begin{table}[htbp]
 \centering
@@ -94,13 +96,13 @@ Reimbursement amount & Total reimbursement for a given drug, split into Medicaid
 
 \subsubsection{National Drug Code}
 
-The NDC is an 11-digit product identifier - this contains a 5-digit labeler code, a 4-digit product code, and a 2-digit package code. The SDUD stores the NDC as an 11-digit string without hyphens. However, throughout this analysis the labeler, product, and package components are extracted by splitting on character position (positions 1-5, 6-9, 10-11). External sources that use the hyphenated three-segment format such as the FDA NDC directory require the inverse transformation where each raw segment is zero-padded to its standard width before concatenation. This normalisation is applied uniformly across all datasets to ensure that NDC-based joins do not introduce incorrect matches due to formatting differences.
+The NDC is an 11-digit product identifier - this contains a 5-digit labeler code, a 4-digit product code, and a 2-digit package code. The SDUD stores the NDC as an 11-digit string without hyphens. However, some datasets remove hyphens or omit leading zeroes. Consequently, the SDUD format is used to normalise all NDCs to ensure that NDC-based joins do not introduce incorrect matches stemming from formatting differences. 
 
 \subsubsection{Firm identification}
 
 The SDUD does not record firm names, so firms are instead identified through their NDC labeler code. However, pharmaceutical firms commonly operate with the use of multiple labeler codes due to  subsidiaries or acquisition arrangements. As a result, labeler codes alone cannot be treated as a unique firm identifier in this analysis.
 
-A firm mapping is constructed from the FDA NDC directory. Each labeler code is initially linked to its registered labeler name from the FDA's product and package text files. These names are then clustered into firm-level groups using a text similarity procedure. Labeler names are standardised by converting to lowercase, removing punctuation, and stripping trailing whitespace. Unigram tokenisation is then used to construct a term frequency-inverse document frequency (TF-IDF) representation, and pairwise cosine similarity is computed across all cleaned labeler names. Pairs with a cosine similarity score above 0.85 are treated as matches and are grouped into firm clusters, so that labeler codes with sufficiently similar names are assigned to the same firm. Each cluster is assigned the name of its first member as the canonical firm identifier. Merging the resulting firm mapping into the SDUD by labeler code allow for 40,003,656 of 42,031,131 records to match, which corresponds to a match rate of 95.18\%.
+A firm mapping is constructed from the FDA NDC directory. Each labeler code is initially linked to its registered labeler name from the FDA's product and package text files. These names are then clustered into firm-level groups using a text similarity procedure. Labeler names are standardised by converting to lowercase, removing punctuation, and stripping trailing whitespace. Unigram tokenisation is then used to construct a term frequency-inverse document frequency (TF-IDF) representation, and pairwise cosine similarity is computed across all cleaned labeler names. Pairs with a cosine similarity score above 0.85 are treated as matches and are grouped into firm clusters, so that labeler codes with sufficiently similar names are assigned to the same firm. Each cluster is assigned the name of its first member as the canonical firm identifier. Merging the resulting firm mapping into the SDUD by labeler code allows for 40,003,656 of 42,031,131 records to match, which corresponds to a match rate of 95.18\%.
 
 \subsubsection{Therapeutic classification}
 
@@ -116,7 +118,7 @@ Two variables are constructed to separate the clinical and pricing stages of PDL
 
 \subsubsection{Effective date treatment}
 
-Coverage start and end dates are recorded at the day-month-year level. A drug is classed as having active coverage in a given year-quarter if its coverage start date falls prior to the end of the quarter and it either has no coverage end date or the coverage end date is after the start of the quarter. Drugs for which no end date is present, or for which the end date is in 2025 or later, are treated as currently active.
+A drug is classed as having active coverage in a given year-quarter if its coverage start date falls prior to the end of the quarter and it either has no coverage end date or the coverage end date is after the start of the quarter. Drugs for which no end date is present, or for which the end date is in 2025 or later, are treated as currently active.
 
 \subsubsection{Linking to the SDUD}
 
@@ -129,9 +131,12 @@ Since the PDL analysis relies on a single state's formulary, the extent to which
 \begin{table}[htbp]
 \centering
 \caption{Pairwise overlap of state Preferred Drug Lists}
-\begin{tabular}{lllll}
+\begin{tabular}{llp{0.22\textwidth}p{0.22\textwidth}}
 \toprule
-\multicolumn{1}{c}{State 1} & \multicolumn{1}{c}{State 2} & \multicolumn{1}{c}{Overlap (State 1 in State 2)} & \multicolumn{1}{c}{Overlap (State 2 in State 1)} \\
+\multicolumn{1}{c}{State 1} & 
+\multicolumn{1}{c}{State 2} & 
+\multicolumn{1}{c}{\parbox{0.22\textwidth}{\centering Share of State 1 PDL also on \\ State 2 PDL}} & 
+\multicolumn{1}{c}{\parbox{0.22\textwidth}{\centering Share of State 2 PDL also on \\ State 1 PDL}} \\
 \midrule
 New York & Texas & 0.375 & 0.950 \\
 California & Texas & 0.196 & 0.197 \\
@@ -144,16 +149,14 @@ California & Washington & 0.384 & 0.106 \\
 
 The results indicate that 95.0\% of drugs on the Texas PDL also appear on the New York PDL, and 81.2\% also appear on the Washington PDL. Overlap with California is substantially lower at around 20\% in both directions, reflecting California's distinct formulary structure. The overlap analysis suggests that the Texas PDL shares are somewhat representative of the preferred drug lists of other large states. However, it should not be treated as a direct proxy for every state's formulary decisions, especially given the weaker overlap with California. In this thesis, the Texas PDL is used primarily to capture the two-stage clinical-and-price structure of PDL selection, rather than to measure the exact set of preferred drugs nationwide.
 
+This creates measurement error when PDL exposure in Texas is used as a proxy for firm's exposure to Medicaid across the United States. Since this measurement weakens the link between the constructed PDL variable and a firm's true national exposure, the estimated innovation response is likely to be attenuated downwards in magnitude towards zero. Therefore regression estimates using PDL exposure should be interpreted as a lower bound on the effect of formulary placement.
+
 Future work could extend this approach by obtaining PDL records from additional states and constructing state-specific firm-class PDL exposure measures. These state-level exposure measures could then be averaged across states to obtain a multi-state measure of firms' exposure to PDL placement. As more state formularies are added, this measure would better approximate a firm's overall exposure to the PDL stages.
 
 \subsection{FDA Approval Data}
 \label{sec:fda}
 
-Approval data for drugs is obtained from the Drugs@FDA database, which records all drug applications submitted to the FDA. Three files are specifically used for the purpose of this study. Applications are used to determine the sponsor name and application number of a given drug, the submissions file provides the FDA's action taken on a given outcome, and the products file records the active ingredients and drug names associated with each application number.
-
-\subsubsection{Application types}
-
-The Drugs@FDA dataset contains three types of applications: New Drug Applications (NDAs), Abbreviated New Drug Applications (ANDAs), and Biologics License Applications (BLAs). While NDAs and ANDAs count towards approvals of novel drugs, ANDAs correspond to generic drug approvals. This paper proposes to retain ANDAs within the set of innovation applications as generic entry of drugs is a form of product approval that can affect the competitive environment within a class. The sample is restricted to approvals occurring on or after 1 January 2005 to align with the SDUD coverage window.
+Approval data for drugs is obtained from the Drugs@FDA database, which records all drug applications submitted to the FDA. The applications, submissions and products files identify sponsor names, application numbers, approval status and the associated active ingredients for approved drugs. The sample is restricted to approvals occurring on or after 1 January 2005 to align with the SDUD coverage window.
 
 \subsubsection{Therapeutic classification}
 
@@ -172,13 +175,13 @@ Patent data is obtained from the USPTO PatentsView data files. PatentsView harmo
 
 \subsubsection{Relevant patents}
 
-The universe of patents is filtered in two steps. First, patents are restricted to those classified under the WIPO technology field ``Pharmaceuticals''. This provides a broad filter for patents associated with pharmaceutical products, including biological and chemical technologies. Within this set, patents are restricted to those that fall under the ``A61P'' subclass - this allows for the study to focus on patents with a stated therapeutic use. Patents classified in A61P but not in the WIPO Pharmaceuticals field are also included, as some patent-level WIPO assignments may be incomplete. The A61P covers the therapeutic activity of chemical compounds or medicinal preparations, therefore this is the most relevant CPC subclass for mapping patents to therapeutic classes. Patents classified under A61P are kept even if they are not assigned to the WIPO pharmaceutical field, since some patent-level WIPO assignments may be incomplete. This allows for the study to focus on patents that are most likely to be related to therapeutic drug innovation.
+The universe of patents is filtered in two steps. First, patents are restricted to those classified under the WIPO technology field ``Pharmaceuticals''. Within this set, patents are restricted to those that fall under the ``A61P'' subclass - this allows for the study to focus on patents with a stated therapeutic use. Patents classified under A61P but not assigned to the WIPO Pharmaceuticals field are also included, as some patent-level WIPO assignments may be incomplete. This allows for the study to focus on patents that are most likely to be related to therapeutic drug innovation.
 
 It is important to note that the CPC classifications are not perfect measures of pharmaceutical invention of a patent, since CPC classes are assigned during the patent examination process. Consequently, the A61P restriction may exclude some relevant patents relating to delivery or formulation, while also retaining some patents that are classified as pharmaceutical but less directly related to new therapeutic agents.
 
 \subsubsection{Therapeutic classification}
 
-The A61P subclass is divided into CPC groups corresponding to different therapeutic uses. A manually constructed crosswalk is used map each A61P group to an ATC Level 1 class, with the crosswalk following the structure of the USPTO's A61P classification. Selected entries from this crosswalk are shown in Table~\ref{tab:a61p_atc_crosswalk}. For example, patents related to cardiovascular activity are classified under A61P9, so these are mapped to ATC class C, while patents related to nervous system activity fall under A61P25, thus they are mapped to ATC class N. In cases where a patent falls under multiple different A61P CPC groups, it is counted once within each applicable class.
+The A61P subclass is divided into CPC groups corresponding to different therapeutic uses. A manually constructed crosswalk is used to map each A61P group to an ATC Level 1 class, with the crosswalk following the structure of the USPTO's A61P classification. Selected entries from this crosswalk are shown in Table~\ref{tab:a61p_atc_crosswalk}. For example, patents related to cardiovascular activity are classified under A61P9, so these are mapped to ATC class C, while patents related to nervous system activity fall under A61P25, thus they are mapped to ATC class N. In cases where a patent falls under multiple different A61P CPC groups, it is counted once within each applicable class.
 
 \begin{table}[htbp]
 \centering
@@ -205,13 +208,11 @@ A61P27 & Sensory organs & S \\
 \end{tabular}
 \end{table}
 
-\subsubsection{Firm--NDC matching}
+\subsubsection{Firm-NDC matching}
 
 Patent assignee names are matched to the NDC labeler firm clusters using the same three-stage procedure applied to sponsors in the Drugs@FDA dataset. Cleaned assignee names are first matched to labeler names exactly. The remaining unmatched assignees undergo root-token matching followed by a Jaro-Winkler fuzzy match at a threshold of 0.90.
 
-Out of 28,143 unique assignees, 7,566 were matched to the NDC firm universe, which corresponds to a match rate of 27.1\%. The patent assignee universe includes academic institutions, research hospitals, individual inventors, and non-pharmaceutical entities that may hold A61P patents but have no commercial presence in the Medicaid drug market. These entities do not have labeler codes within the SDUD. Additionally, pharmaceutical firms may assign patents to research subsidiaries whose names differ from the trading names under which drugs are marketed. As a result, the match rate is substantially lower than the Drugs@FDA match rate.
-
-Unmatched patent assignees are kept in the patent count data, but they cannot be linked to firm-level PDL exposure. These sponsors are therefore excluded from specifications that require firm-level linkage to the SDUD.
+Out of 28,143 unique assignees, 7,566 were matched to the NDC firm universe, which corresponds to a match rate of 27.1\%. The patent assignee universe includes academic institutions, research hospitals, individual inventors, and non-pharmaceutical entities that may hold A61P patents but have no commercial presence in the Medicaid drug market. These entities do not have labeler codes within the SDUD. Additionally, pharmaceutical firms may assign patents to research subsidiaries whose names differ from the trading names under which drugs are marketed. As a result, the match rate is substantially lower than the Drugs@FDA match rate. Unmatched patent assignees cannot be linked to universe of NDC labeler codes and cannot be included in the final patent panel.
 
 \subsection{ATC Level 1 Classes}
 \label{sec:atc}
@@ -263,18 +264,19 @@ Drugs@FDA applications to ATC           &     50,368 & 95.58\% \\
 Drugs@FDA sponsors to NDC firms         &      1,465 & 82.26\% \\
 Patent assignees to NDC firms           &     28,143 & 27.10\% \\
 \bottomrule
-\multicolumn{3}{p{0.7\textwidth}}{\footnotesize\textit{Note:} $N$ denotes the number of unique firm names} \\
 \end{tabular}
 \end{table}
 
 \subsection{Panel Construction}
 \label{sec:panel}
 
-The final panels are constructed separately for the patent and FDA approval outcomes. The firm-by-class structure is designed to recover variation in innovation incentives within therapeutic areas, consistent with \citeauthor{sutton1998technology}'s (\citeyear{sutton1998technology}) account of pharmaceutical R\&D as heterogeneous across product areas. Both patent counts and FDA approvals are collapsed to the firm $\times$ ATC Level 1 $\times$ year level. The SDUD prescription and reimbursement variables are first aggregated to the firm $\times$ ATC Level 1 $\times$ year $\times$ level and are then merged with the innovation panels. PDL variables from the Texas Vendor Drug Program are merged at the firm $\times$ ATC Level 1 level - details relating to their exact construction are described in the Methodology section.
+The final panels are constructed separately for the patent and FDA approval outcomes. The firm-by-class structure is designed to recover variation in innovation incentives within therapeutic areas, consistent with \citeauthor{sutton1998technology}'s (\citeyear{sutton1998technology}) account of pharmaceutical R\&D as heterogeneous across product areas. Both patent counts and FDA approvals are collapsed to the firm $\times$ ATC Level 1 $\times$ year level. The SDUD prescription and reimbursement variables are first aggregated to the firm $\times$ ATC Level 1 $\times$ year level and are then merged with the innovation panels. PDL variables from the Texas Vendor Drug Program are merged at the firm $\times$ ATC Level 1 level - details relating to their exact construction are described in the Methodology section.
 
-Each panel is balanced over the firm-class combinations observed in the data. In cases where no patent/approval observations for a given firm-class-year, an outcome value of zero is assigned. Summary statistics for each of the balanced panels are reported in Table~\ref{tab:panel_descriptives}. Histograms for variation in constructed PDL exposure variable in the interval $(0,1]$ can be found in Figure~\ref{fig:pdl_histogram}.
+Each panel is balanced over the firm-class combinations observed in the data. In cases where no patent or approval observations are recorded for a given firm-class-year, an outcome value of zero is assigned. Summary statistics for each of the balanced panels are reported in Table~\ref{tab:panel_descriptives}. Histograms for variation in constructed PDL exposure variable in the interval $(0,1]$ can be found in Figure~\ref{fig:pdl_histogram}.
 
+%TC:ignore
 \input{../output/summary_statistics/panel_statistics.tex}
+%TC:endignore
 
 \begin{figure}[!h]
   \centering
@@ -282,5 +284,10 @@ Each panel is balanced over the firm-class combinations observed in the data. In
   \caption{Distribution of PDL exposure in constructed panels}
   \label{fig:pdl_histogram}
 \end{figure}
+
+\clearpage
+
+\bibliographystyle{apalike}
+\bibliography{references}
 
 \end{document}
