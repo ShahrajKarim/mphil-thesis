@@ -98,15 +98,15 @@ This captures the extent to which a therapeutic class actually experienced incre
 
 \subsubsection{PDL Exposure}
 
-To examine exposure to the Medicaid pricing mechanisms, a measure of preferred drug list exposure for firm $f$ in class $c$ is constructed using the universe of drugs $d$:
+To examine exposure to the Medicaid pricing mechanisms, a measure of preferred drug list exposure for firm $f$ in class $c$ is constructed using the universe of drugs $d$ over the baseline period:
 
 \begin{equation}
 \text{PDL\_Exposure}_{f,c}
 =
 \frac{
-\sum_{d} \mathbf{1}\{d \in f, c\} \cdot \mathbf{1}\{d \in \text{PDL}\}
+\sum_{t=2010}^{2014} \sum_{d} \mathbf{1}\{d \in f, c, t\} \cdot \mathbf{1}\{d \in \text{PDL}_t\}
 }{
-\sum_{d} \mathbf{1}\{d \in f, c\}
+\sum_{t=2010}^{2014} \sum_{d} \mathbf{1}\{d \in f, c, t\}
 }
 \end{equation}
 
@@ -114,14 +114,14 @@ Higher levels of PDL exposure indicate that a larger share of a firm's drug port
 
 \subsubsection{PDL Counterfactual Measures}
 
-Two time-invariant firm-class measures are constructed from the Texas Vendor Drug Program formulary data for use in the counterfactual analysis specification. Each is defined as the share of a firm's NDCs in class $c$ satisfying a given PDL criterion, averaged over the baseline period 2010 to 2014:
+Two time-invariant firm-class measures are constructed from the Texas Vendor Drug Program formulary data for use in the counterfactual analysis specification. Each is defined as the share of a firm's NDCs in class $c$ satisfying a given PDL criterion, averaged over the baseline period:
 
 \begin{equation}
-\text{PT\_Pass}_{f,c} = \frac{\sum_{d} \mathbf{1}\{d \in f, c\} \cdot \mathbf{1}\{\text{PT\_Stage\_Pass}_d = 1\}}{\sum_{d} \mathbf{1}\{d \in f, c\}}
+\text{PT\_Pass}_{f,c} = \frac{\sum_{t=2010}^{2014} \sum_{d} \mathbf{1}\{d \in f, c, t\} \cdot \mathbf{1}\{\text{PT\_Stage\_Pass}_{d,t} = 1\}}{\sum_{t=2010}^{2014} \sum_{d} \mathbf{1}\{d \in f, c, t\}}
 \end{equation}
 
 \begin{equation}
-\text{Price\_Pass}_{f,c} = \frac{\sum_{d} \mathbf{1}\{d \in f, c\} \cdot \mathbf{1}\{\text{Price\_Stage\_Pass}_d = 1\}}{\sum_{d} \mathbf{1}\{d \in f, c\}}
+\text{Price\_Pass}_{f,c} = \frac{\sum_{t=2010}^{2014} \sum_{d} \mathbf{1}\{d \in f, c, t\} \cdot \mathbf{1}\{\text{Price\_Stage\_Pass}_{d,t} = 1\}}{\sum_{t=2010}^{2014} \sum_{d} \mathbf{1}\{d \in f, c, t\}}
 \end{equation}
 
 These proportions are treated as time-invariant firm-class characteristics. Drugs with no match in the Texas formulary are assigned a value of zero for all three measures.
