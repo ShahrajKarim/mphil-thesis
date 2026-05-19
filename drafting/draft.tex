@@ -86,6 +86,7 @@
 \input{empirical_results}
 \input{robustness}
 \input{theoretical_model}
+\input{conclusion}
 
 % ===== Bibliography =====
 \clearpage
@@ -100,32 +101,39 @@
 
 % --- From empirical_results.tex ---
 
+\renewenvironment{table}[1][]{}{}
+
 \subsection{Regression Tables}
 
 \subsubsection{RQ1: Overall Innovation Response}
 
-\begingroup\footnotesize
+%TC:ignore
+\footnotesize
 \input{../output/RQ1/feols_exante_models.tex}
-\endgroup
+\normalsize
+%TC:endignore
 
 \clearpage
 
 \subsubsection{RQ2: Medicaid Demand and PDL Exposure}
 
-\begingroup\footnotesize
+%TC:ignore
+\footnotesize
 \input{../output/RQ2/feols_exante_models.tex}
-\endgroup
+\normalsize
+%TC:endignore
 
 \clearpage
 
 \subsection{Therapeutic-Class Substitutability}
 
-\begingroup
+%TC:ignore
 \makeatletter
-\renewenvironment{table}[1][tbp]{\@float{table}[#1]}{\end@float}
+\renewenvironment{table}[1][H]{\@float{table}[H]}{\end@float}
 \makeatother
 \input{../output/rebate_exploration/class_substitutability.tex}
-\endgroup
+\renewenvironment{table}[1][]{}{}
+%TC:endignore
 
 \clearpage
 
@@ -135,25 +143,31 @@
 
 \subsubsection{RQ1: Ex-Post FEOLS}
 
-\begingroup\footnotesize
+%TC:ignore
+\footnotesize
 \input{../output/RQ1/feols_expost_models.tex}
-\endgroup
+\normalsize
+%TC:endignore
 
 \clearpage
 
 \subsubsection{RQ1: FE Poisson (Ex-Ante)}
 
-\begingroup\footnotesize
+%TC:ignore
+\footnotesize
 \input{../output/RQ1/fepois_exante_models.tex}
-\endgroup
+\normalsize
+%TC:endignore
 
 \clearpage
 
 \subsubsection{RQ1: FE Poisson (Ex-Post)}
 
-\begingroup\footnotesize
+%TC:ignore
+\footnotesize
 \input{../output/RQ1/fepois_expost_models.tex}
-\endgroup
+\normalsize
+%TC:endignore
 
 \begin{figure}[!h]
   \centering
@@ -173,29 +187,35 @@
 
 \subsubsection{RQ1: Binned Treatment}
 
-\begingroup\footnotesize
+%TC:ignore
+\footnotesize
 \input{../output/robustness/binned_treatment/binned_models.tex}
-\endgroup
+\normalsize
+%TC:endignore
 
 \clearpage
 
 \subsubsection{RQ1: Continuous Difference-in-Differences}
 
-\begingroup
+%TC:ignore
 \makeatletter
-\renewenvironment{table}[1][tbp]{\@float{table}[#1]}{\end@float}
+\renewenvironment{table}[1][H]{\@float{table}[H]}{\end@float}
 \makeatother
 \footnotesize
 \input{../output/robustness/contdid/contdid_es.tex}
-\endgroup
+\normalsize
+\renewenvironment{table}[1][]{}{}
+%TC:endignore
 
 \clearpage
 
 \subsubsection{RQ2: Ex-Post FEOLS}
 
-\begingroup\footnotesize
+%TC:ignore
+\footnotesize
 \input{../output/RQ2/feols_expost_models.tex}
-\endgroup
+\normalsize
+%TC:endignore
 
 \clearpage
 
@@ -205,6 +225,12 @@
 
 Table~\ref{tab:parameters} reports the baseline parameter values used to generate Figure~\ref{fig:comp_statics}. Parameters that are not varied are held at these baseline values.
 
+%TC:ignore
+\makeatletter
+\renewenvironment{table}[1][H]{\@float{table}[H]}{\end@float}
+\makeatother
 \input{../output/theoretical_model/parameters.tex}
+\renewenvironment{table}[1][]{}{}
+%TC:endignore
 
 \end{document}
