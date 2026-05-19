@@ -64,7 +64,7 @@ The baseline results are estimated using FEOLS with an ex-ante Medicaid market s
 
 The baseline specification uses pre-expansion Medicaid market shares to measure treatment intensity. Ex-post market shares are constructed from realised the Medicaid prescription shares in 2014-2015 as an alternative measure of exposure to the ACA. The window for ex-post shares is restricted to the first two years of the reform in order to capture initial shifts in demand without extending into periods where endogenous response in firm entry or prescribing behaviour, may contaminate the exposure measure. Estimates using ex-post exposure act purely as a robustness check since the measure would still reflect the actual post-expansion demand environment as opposed to being a predetermined exposure measure.
 
-Under the estimated ex-post measure, the patent coefficients are nearly identical to the ex-ante estimates. The pre-expansion coefficients remain small and insignificant, highlighting robustness to the parallel trends assumption while the post-reform coefficients follow the same gradual negative trajectory, growing from $-0.088$ in 2015 to $-0.250$ by 2024 before dropping slightly to $-0.212$ in 2025. These estimates are consistent with the ex-ante result, which also has a 2024 peak at $-0.252$. Similarly, the coefficients for FDA approvals are also in line with the baseline specification, where the coefficients are largely statistically insignificant with the exception of 2017 and 2019, while having no clear directional pattern. The alignment between the ex-ante and ex-post results therefore indicates that the findings are orthogonal to the choice of exposure measure.
+Under the estimated ex-post measure (Table~\ref{tab:rob_rq1_feols_expost}), the patent coefficients are nearly identical to the ex-ante estimates. The pre-expansion coefficients remain small and insignificant, highlighting robustness to the parallel trends assumption while the post-reform coefficients follow the same gradual negative trajectory, growing from $-0.088$ in 2015 to $-0.250$ by 2024 before dropping slightly to $-0.212$ in 2025. These estimates are consistent with the ex-ante result, which also has a 2024 peak at $-0.252$. Similarly, the coefficients for FDA approvals are also in line with the baseline specification, where the coefficients are largely statistically insignificant with the exception of 2017 and 2019, while having no clear directional pattern. The alignment between the ex-ante and ex-post results therefore indicates that the findings are orthogonal to the choice of exposure measure.
 
 \begin{figure}[!h]
   \centering
@@ -84,11 +84,11 @@ Under the estimated ex-post measure, the patent coefficients are nearly identica
 
 \subsubsection{FE Poisson Estimation}
 
-The baseline FEOLS specification models patent counts and FDA approvals linearly, although both outcomes are non-negative integer variables with substantial counts of zero. Consequently, the specification is re-estimated using a fixed-effects Poisson model, which therefore models the conditional mean of each of the innovation outcomes non-linearly. This allows for a robustness check on whether the baseline findings are sensitive to the linear treatment of the count outcomes, since the Poisson estimator remains consistent even when the outcome is overdispersed provided the conditional mean is correctly specified \citep{wooldridge1999distribution}.
+The baseline FEOLS specification models patent counts and FDA approvals linearly, although both outcomes are non-negative integer variables with substantial counts of zero. Consequently, the specification is re-estimated using a fixed-effects Poisson model, which therefore models the conditional mean of each of the innovation outcomes non-linearly. This allows for a robustness check on whether the baseline findings are sensitive to the linear treatment of the count outcomes, since the Poisson estimator remains consistent even when the outcome is overdispersed provided the conditional mean is correctly specified \citep{wooldridge1999distribution}. The resulting ex-ante and ex-post estimates are reported in Tables~\ref{tab:rob_rq1_fepois_exante} and~\ref{tab:rob_rq1_fepois_expost} respectively.
 
 The FE Poisson estimates for patents are consistent with the FEOLS results. Under the ex-ante specification, the pre-expansion coefficients are small and insignificant, providing support for the parallel trends assumption. The post-expansion coefficients are negative and grow in magnitude over time, peaking at $-1.474$ by 2024 and fall slightly in 2025, consistent with the FEOLS findings. Therefore, at its peak in 2024, a ten percentage point increase in Medicaid exposure corresponds to an approximate 14.7 percent decrease in patents on average. The ex-post FE Poisson estimates follow a similar trajectory, with the 2024 peak being more negative at $-2.021$.
 
-While the FDA approval estimates under the Poisson model are uniformly negative, they still remain insignificant across both the ex-ante and ex-post specifications. This is a slight deviation from the baseline OLS results, where the FDA estimates fluctuate in sign, but both specifications agree that the innovation response at the approval stage remains statistically significant. The findings for both innovation outcomes are consistent between the linear and Poisson specifications, suggesting that the post-expansion patterns are not sensitive to modelling the count outcomes linearly.
+While the FDA approval estimates under the Poisson model are uniformly negative, they still remain insignificant across both the ex-ante and ex-post specifications. This is a slight deviation from the baseline OLS results, where the FDA estimates point in opposite directions, but both specifications still agree that the innovation response at the approval stage remains statistically significant. The findings for both innovation outcomes are consistent between the linear and Poisson specifications, suggesting that the post-expansion patterns are not sensitive to modelling the count outcomes linearly.
 
 \begin{figure}[!h]
   \centering
@@ -120,7 +120,7 @@ Therapeutic classes are grouped into the three bins based on their ex-ante Medic
 \input{../output/robustness/binned_treatment/atc_bins.tex}
 \endgroup
 
-The low exposure bin is omitted from the regression, so the coefficients for the high and medium bins are estimated relative to the low-exposure bin. The pre-expansion coefficients for both the high and medium-exposure patent bins are small and statistically insignificant, supporting the parallel trends assumption within each group. While the medium-exposure bin largely contain positive insignificant coefficients throughout the post-expansion period with a peak decline of $-0.02$ in 2025, the high-exposure bin exhibit a growing negative trajectory with coefficients reaching $-0.155$ by the same year. This reinforces the finding from RQ3 that the post-expansion patenting decline driven by classes at the upper end of the Medicaid exposure distribution. Importantly, the relative magnitude of the high and medium exposure coefficients is disproportionately larger than their respective Medicaid market shares. On average, exposure of the high bin is approximately $2.5$ times larger than the medium bin, yet the peak patent responses approximately differ by a factor of eight. This suggests that the relationship between Medicaid exposure and patenting may be convex, with the response intensifying at greater levels of exposure as opposed to scaling proportionally.
+The low exposure bin is omitted from the regression, so the coefficients for the high and medium bins listed in Table~\ref{tab:rob_binned} are estimated relative to the low-exposure bin. The pre-expansion coefficients for both the high and medium-exposure patent bins are small and statistically insignificant, supporting the parallel trends assumption within each group. While the medium-exposure bin largely contain positive insignificant coefficients throughout the post-expansion period with a peak decline of $-0.02$ in 2025, the high-exposure bin exhibit a growing negative trajectory with coefficients reaching $-0.155$ by the same year. This reinforces the finding from RQ3 that the post-expansion patenting decline driven by classes at the upper end of the Medicaid exposure distribution. Importantly, the relative magnitude of the high and medium exposure coefficients is disproportionately larger than their respective Medicaid market shares. On average, exposure of the high bin is approximately $2.5$ times larger than the medium bin, yet the peak patent responses approximately differ by a factor of eight. This suggests that the relationship between Medicaid exposure and patenting may be convex, with the response intensifying at greater levels of exposure as opposed to scaling proportionally.
 
 FDA approval estimates are statistically insignificant for both the high and medium-exposure bins throughout the sample period, and the pre-expansion coefficients are close to zero in both bins, supporting the parallel trends assumption. The absence of significant post-expansion effects for FDA approvals is consistent with the baseline findings and reinforces the interpretation that the innovation response has not yet propagated to the downstream approval stage. Unlike the patent results, the estimates from the FDA binned specification provide no evidence of a non-linear treatment effects across the Medicaid market share distribution, but this is driven by the absence of a detectable effect within each of the exposure bins rather than providing support for a linear relationship.
 
@@ -160,7 +160,7 @@ FDA approval estimates are statistically insignificant for both the high and med
 
 \subsubsection{Continuous Difference-in-Differences}
 
-The binned event-study specification allowed for treatment effects to vary across the discrete groups, but the results were contingent on the boundaries specified for each exposure bin. Given this, the continuous difference-in-differences (Continuous DiD) estimator proposed by \citet{NBERw32117} is applied using the \texttt{contdid} R package \citep{contdid2025}. This estimator non-parametrically identifies dose-specific treatment effects at each exposure-level under the parallel trends assumption, thereby avoiding the need to discretise the treatment variable. Conventional TWFE estimators with continuous treatment can be difficult to interpret when treatment effects differ across the distribution of exposure level. The Continuous DiD estimator avoids this by aggregating the dose-specific estimates into event-study coefficients and assesses for pre-trends and post-treatment dynamics. The full set of coefficient estimates is reported in Table~\ref{tab:contdid_es}.
+The binned event-study specification allowed for treatment effects to vary across the discrete groups, but the results were contingent on the boundaries specified for each exposure bin. Given this, the continuous difference-in-differences (Continuous DiD) estimator proposed by \citet{NBERw32117} is applied using the \texttt{contdid} R package \citep{contdid2025}. This estimator non-parametrically identifies dose-specific treatment effects at each exposure-level under the parallel trends assumption, thereby avoiding the need to discretise the treatment variable. Conventional TWFE estimators with continuous treatment can be difficult to interpret when treatment effects differ across the distribution of exposure level. The Continuous DiD estimator avoids this by aggregating the dose-specific estimates into event-study coefficients and assesses for pre-trends and post-treatment dynamics. The resulting coefficient estimates are reported in Table~\ref{tab:contdid_es}.
 
 The Continuous DiD estimates for patents are consistent with the baseline results. The pre-expansion coefficients are small and statistically insignificant, supporting the parallel trends assumption. Notably, the coefficients are persistently significant from 2019 onwards, which is four years later than the 2015 onset under the baseline FEOLS model. This implies that the innovation response was not immediate as suggested by the baseline results, instead firms required several years to fully adjust their R\&D decisions in response to the expansion.
 
@@ -192,7 +192,7 @@ Taken together, the results from the sensitivity analysis show that the main fin
 
 \subsubsection{Ex-Post Medicaid Exposure}
 
-The second specification jointly estimates the innovation response to Medicaid demand exposure and exposure to the PDL. Like RQ1, an ex-post market share measure is used to determine whether the estimates are sensitive to the construction of the exposure variable.
+The second specification jointly estimates the innovation response to Medicaid demand exposure and exposure to the PDL. Like RQ1, an ex-post market share measure is used to determine whether the estimates are sensitive to the construction of the exposure variable, with the results reported in Table~\ref{tab:rob_rq2_feols_expost}.
 
 Once again, the ex-post Medicaid exposure coefficients for patents are nearly identical to the baseline results. The same reductions in Medicaid market share coefficients is observed, with the PDL exposure coefficient path also coinciding with the ex-ante model which saw negative coefficients from 2016 with significance from 2019. The pre-expansion coefficients for both the Medicaid and PDL measures remain small and statistically insignificant, supporting the parallel trends assumption even under the ex-post exposure construction.
 
@@ -242,14 +242,7 @@ The FE Poisson, binned treatment, and continuous difference-in-differences estim
 
 The RQ3 specification allows for heterogeneity in innovation behaviour to vary at ATC Level 1 therapeutic class. The ex-post exposure measure of Medicaid exposure is used as a robustness check.
 
-\begin{center}
-\begingroup\footnotesize
-\input{../output/RQ3/feols_expost_models.tex}
-\endgroup
-\end{center}
-
-
-The ex-post estimates are broadly consistent with the ex-ante baseline. Therapeutic classes that exhibited significant negative patent responses under ex-ante exposure, continue to display significant negative coefficients under the ex-post measure. Additionally, positive patent responses are still observed for therapeutic classes relating to blood related drugs, hormonal preparations, and sensory organs. Simiarly, the FDA approval coefficients are aligned with their ex-ante results - significant positive responses for alimentary tract and dermatologicals, and no class are recorded to have a significant reduction in approvals. The results aligning between the two exposure measures indicates that the baseline class-level heterogeneity in innovation response is not driven by the choice of exposure measure.
+The ex-post estimates (Table~\ref{tab:rob_rq3_feols_expost}) are broadly consistent with the ex-ante baseline. Therapeutic classes that exhibited significant negative patent responses under ex-ante exposure, continue to display significant negative coefficients under the ex-post measure. Additionally, positive patent responses are still observed for therapeutic classes relating to blood related drugs, hormonal preparations, and sensory organs. Simiarly, the FDA approval coefficients are aligned with their ex-ante results - significant positive responses for alimentary tract and dermatologicals, and no class are recorded to have a significant reduction in approvals. The results aligning between the two exposure measures indicates that the baseline class-level heterogeneity in innovation response is not driven by the choice of exposure measure.
 
 \subsubsection{Parallel Trends}
 
@@ -277,6 +270,8 @@ Third, as discussed in the methodology, a violation of parallel trends would req
 
 \begingroup\footnotesize
 \input{../output/RQ1/feols_expost_models.tex}
+\captionof{table}{FEOLS event-study estimates: overall innovation response (ex-post)}
+\label{tab:rob_rq1_feols_expost}
 \endgroup
 
 \clearpage
@@ -285,6 +280,8 @@ Third, as discussed in the methodology, a violation of parallel trends would req
 
 \begingroup\footnotesize
 \input{../output/RQ1/fepois_exante_models.tex}
+\captionof{table}{FE Poisson event-study estimates: overall innovation response (ex-ante)}
+\label{tab:rob_rq1_fepois_exante}
 \endgroup
 
 \clearpage
@@ -293,6 +290,8 @@ Third, as discussed in the methodology, a violation of parallel trends would req
 
 \begingroup\footnotesize
 \input{../output/RQ1/fepois_expost_models.tex}
+\captionof{table}{FE Poisson event-study estimates: overall innovation response (ex-post)}
+\label{tab:rob_rq1_fepois_expost}
 \endgroup
 
 \begin{figure}[!h]
@@ -315,6 +314,8 @@ Third, as discussed in the methodology, a violation of parallel trends would req
 
 \begingroup\footnotesize
 \input{../output/robustness/binned_treatment/binned_models.tex}
+\captionof{table}{Binned treatment event-study estimates (FEOLS, ex-ante)}
+\label{tab:rob_binned}
 \endgroup
 
 \clearpage
@@ -335,6 +336,18 @@ Third, as discussed in the methodology, a violation of parallel trends would req
 
 \begingroup\footnotesize
 \input{../output/RQ2/feols_expost_models.tex}
+\captionof{table}{FEOLS event-study estimates: Medicaid demand and PDL exposure (ex-post)}
+\label{tab:rob_rq2_feols_expost}
+\endgroup
+
+\clearpage
+
+\subsection{RQ3: Ex-Post FEOLS}
+
+\begingroup\footnotesize
+\input{../output/RQ3/feols_expost_models.tex}
+\captionof{table}{Triple-difference estimates: therapeutic-class heterogeneity (FEOLS, ex-post)}
+\label{tab:rob_rq3_feols_expost}
 \endgroup
 
 \fi
