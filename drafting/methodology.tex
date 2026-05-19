@@ -64,8 +64,6 @@ Since pharmaceutical R\&D operates over long development cycles, patents and FDA
 
 Identification also requires that there were no contemporaneous shocks around 2014 that differentially affected innovation in high-Medicaid-exposure classes. Year fixed effects are used to absorb shocks to the pharmaceutical industry such as FDA regulation changes or industry-wide shifts in R\&D that affect all therapeutic areas within a given year. Given the fixed-effects, a confounding shock would therefore need to occur around 2014 and affect some therapeutic classes more than others. There are no clear candidates for such a shock, and other ACA provisions, including changes to private insurance markets and coverage mandates, affected the pharmaceutical sector more broadly and their effect would be absorbed by year fixed effects.
 
-PDL exposure is constructed as a predetermined measure of a firm's positioning within Medicaid's formulary, and since Texas did not opt for the Medicaid expansion, contamination of this measure from the ACA is unlikely.
-
 The specifications include firm-class fixed effects and year fixed effects. Firm-class fixed effects absorb time-invariant differences in innovation levels across firm-class pairs. This is important since firms may specialise in particular therapeutic areas - separate firm and class fixed effects may not be able to capture this source of heterogeneity. Year fixed effects absorb aggregate shocks to pharmaceutical innovation that are common across classes in a given year. Standard errors are clustered at the firm level to account for serial correlation in innovation outcomes within firms over time, since a firm's current innovation activity may influence its future innovation behaviour.
 
 \subsection{Construction of Key Variables}
@@ -112,7 +110,7 @@ To examine exposure to the Medicaid pricing mechanisms, a measure of preferred d
 }
 \end{equation}
 
-Higher levels of PDL exposure indicate that a larger share of a firm's drug portfolio in a therapeutic class is subject to formulary selection and the pricing environment associated with preferred placement on the PDL. Empirically, this variable is used as a proxy for exposure to procurement institutions rather than as a direct measure of rebates or negotiated prices.
+Higher levels of PDL exposure indicate that a larger share of a firm's drug portfolio in a therapeutic class is subject to formulary selection and the pricing environment associated with preferred placement on the PDL. Empirically, this variable is used as a proxy for exposure to procurement institutions rather than as a direct measure of rebates or negotiated prices. While this measure utilises data up to 2014, which is when the ACA expansion occurred, Texas was a non-expansion state, therefore the measure is predetermined with respect to the ACA.
 
 \subsubsection{PDL Counterfactual Measures}
 
