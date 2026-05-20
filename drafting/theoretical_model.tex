@@ -53,7 +53,7 @@
 
 \section{Theoretical Model}
 
-This section outlines a game-theoretical model for pharmaceutical innovation and pricing to explain the empirical puzzle observed in the patent market following the expansion of Medicaid under the Affordable Care Act. The model captures the stochastic nature of R\&D, the specific procurement mechanism (PDL bidding) used by Medicaid under each state, and how current procurement outcomes dictate future innovation incentives.
+This section outlines a game-theoretical model for pharmaceutical innovation and pricing to explain the empirical puzzle observed in RQ1. The model captures the stochastic nature of R\&D, the specific procurement mechanism (PDL bidding) used by Medicaid under each state, and how current procurement outcomes dictate future innovation incentives.
 
 In reality, several manufacturers may compete within a therapeutic class, and more than one product may appear on a state's PDL to account for clinical variations, such as allergies. However, the game uses a two-firm simplification for illustrative purposes. The same mechanism extends to settings with more firms. The model is set up for a representative therapeutic class $c \in \mathcal{C}$, where $\mathcal{C}$ denotes the set of ATC Level 1 classes. This class-specific segregation is consistent with \citeauthor{sutton1998technology}'s (\citeyear{sutton1998technology}) characterisation of pharmaceutical R\&D as operating across distinct therapeutic areas with limited knowledge spillovers across groups. Each class is characterised by a Medicaid market size $M_c$, a rebate function $\tau_c(M_c)$, and a degree of drug substitutability $n_c$.
 
@@ -440,10 +440,10 @@ Two crucial assumptions of this model are that the Medicaid rebate wedge, $\tau_
 This assumption is tested using the SDUD. States are mapped to their multi-state purchasing pools to reflect the true negotiating market size within each ATC. Per-prescription rebates are regressed against the natural log of market size with and without the inclusion of the number of distinct NDCs within a class $n_c$, class and year fixed effects are included:
 
 \begin{equation}
-    \text{Rebate}_{c,t} = \alpha + \beta_1 \log(M_c) + \beta_2 n_c + \lambda_c + \delta_t + \varepsilon_{c,t}
+    \text{Rebate}_{c,t} = \alpha + \beta_1 \log(M_c) + \beta_2 \log(n_c) + \lambda_c + \delta_t + \varepsilon_{c,t}
 \end{equation}
 
-Table~\ref{tab:rebate_regression} shows that the coefficients on both $\log(M_c)$ and $n_c$ are positive and significant, indicating that larger Medicaid markets and a greater number of distinct drugs within a class are both associated with higher rebates. These results support the assumptions that $\tau_c'(M_c)>0$ and that the rebate schedule steepens with $n_c$.
+Table~\ref{tab:rebate_regression} shows that the coefficients on both $\log(M_c)$ and $\log(n_c)$ are positive and significant, indicating that larger Medicaid markets and a greater number of distinct drugs within a class are both associated with higher rebates. These results support the assumptions that $\tau_c'(M_c)>0$ and that the rebate schedule steepens with $n_c$.
 
 %TC:ignore
 \input{../output/rebate_exploration/rebate_regression.tex}
@@ -569,6 +569,10 @@ Y_{f,c,t} = \alpha_f + \delta_c + \lambda_t +
 
 $\theta_a$ specifically estimates the innovation response in class $a$ relative to that class's Medicaid exposure. The sign of $\theta_c$ is split into three categories as listed in Table \ref{tab:regime_mapping}.
 
+\begingroup
+\makeatletter
+\renewenvironment{table}[1][tbp]{\@float{table}[#1]}{\end@float}
+\makeatother
 \begin{table}[h]
 \centering
 \begin{tblr}{
@@ -587,6 +591,7 @@ Trap-bound       & $\theta_a < 0$ & $M_c^{post} > M_c^*$ & $de_c^*/d\Delta M_c <
 \caption{Mapping between theoretical categories and the RQ3 coefficient $\theta_a$}
 \label{tab:regime_mapping}
 \end{table}
+\endgroup
 
 Positive coefficients are consistent with the standard market-size effect, negative coefficients indicate classes where rebate extraction dominates the increased demand and insignificant coefficients suggest that the volume and monopsony effects balance each other.
 
