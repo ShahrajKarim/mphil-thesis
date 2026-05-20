@@ -11,6 +11,7 @@ library(dplyr)
 library(readr)
 library(broom)
 library(modelsummary)
+library(kableExtra)
 
 # Generate lists for Multi-state PDL alliances
 
@@ -119,6 +120,30 @@ tidy(m2) |>
 # the PDL committee to demand larger rebates, consistent with tau_c'(M_c)
 # increasing in n_c.
 
+
+# --- Export m1 and m2 to tex --- #
+
+rebate_models <- list(
+  "Market size"          = m1,
+  "Market size + NDCs"   = m2
+)
+
+modelsummary(
+  rebate_models,
+  stars    = c(`*` = 0.05, `**` = 0.01, `***` = 0.001),
+  coef_map = c(
+    "log(market_size)" = "Log market size",
+    "n_c"              = "NDCs in class"
+  ),
+  gof_map  = tribble(
+    ~raw,        ~clean,      ~fmt,
+    "nobs",      "Num. obs.", 0,
+    "r.squared", "R2",        3
+  ),
+  output = here("output", "rebate_exploration", "rebate_regression.tex")
+)
+
+
 # (b) Two-step: estimate the rebate-market-size slope per (class, state), then
 # regress those slopes on n_c. beta_c is how sensitively rebates in a given
 # class respond to changes in that state's market size over time.
@@ -150,3 +175,54 @@ tidy(m3) |> filter(term == "n_c")
 # leaving only within-class variation across states, which is noisy. The
 # pooled result in m2 provides stronger evidence for the substitutability
 # channel.
+
+
+# --- Substitutability ranking by therapeutic class --- #
+# Mean annual n_c per ATC1 class. Annual n_c is the count of distinct NDCs
+# observed nationally within a class-year. Ranking is sorted descending.
+
+atc_labels <- c(
+  A = "Alimentary tract and metabolism",
+  B = "Blood and blood-forming organs",
+  C = "Cardiovascular system",
+  D = "Dermatologicals",
+  G = "Genito-urinary and sex hormones",
+  H = "Systemic hormonal preparations",
+  J = "Anti-infectives for systemic use",
+  L = "Antineoplastic and immunomodulating",
+  M = "Musculo-skeletal system",
+  N = "Nervous system",
+  P = "Antiparasitic products",
+  R = "Respiratory system",
+  S = "Sensory organs",
+  V = "Various"
+)
+
+class_substitutability <- SDUD |>
+  filter(!is.na(atc)) |>
+  group_by(atc, year) |>
+  summarise(annual_n_c = n_distinct(ndc), .groups = "drop") |>
+  group_by(atc) |>
+  summarise(mean_annual_n_c = mean(annual_n_c), .groups = "drop") |>
+  mutate(class_name = atc_labels[atc]) |>
+  arrange(desc(mean_annual_n_c)) |>
+  select(atc, class_name, mean_annual_n_c)
+
+class_substitutability |>
+  mutate(mean_annual_n_c = round(mean_annual_n_c, 0)) |>
+  rename(
+    ATC = atc,
+    `Therapeutic class` = class_name,
+    `Mean annual $n_c$` = mean_annual_n_c
+  ) |>
+  kbl(
+    format = "latex",
+    booktabs = TRUE,
+    align = c("l", "l", "r"),
+    caption = "Average annual distinct NDC count by ATC class",
+    label = "class_substitutability",
+    escape = FALSE
+  ) |>
+  kable_styling(latex_options = "hold_position") |>
+  as.character() |>
+  writeLines(here("output/rebate_exploration/class_substitutability.tex"))

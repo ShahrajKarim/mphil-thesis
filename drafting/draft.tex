@@ -1,0 +1,262 @@
+\documentclass[12pt]{article}
+\usepackage{geometry}
+\geometry{a4paper, portrait, margin=1in}
+
+% --- Flag so sub-files can detect draft compilation ---
+\newcommand{\isdraft}{}
+
+% --- Math ---
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+
+% --- Graphics ---
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows, positioning}
+
+% --- Formatting ---
+\usepackage{parskip}
+\usepackage[hidelinks]{hyperref}
+\usepackage{natbib}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{siunitx}
+\usepackage{tabularray}
+\UseTblrLibrary{booktabs, siunitx}
+\pagestyle{plain}
+
+% --- Theorem environments (from theoretical_model.tex) ---
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{result}{Result}
+
+% --- docmute: silently discards the preamble of any \input'd file ---
+\usepackage{docmute}
+
+% --- Suppress per-chapter front matter that appears in each sub-file body ---
+\renewcommand{\maketitle}{}
+\newcommand{\wordcount}{}
+
+\let\mastertoc\tableofcontents
+\renewcommand{\tableofcontents}{}
+
+\let\masterbibliographystyle\bibliographystyle
+\let\masterbibliography\bibliography
+\renewcommand{\bibliographystyle}[1]{}
+\renewcommand{\bibliography}[1]{}
+
+% --- Suppress \appendix in sub-files (appendix content handled in draft.tex) ---
+\renewcommand{\appendix}{}
+
+% --- Word count for title page (requires --shell-escape) ---
+\newcommand{\totalwordcount}{%
+  \immediate\write18{texcount -sum -1 -inc draft.tex 2>/dev/null | python3 -c "import sys; n=sys.stdin.read().strip(); print(f'{int(n):,}') if n.isdigit() else print('?')" > draft.wc}%
+  \input{draft.wc}%
+}
+
+\begin{document}
+
+% ===== Title Page =====
+\begin{titlepage}
+  \centering
+  \vspace*{3cm}
+  {\LARGE\bfseries MPhil Thesis\par}
+  \vspace{1.5cm}
+  {\Large Mohammad-Shah Karim\par}
+  \vspace{1cm}
+  {\large May 2026\par}
+  \vspace{2cm}
+  {\large Word count: \totalwordcount\par}
+  \vfill
+\end{titlepage}
+
+% ===== Table of Contents =====
+\mastertoc
+\newpage
+
+% ===== Main Body =====
+\input{introduction}
+\input{literature_review}
+\input{data}
+\input{methodology}
+\input{empirical_results}
+\input{robustness}
+\input{theoretical_model}
+\input{conclusion}
+
+% ===== Bibliography =====
+\clearpage
+\renewcommand{\refname}{\vspace{-1em}}
+\section{References}
+\masterbibliographystyle{apalike}
+\masterbibliography{references}
+
+% ===== Appendix =====
+\clearpage
+\section{Appendix}
+
+% --- From empirical_results.tex ---
+
+\renewenvironment{table}[1][]{}{}
+
+\subsection{Regression Tables}
+
+\subsubsection{RQ1: Overall Innovation Response}
+
+%TC:ignore
+\footnotesize
+\input{../output/RQ1/feols_exante_models.tex}
+\captionof{table}{FEOLS event-study estimates: overall innovation response (ex-ante)}
+\label{tab:rq1_feols_exante}
+\normalsize
+%TC:endignore
+
+\clearpage
+
+\subsubsection{RQ2: Medicaid Demand and PDL Exposure}
+
+%TC:ignore
+\footnotesize
+\input{../output/RQ2/feols_exante_models.tex}
+\captionof{table}{FEOLS event-study estimates: Medicaid demand and PDL exposure (ex-ante)}
+\label{tab:rq2_feols_exante}
+\normalsize
+%TC:endignore
+
+\clearpage
+
+\subsection{Therapeutic-Class Substitutability}
+
+%TC:ignore
+\makeatletter
+\renewenvironment{table}[1][H]{\@float{table}[H]}{\end@float}
+\makeatother
+\input{../output/rebate_exploration/class_substitutability.tex}
+\renewenvironment{table}[1][]{}{}
+%TC:endignore
+
+\clearpage
+
+% --- From robustness.tex ---
+
+\subsection{Robustness Regression Tables}
+
+\subsubsection{RQ1: Ex-Post FEOLS}
+
+%TC:ignore
+\footnotesize
+\input{../output/RQ1/feols_expost_models.tex}
+\captionof{table}{FEOLS event-study estimates: overall innovation response (ex-post)}
+\label{tab:rob_rq1_feols_expost}
+\normalsize
+%TC:endignore
+
+\clearpage
+
+\subsubsection{RQ1: FE Poisson (Ex-Ante)}
+
+%TC:ignore
+\footnotesize
+\input{../output/RQ1/fepois_exante_models.tex}
+\captionof{table}{FE Poisson event-study estimates: overall innovation response (ex-ante)}
+\label{tab:rob_rq1_fepois_exante}
+\normalsize
+%TC:endignore
+
+\clearpage
+
+\subsubsection{RQ1: FE Poisson (Ex-Post)}
+
+%TC:ignore
+\footnotesize
+\input{../output/RQ1/fepois_expost_models.tex}
+\captionof{table}{FE Poisson event-study estimates: overall innovation response (ex-post)}
+\label{tab:rob_rq1_fepois_expost}
+\normalsize
+%TC:endignore
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{../output/RQ1/patent_poi_expost.png}
+  \caption{FE Poisson event study: patents, ex-post Medicaid exposure}
+  \label{fig:rob_rq1_patent_poi_expost}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{../output/RQ1/fda_poi_expost.png}
+  \caption{FE Poisson event study: FDA approvals, ex-post Medicaid exposure}
+  \label{fig:rob_rq1_fda_poi_expost}
+\end{figure}
+
+\clearpage
+
+\subsubsection{RQ1: Binned Treatment}
+
+%TC:ignore
+\footnotesize
+\input{../output/robustness/binned_treatment/binned_models.tex}
+\captionof{table}{Binned treatment event-study estimates (FEOLS, ex-ante)}
+\label{tab:rob_binned}
+\normalsize
+%TC:endignore
+
+\clearpage
+
+\subsubsection{RQ1: Continuous Difference-in-Differences}
+
+%TC:ignore
+\makeatletter
+\renewenvironment{table}[1][H]{\@float{table}[H]}{\end@float}
+\makeatother
+\footnotesize
+\input{../output/robustness/contdid/contdid_es.tex}
+\normalsize
+\renewenvironment{table}[1][]{}{}
+%TC:endignore
+
+\clearpage
+
+\subsubsection{RQ2: Ex-Post FEOLS}
+
+%TC:ignore
+\footnotesize
+\input{../output/RQ2/feols_expost_models.tex}
+\captionof{table}{FEOLS event-study estimates: Medicaid demand and PDL exposure (ex-post)}
+\label{tab:rob_rq2_feols_expost}
+\normalsize
+%TC:endignore
+
+\clearpage
+
+\subsubsection{RQ3: Ex-Post FEOLS}
+
+%TC:ignore
+\footnotesize
+\input{../output/RQ3/feols_expost_models.tex}
+\captionof{table}{Triple-difference estimates: therapeutic-class heterogeneity (FEOLS, ex-post)}
+\label{tab:rob_rq3_feols_expost}
+\normalsize
+%TC:endignore
+
+\clearpage
+
+% --- From theoretical_model.tex ---
+
+\subsection{Baseline Model Parameters} \label{app:parameters}
+
+Table~\ref{tab:parameters} reports the baseline parameter values used to generate Figure~\ref{fig:comp_statics}. Parameters that are not varied are held at these baseline values.
+
+%TC:ignore
+\makeatletter
+\renewenvironment{table}[1][H]{\@float{table}[H]}{\end@float}
+\makeatother
+\input{../output/theoretical_model/parameters.tex}
+\renewenvironment{table}[1][]{}{}
+%TC:endignore
+
+\end{document}

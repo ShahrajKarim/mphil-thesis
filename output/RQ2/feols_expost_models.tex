@@ -1,0 +1,51 @@
+\begin{table}
+\centering
+\begin{talltblr}[         %% tabularray outer open
+entry=none,label=none,
+note{}={* p \num{< 0.05}, ** p \num{< 0.01}, *** p \num{< 0.001}},
+]                     %% tabularray outer close
+{                     %% tabularray inner open
+width=\linewidth,
+colspec={Q[]X[]X[]X[]X[]},
+column{2,3,4,5}={}{halign=c,},
+column{1}={}{halign=l,},
+hline{33}={1,2,3,4,5}{solid, black, 0.05em},
+}                     %% tabularray inner close
+\toprule
+& \SetCell[c=2]{c} Patents && \SetCell[c=2]{c} FDA Approvals & \\
+& Medicaid Market Share & PDL Exposure & Medicaid Market Share & PDL Exposure \\ \midrule
+2010 & \num{-0.033}    & \num{1.546}     & \num{0.285}   & \num{0.046}   \\
+     & (\num{0.035})   & (\num{2.018})   & (\num{0.448}) & (\num{0.807}) \\
+2011 & \num{-0.010}    & \num{0.734}     & \num{0.344}   & \num{-0.257}  \\
+     & (\num{0.033})   & (\num{1.642})   & (\num{0.412}) & (\num{0.711}) \\
+2012 & \num{0.005}     & \num{1.079}     & \num{0.371}   & \num{1.395}   \\
+     & (\num{0.027})   & (\num{1.289})   & (\num{0.447}) & (\num{0.912}) \\
+2014 & \num{-0.017}    & \num{4.161}*    & \num{-0.338}  & \num{0.398}   \\
+     & (\num{0.024})   & (\num{1.890})   & (\num{0.536}) & (\num{0.647}) \\
+2015 & \num{-0.088}**  & \num{0.836}     & \num{-0.037}  & \num{1.158}   \\
+     & (\num{0.027})   & (\num{1.480})   & (\num{0.422}) & (\num{0.881}) \\
+2016 & \num{-0.123}*** & \num{-1.554}    & \num{0.456}   & \num{2.642}   \\
+     & (\num{0.032})   & (\num{1.620})   & (\num{0.418}) & (\num{1.682}) \\
+2017 & \num{-0.123}*** & \num{-1.342}    & \num{1.566}*  & \num{1.924}   \\
+     & (\num{0.034})   & (\num{1.890})   & (\num{0.690}) & (\num{0.992}) \\
+2018 & \num{-0.136}*** & \num{-2.787}    & \num{1.181}*  & \num{1.683}   \\
+     & (\num{0.037})   & (\num{1.644})   & (\num{0.563}) & (\num{1.021}) \\
+2019 & \num{-0.195}*** & \num{-3.807}*   & \num{0.359}   & \num{1.171}*  \\
+     & (\num{0.039})   & (\num{1.912})   & (\num{0.498}) & (\num{0.591}) \\
+2020 & \num{-0.227}*** & \num{-4.650}*   & \num{0.598}   & \num{1.585}   \\
+     & (\num{0.041})   & (\num{1.894})   & (\num{0.537}) & (\num{0.942}) \\
+2021 & \num{-0.224}*** & \num{-5.267}**  & \num{0.103}   & \num{3.110}*  \\
+     & (\num{0.040})   & (\num{1.687})   & (\num{0.583}) & (\num{1.393}) \\
+2022 & \num{-0.235}*** & \num{-6.029}**  & \num{0.381}   & \num{0.994}   \\
+     & (\num{0.041})   & (\num{1.941})   & (\num{0.593}) & (\num{0.653}) \\
+2023 & \num{-0.240}*** & \num{-6.926}*** & \num{0.798}   & \num{1.191}   \\
+     & (\num{0.041})   & (\num{1.851})   & (\num{0.583}) & (\num{1.737}) \\
+2024 & \num{-0.252}*** & \num{-6.485}*** & \num{0.154}   & \num{-0.447}  \\
+     & (\num{0.042})   & (\num{1.788})   & (\num{0.501}) & (\num{0.589}) \\
+2025 & \num{-0.212}*** & \num{-4.589}**  & \num{-0.347}  & \num{-1.113}  \\
+     & (\num{0.041})   & (\num{1.549})   & (\num{0.525}) & (\num{0.908}) \\
+Num. obs. & \SetCell[c=2]{c} \num{5281696} && \SetCell[c=2]{c} \num{151200} & \\
+R2        & \SetCell[c=2]{c} \num{0.535}   && \SetCell[c=2]{c} \num{0.609}  & \\
+\bottomrule
+\end{talltblr}
+\end{table}

@@ -1,0 +1,242 @@
+\documentclass[12pt]{article}
+\usepackage{geometry}
+\geometry{a4paper, portrait, margin=1in}
+
+% --- Math Packages ---
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+
+% --- Graphics & Diagrams ---
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows, positioning}
+
+% --- Formatting ---
+\usepackage{parskip}
+\usepackage[hidelinks]{hyperref}
+\usepackage{natbib}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{siunitx}
+\usepackage{tabularray}
+\UseTblrLibrary{booktabs, siunitx}
+\pagestyle{plain}
+
+% --- Allow talltblr to break across pages ---
+% modelsummary wraps talltblr in \begin{table}...\end{table}.
+% Floats cannot span pages, so tall tables get cut off at the page bottom.
+% All tables in this document are talltblr regression tables, so we
+% redefine the table environment globally as a no-op.
+\renewenvironment{table}[1][]{}{}
+
+% --- Word count (requires compiling with --shell-escape) ---
+\newcommand{\wordcount}{%
+  \immediate\write18{texcount -sum -1 \jobname.tex 2>/dev/null | python3 -c "import sys; n=sys.stdin.read().strip(); print(f'{int(n):,}') if n.isdigit() else print('?')" > \jobname.wc}%
+  \input{\jobname.wc}%
+}
+
+\title{MPhil Thesis: Empirical Results}
+\author{Mohammad-Shah Karim}
+\date{May 2026}
+
+\begin{document}
+
+\ifdefined\isdraft\else
+\maketitle
+\begin{center}
+  \small Word count: \wordcount
+\end{center}
+\tableofcontents
+\newpage
+\fi
+
+\section{Empirical Results}
+
+% -----------------------------------------------------------------------
+\subsection{RQ1: Overall Innovation Response}
+% -----------------------------------------------------------------------
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{../output/RQ1/patent_feols_exante.png}
+  \caption{FEOLS event study: patents, ex-ante Medicaid exposure}
+  \label{fig:rq1_patent_feols_exante}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{../output/RQ1/fda_feols_exante.png}
+  \caption{FEOLS event study: FDA approvals, ex-ante Medicaid exposure}
+  \label{fig:rq1_fda_feols_exante}
+\end{figure}
+
+\clearpage
+
+The pre-expansion coefficients between 2010 and 2012 are small and statistically insignificant across both specifications, which is consistent with the assumption of parallel trends in firm patenting behaviour between areas with differential Medicaid market shares. Under the FEOLS specification with ex-ante exposure (Table~\ref{tab:rq1_feols_exante}), the post-expansion coefficient is insignificant in 2014 and then becomes significant in 2015 at $-0.086$ and then begins to grow in magnitude over time, peaking at $-0.252$ in 2024. Since the exposure to Medicaid is measured as a therapeutic class's market share within Medicaid, the estimated coefficients correspond to a one-hundred percentage point increase in Medicaid share. Consequently, a therapeutic class with a 10 percentage-point higher Medicaid market share would be associated with $0.025$ fewer patents per firm-class-year by 2024, this corresponds to about 16 percent of the sample mean patent count ($0.16$). Noticeably, the coefficients stabilise between 2020 and 2025 in the range of $-0.220$ to $-0.252$, indicating that the negative response persists.
+
+The gradual onset of the effect is expected given that patent outcomes are recorded by the date of award rather than the application date. Thus, patents observed shortly after 2014 may include applications prior to the ACA, so the timing should not be interpreted as the exact timing of underlying R\&D decisions. Additionally, the effect also reflects transition dynamics when making R\&D decisions. Firms would not immediately adjust their innovation decisions in response to policy shifts, and pricing in the new Medicaid market conditions into R\&D plans may take time given the long development horizons involved in pharmaceutical innovation. Both of these factors therefore contribute towards the increasing magnitude of the coefficients where stabilisation is seen between 2020 and 2025.
+
+The results from FDA approvals contrast with the patent findings. The post-expansion coefficients are statistically insignificant with wide confidence intervals. Whereas the patent FEOLS estimates grow monotonically from $-0.086$ in 2015 to $-0.252$ in 2024, the FDA FEOLS estimates fluctuate between $-0.321$ and $1.421$ without a sustained direction. The isolated significance in 2017 and 2018 is consistent with sampling variation given the number of post-expansion periods tested. Overall, the results for FDA approvals provide inconclusive evidence of a response to Medicaid demand exposure at the end stage of the pipeline.
+
+The difference between the patent and FDA results is consistent with the structure of the pharmaceutical R\&D pipeline documented in the literature. \citet{sutton1998technology} suggests pharmaceutical development follows a staged process, which can span over a decade \citep{brown2022clinical}. Patenting activity captures an earlier stage of this process relative to FDA approvals, and so changes in patenting appear earlier than approvals. Therefore, the ACA policy shock may plausibly affect patenting without yet generating a response in FDA approvals. Changes in patenting decisions would feed through into drugs under active development, subsequently appear in clinical trial activity, and only reach FDA approvals once the affected drug cohort arrives at the final stage of the development pipeline. Under this interpretation, the insignificant response of FDA approvals reflects that insufficient time has passed for the upstream adjustment to result in detectable changes at the approval stage as opposed to contradicting the patent findings.
+
+This is consistent with \citet{NBERw28755}, who study the response of clinical trial activity with three years of post-ACA data and find an insignificant innovation response. Clinical trial activity generally occurs later in the development process than early patenting activity, and given that the patent event-study displays a gradual build-up over nearly a decade, a three-year window is likely too short to detect a response even at the clinical trial stage.
+
+\clearpage
+
+% -----------------------------------------------------------------------
+\subsection{RQ2: Medicaid Demand and PDL Exposure}
+% -----------------------------------------------------------------------
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{../output/RQ2/patent_feols_exante_medicaid.png}
+  \caption{FEOLS event study: patents, Medicaid exposure (ex-ante)}
+  \label{fig:rq2_patent_feols_exante_medicaid}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{../output/RQ2/patent_feols_exante_pdl.png}
+  \caption{FEOLS event study: patents, PDL exposure (ex-ante)}
+  \label{fig:rq2_patent_feols_exante_pdl}
+\end{figure}
+
+\clearpage
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{../output/RQ2/fda_feols_exante_medicaid.png}
+  \caption{FEOLS event study: FDA approvals, Medicaid exposure (ex-ante)}
+  \label{fig:rq2_fda_feols_exante_medicaid}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{../output/RQ2/fda_feols_exante_pdl.png}
+  \caption{FEOLS event study: FDA approvals, PDL exposure (ex-ante)}
+  \label{fig:rq2_fda_feols_exante_pdl}
+\end{figure}
+
+\clearpage
+
+The Medicaid exposure and PDL exposure coefficients from the joint specification are reported in Table~\ref{tab:rq2_feols_exante}. The results for Medicaid demand are consistent with the findings of the previous research question, with insignificant pre-period estimates and negative post-expansion coefficients growing from $-0.086$ in 2015 to $-0.252$ by 2024. Controlling for firm exposure to the PDL formulary yields larger Medicaid exposure coefficient estimates. This suggests that the RQ1 Medicaid coefficient partially absorbed variation associated with procurement exposure when PDL exposure was omitted. Including both measures therefore provides a cleaner comparison between the Medicaid demand response and the additional response associated with firms' exposure to PDL institutions. Since PDL exposure is a proxy for procurement exposure rather than a direct measure of rebate extraction, the estimates should not be interpreted as a full decomposition of the demand and pricing channels.
+
+The PDL exposure coefficients point towards an additional source for the decline in post-expansion patenting. The pre-expansion PDL coefficients are positive but insignificant, providing support for the parallel trends assumption. The isolated positive estimate in 2014 is not persistent and should not be interpreted as a full effect of the ACA. From 2016 onwards, the PDL coefficients turn negative and become significant from 2019 onwards and grow to $-6.925$ by 2023. This indicates that firms with greater formulary exposure experienced an additional decline in patenting relative to the Medicaid demand effect.
+
+This result should not be interpreted as showing that preferred placement itself reduces innovation incentives. The PDL exposure measure instead depicts the pre-expansion share of a firm's portfolio already on the PDL prior to Medicaid expansion, thus the negative coefficient indicates that firms more deeply embedded in Medicaid's formulary system before the reform experienced a stronger negative innovation response once Medicaid demand increased. This is consistent with these firms being more exposed to the procurement pressures that intensified following the expansion, even though securing preferred placement remains beneficial relative to failing one of the PDL stages.
+
+Both the Medicaid exposure and PDL exposure coefficients for FDA approvals are statistically insignificant throughout the post-expansion period. There are isolated exceptions for this, with 2017 and 2018 for the Medicaid coefficients and 2019 and 2021 for the PDL coefficients, but these do not form a sustained pattern. Although a significant PDL effect is recorded for patents, the absence of a corresponding effect on FDA approvals is consistent with the broader interpretation that adjustment first appears in upstream R\&D activity and has not yet propagated to the final stage of the R\&D pipeline.
+
+
+\clearpage
+
+% -----------------------------------------------------------------------
+\subsection{RQ3: Therapeutic-Class Heterogeneity}
+% -----------------------------------------------------------------------
+
+\begingroup\footnotesize
+%TC:ignore
+\input{../output/RQ3/feols_exante_models.tex}
+%TC:endignore
+\captionof{table}{Triple-difference estimates: therapeutic-class heterogeneity (FEOLS, ex-ante)}
+\label{tab:rq3_feols_exante}
+\endgroup
+
+The triple-difference estimates in Table~\ref{tab:rq3_feols_exante} reveal substantial heterogeneity across therapeutic areas. Significant negative responses are observed in patenting behaviour for alimentary tract and metabolism, cardiovascular, musculo-skeletal, and nervous system drugs. RQ1 identifies an aggregate decline in patenting following the Medicaid expansion and these classes appear to account for a significant share of the overall response. Several of these classes rank highly in the annual NDC count averages reported in Table~\ref{tab:class_substitutability}. Additionally, these classes also cover widely prescribed drug categories, such as diabetes and gastrointestinal medications, cardiovascular therapies, and antidepressants. This pattern supports the procurement mechanism developed in the theoretical model, where therapeutic areas with greater drug substitutability are exposed to more intense formulary competition and rebate pressure. Consequently, the procurement channel may more strongly offset the standard market-size incentive in these classes.
+
+Positive patenting responses are observed for blood and blood-forming organs, hormonal preparations, and sensory organs. These classes are situated towards the lower end of the NDC count distribution, where therapeutic substitutability is weaker and the PDL channel is therefore less likely to dominate. The positive estimates are consistent with the standard market-size prediction in this setting, suggesting that the demand effect outweighs the disincentives associated with Medicaid's pricing pressure. Insignificant coefficients are observed for the remaining therapeutic classes, suggesting the demand and pricing pressure offset one another, or the expansion is unimportant for patenting decisions in these areas.
+
+The presence of positive class-level estimates indicates that some therapeutic areas experience an innovation response that is driven largely by demand, suggesting that the standard market-size effect is not absent in the Medicaid setting. Instead, the aggregate negative patenting response identified in RQ1 appears to be concentrated in a subset of classes for which the procurement channel is likely to dominate. Hence, the heterogeneity analysis complements the key findings from RQ1 and the PDL-based evidence from RQ2, as opposed to implying that patenting responded uniformly across therapeutic classes in response to the ACA.
+
+The FDA approval results contrast starkly from the patent pattern. Significant positive responses are observed for alimentary tract and metabolism, dermatologicals, and sensory organs, while no therapeutic class exhibits a significant negative response. The coefficient for sensory organs is large in magnitude but imprecisely estimated given the small number of approvals in that class.
+
+Despite a strong negative patenting response in alimentary tract and metabolism classes, positive FDA approval coefficients are observed in these areas in response to the ACA. This divergence is consistent with the pipeline interpretation, where FDA approvals observed during the post-expansion period most likely reflect R\&D investments made prior to the Medicaid expansion, so the upstream patent decline has not yet propagated to the approval stage. Additionally, dermatologicals have a positive approval response while having an insignificant patent coefficient, indicating that approval estimates do not cleanly map onto patent responses within therapeutic areas. Both patents and FDA approvals have positive coefficients for pharmaceuticals relating to sensory organs, but the large standard errors suggest that this pattern should be interpreted with caution.
+
+Several therapeutic classes display negative point estimates, but none reach statistical significance. This reinforces the earlier finding that the upstream decline in innovation has not yet reached the end stage of approvals. Consequently, the therapeutic-level heterogeneity identified in patenting has not yet been reflected in regulatory approvals, consistent with the long development horizons separating early-stage innovation from drug approval.
+
+\clearpage
+
+% -----------------------------------------------------------------------
+\subsection{PDL Counterfactual Analysis}
+% -----------------------------------------------------------------------
+
+The estimates from the PDL counterfactual specification introduced in Section 4 are presented in Table~\ref{tab:pdl_counterfactual}, where the omitted baseline corresponds to a firm-class pair whose drugs do not pass either PDL stage.
+
+\begingroup\footnotesize
+%TC:ignore
+\input{../output/PDL_counterfactual/pdl_counterfactual_models.tex}
+%TC:endignore
+\captionof{table}{PDL counterfactual estimates (FEOLS, ex-ante)}
+\label{tab:pdl_counterfactual}
+\endgroup
+
+The patent results indicate that the innovation response to the ACA differs depending on a firm's pre-existing position within the PDL process. Firms that pass only one of the clinical and pricing stages experience reductions in patenting activity. Notably, the decline is larger for firms only passing the clinical stage, with a coefficient of $-11.399$, compared with a coefficient of $-7.386$ for firms that only pass the pricing stage. This indicates that exposure to either stage in isolation is associated with a post-expansion decline in patenting. Specifically, firms that only pass the clinical stage develop pharmaceutical products which meet the standards for safety and efficacy but do not secure preferred placement. However, firms which only pass the pricing stage are price-competitive but do not meet clinical criteria. In both cases, the expanded Medicaid market raises the value of PDL placement without granting these firms access to the associated demand.
+
+The clinical stage measure being more negative indicates that the strongest post Medicaid expansion decline in patenting is associated with firms whose drugs pass the clinical threshold but are not cost competitive enough to secure preferred placement. Since these firms are unable to meet the pricing condition needed for preferred status on the Medicaid formulary, they cannot leverage their clinical eligibility for PDL access and are therefore the most exposed to the procurement channel. However, firms only passing the pricing stage produce cost-competitive drugs which do not meet the clinical criteria for preferred placement, and were consequently not positioned to secure PDL access regardless of pricing. Thus, PDL selection is less binding for this group, matching the smaller magnitude of the corresponding coefficient.
+
+The coefficient for firms passing both stages of the PDL is large and positive, indicating that securing preferred placement substantially offsets the negative responses associated with passing either stage in isolation. Consequently, the total post-expansion effect for a firm whose portfolio passes both stages is $-3.236$. The net effect therefore remains negative and indicates a modest decline in patenting and is substantially smaller than the decline observed for firms only passing the clinical or pricing stages. Therefore, securing preferred placement appears to mitigate the negative innovation response, even if it does not fully reverse it.
+
+The FDA approval results from the counterfactual specification do not mirror patenting behaviour. Both the clinical-stage and pricing-stage coefficients are small and positive, while the joint coefficient is mildly negative at $-0.112$. None of the coefficients being statistically significant is consistent with the broader pattern identified in RQ1 and RQ3, where the decline in patents has not yet reached the downstream approval stage given the long development horizons involved in pharmaceutical innovation. Consequently, a firm's position within the PDL process is not yet associated with an observable shift in drug approvals.
+
+\clearpage
+
+\bibliographystyle{apalike}
+\bibliography{references}
+
+\ifdefined\isdraft\else
+
+\clearpage
+\appendix
+
+\section{Empirical Results}
+
+% -----------------------------------------------------------------------
+\subsection{Regression Tables}
+% -----------------------------------------------------------------------
+
+\subsubsection{RQ1: Overall Innovation Response}
+
+\begingroup\footnotesize
+%TC:ignore
+\input{../output/RQ1/feols_exante_models.tex}
+%TC:endignore
+\captionof{table}{FEOLS event-study estimates: overall innovation response (ex-ante)}
+\label{tab:rq1_feols_exante}
+\endgroup
+
+\clearpage
+
+\subsubsection{RQ2: Medicaid Demand and PDL Exposure}
+
+\begingroup\footnotesize
+%TC:ignore
+\input{../output/RQ2/feols_exante_models.tex}
+%TC:endignore
+\captionof{table}{FEOLS event-study estimates: Medicaid demand and PDL exposure (ex-ante)}
+\label{tab:rq2_feols_exante}
+\endgroup
+
+\clearpage
+
+
+% -----------------------------------------------------------------------
+\subsection{Therapeutic-Class Substitutability}
+% -----------------------------------------------------------------------
+
+\begingroup
+\makeatletter
+\renewenvironment{table}[1][H]{\@float{table}[H]}{\end@float}
+\makeatother
+%TC:ignore
+\input{../output/rebate_exploration/class_substitutability.tex}
+%TC:endignore
+\endgroup
+
+\fi
+
+\end{document}

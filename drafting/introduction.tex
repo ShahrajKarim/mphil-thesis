@@ -1,0 +1,92 @@
+\documentclass[12pt]{article}
+\usepackage{geometry}
+\geometry{a4paper, portrait, margin=1in}
+
+% --- Math Packages ---
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+
+% --- Graphics & Diagrams ---
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows, positioning}
+
+% --- Formatting ---
+\usepackage{parskip}
+\usepackage[hidelinks]{hyperref}
+\usepackage{natbib}
+\usepackage{enumitem}
+\pagestyle{plain}
+
+% --- Word count (requires compiling with --shell-escape) ---
+\newcommand{\wordcount}{%
+  \immediate\write18{texcount -sum -1 \jobname.tex 2>/dev/null | python3 -c "import sys; n=sys.stdin.read().strip(); print(f'{int(n):,}') if n.isdigit() else print('?')" > \jobname.wc}%
+  \input{\jobname.wc}%
+}
+
+\title{MPhil Thesis: Introduction}
+\author{Mohammad-Shah Karim}
+\date{April 2026}
+
+\begin{document}
+
+\ifdefined\isdraft\else
+\maketitle
+\begin{center}
+  \small Word count: \wordcount
+\end{center}
+\fi
+
+\section{Introduction}
+
+Governments face a key tension in pharmaceutical policy. Public procurement systems and insurance programmes can reduce drug prices and lower state spending, but they may also lower the expected returns to research and development (R\&D), weakening incentives for pharmaceutical innovation. This tension arises due to novel drug development requiring large upfront investments over a long horizon, including patent applications and clinical trials, with a high probability of failure \citep{sutton1998technology}. The returns to a successful drug depend on both prices and volumes and accrue over multiple years. Incentives to invest are therefore shaped not only by clinical opportunity but also by the economic and policy settings which influence the expected revenues that can be generated once a drug reaches the market. \citeauthor{garthwaite2023drug} frame this as a broader challenge within pharmaceutical pricing reforms, emphasising that policy-makers must balance improved healthcare access through lower drug spending against the incentives required to maintain drug development.
+
+This tension makes the pharmaceutical market within the United States (US) an important setting for studying how public policy shapes innovation incentives. Federal and state governments are major players in the market, with Medicaid and Medicare together accounting for approximately 40\% of total spending among the ten top-selling prescription drugs in the US between 2017 and 2019 \citep{chavehpour2024prescription}. Medicaid is especially important in this respect - it is a large public buyer, but it does not operate as a standard private insurer. Manufacturers that wish to have Medicaid coverage must participate in the Medicaid Drug rebate Program, and states can use Preferred Drug Lists (PDLs) in order to negotiate additional rebates in exchange for preferred formulary placement. Medicaid demand therefore passes through a public procurement system rather than a conventional insurance market, and its institutional features are described in detail in Section~\ref{sec:ACA_section}.
+
+This thesis examines the consequences of a major expansion of a US public insurance programme for pharmaceutical innovation - the 2014 Medicaid expansion under the Affordable Care Act (ACA). The reform produced a well-documented expansion in the size of the Medicaid market, with population coverage increasing by close to twenty million enrollees in the years following the policy change \citep{kff2026medicaidexpansion}. Under standard market-sized frameworks in the pharmaceutical sector this should increase innovation incentives for drug-classes more exposed to Medicaid demand \citep{finkelstein2004static, dubois2015market}. If firms expect to sell more units after a successful round of innovation, the expected returns to R\&D rise. However, the additional demand entered the market through Medicaid's procurement institutions rather than through standard private channels, so an expansion of Medicaid was not simply a positive demand shock for pharmaceutical firms.
+
+The Medicaid setting complicates the prediction from standard pharmaceutical market-sized frameworks. The ACA did not only expand the number of patients covered by Medicaid, but it also raised the statutory rebate percentages and extended rebate obligations to Medicaid managed care. Therefore, the reform increased the size of the public market while also lowering the share of revenue retained by manufacturers. Additionally, as Medicaid demand grows, preferred placement on a state PDL becomes more valuable. States can use this to negotiate deeper rebates from manufacturers. The same policy may therefore generate two opposing effects: it raises demand, while also increasing pricing pressure and reducing the resulting surplus that firms can capture from that demand \citep{duggan2006, feng2023profiting, garthwaite2023drug}.
+
+Public programmes are increasingly central to the pharmaceutical market in the United States. A large share of prescription drug spending is financed by the public sector, and recent reforms have placed greater emphasis on using public purchasing power to reduce drug prices. The 2022 Inflation Reduction Act is a clear example of this shift, where Medicare price negotiation have been introduced for high-spend drugs. These reforms raise the same broad policy tension studied in this thesis: lower prices can benefit patients and taxpayers in the short run, but they may also affect the expected returns to future pharmaceutical innovation.
+
+The Medicaid expansion provides a useful benchmark for this wider policy question by combining a large coverage expansion with an established system of public reimbursement and rebate negotiation. Similar questions arise wherever public buyers combine broad coverage with price control, including the NHS in the United Kingdom and other publicly financed health systems.
+
+The implication is not that public bargaining is necessarily harmful. Rather, the point is that public reimbursement rules can affect pharmaceutical innovation incentives, not only current drug spending \citep{lakdawalla2009innovation, lakdawalla2018economics}. This thesis studies that relationship in the context of Medicaid, where public demand expanded while the institutions governing public reimbursement became more important.
+
+This thesis therefore raises the question of whether the ACA-induced Medicaid expansion raised pharmaceutical innovation, and whether the response dependent on a firm's exposure to the Medicaid procurement institutions. Put simply, was the expected positive relationship between market size and innovation weakened when the additional demand flows through a state-wide monopsony?
+
+This thesis makes several contributions. First, it constructs a firm-by-therapeutic-class panel linking patent records, FDA approvals, Medicaid prescription data, and PDL placement over 2005-2025, with the empirical analysis using observations from 2010 onwards. This exercise is non-trivial since the underlying sources do not share common firm, drug, or therapeutic-class identifiers. Second, it studies the innovation response to ACA-induced Medicaid expansion using patents and FDA approvals rather than clinical trial activity, while extending the post-expansion period through to 2025. Third, it moves beyond aggregate therapeutic-class exposure by linking innovation outcomes to firm-level exposure to Medicaid's PDL, allowing the analysis to separate Medicaid demand exposure from PDL exposure and to examine whether responses vary across therapeutic areas. Fourth, it allows the innovation response to vary across ATC therapeutic areas, rather than imposing a single average response across all drug classes. Finally, the thesis conducts PDL counterfactual analysis and builds a theoretical model of firm innovation behaviour to interpret the empirical results and show how an expansion in Medicaid demand can be offset by the Medicaid monopsony wedge.
+
+The main empirical finding of this thesis is that therapeutic classes with greater pre-expansion Medicaid exposure experienced a decline in patenting following the 2014 ACA Medicaid expansion, while the evidence for FDA approvals appears to be inconsistent. This suggests that the innovation response to the policy was concentrated in earlier stages of the R\&D pipeline rather than at the final point of regulatory approval. Accounting for firm-level exposure to Medicaid's pricing and formulary systems reveals that firms with greater exposure to Medicaid's preferred drug list experience stronger declines in patenting, consistent with the pricing channel reducing the returns to innovation. The negative patenting response is most pronounced in classes where Medicaid exposure is high and products are more substitutable, while other classes show weaker or more positive responses. The theoretical model provides an interpretation for these patterns: while the Medicaid expansion raised expected demand, it also increased a procurement wedge faced by firms through rebates and bargaining. If the procurement effect is large enough, then even while Medicaid demand increases, firms may not expect to earn sufficient profits for innovation incentives to rise. This lends an explanation for why the standard market-size prediction may fail in this setting.
+
+The closest related paper is \citet{NBERw28755}, which studies clinical trial activity around the Medicaid expansion and finds little evidence of an aggregate innovation response. They propose that the inconclusive results may reflect lower returns associated with Medicaid's pricing rules, but do not test this channel directly. This thesis builds on their work by extending the outcome set to patents and FDA approvals, which bracket clinical trials in the development pipeline, thereby capturing earlier and later stage innovation activity. It also extends the post-expansion window to 2025, and moves from therapeutic-class-level analysis to a firm-class panel. Importantly, the analysis directly examines the pricing channel proposed in their interpretation by linking firm-therapeutic class exposure to Medicaid's formulary system. The empirical results are then used to inform the illustrative model developed later in the thesis, which studies how the Medicaid expansion affects firm innovation incentives when the preferential status on the PDL changes the surplus firms expect to capture.
+
+The remainder of the thesis is structured as follows. Section 2 reviews the related literature on Medicaid and the ACA, public procurement and pharmaceutical pricing, market size and pharmaceutical innovation, and dynamic innovation incentives. Section 3 provides the institutional background needed for the empirical analysis, setting out the ACA Medicaid expansion, the Medicaid rebate system, and the Preferred Drug List mechanism in greater detail. Section 4 describes the data sources and the construction of the main variables, including Medicaid demand exposure and PDL exposure at the firm-by-class level. Section 5 sets out the empirical strategy for the three research questions. Section 6 reports the empirical results. Section 7 presents the theoretical model, including the structure of the game, the mapping from theoretical states to empirical outcomes, the equilibrium analysis, and the comparative statics. Section 8 discusses the policy implications, focusing on the tension between lower net drug prices and the innovation incentives required to justify upfront R\&D investment. Section 9 discusses extensions and directions for further research with section 10 concluding the thesis.
+
+\section{The Affordable Care Act} \label{sec:ACA_section}
+
+Medicaid is a federal-state public health insurance programme for low-income individuals and other eligible groups in the United States. Prior to 2014 eligibility was largely restricted to specific categories, including low-income children, pregnant women, disabled individuals, and some elderly individuals, as opposed to low-income adults in general. While prescription drug benefits were formally non-mandatory, all state Medicaid programmes provided them. Additionally, outpatient prescriptions are reimbursed through fee-for-service and managed care arrangements.
+
+The ACA substantially expanded this market. From 2014, states were allowed to extend Medicaid eligibility to adults with incomes up to 138\% of the federal poverty line. This threshold change generated a large increase in Medicaid enrolment, with adult enrolment increasing by 20.3 million as of January 2025, of whom 16.8 million were newly eligible under the reform \citet{kff2026medicaidexpansion}. This expansion in coverage corresponding increase in the number of prescriptions reimbursed through Medicaid.
+
+Importantly, there are two key institutional features of Medicaid that are noteworthy. The first is the Medicaid Drug Rebate Program (MDRP). Manufacturers that want their drugs to be reimbursed by Medicaid must enter into a national rebate agreement and pay rebates to states for each unit dispensed to Medicaid. Specifically, for brand-name drugs, the basic rebate applied is based on what is greater between a fixed percentage of the average manufacturer price (AMP), or the difference between AMP and the manufacturer's lowest commercial price, known as the ``best price''. Consequently, discounts offered elsewhere in the market can affect the rebates owed to Medicaid \citep{duggan2006}. Medicaid therefore receives a legally protected discount thereby lowering the value of Medicaid prescriptions to manufacturers.
+
+The ACA also changed the rebate environment directly. The statutory rebate percentage under the MDRP was increased from 15.1\% to 23.1\% of AMP for most brand-name drugs, and from 11\% to 13\% for generics. Firms were now obligated to extend rebates to drugs dispensed through Medicaid managed care organisations, while previously being exempt.
+
+The second institutional feature is the Preferred Drug List (PDL). States can negotiate supplemental rebates from manufacturers in exchange for preferred placement on their formulary. Preferred drugs are prescribed to patients without prior authorisation, while non-preferred drugs require additional approval before being prescribed. Requesting authorisation creates an administrative cost for physicians, shifting prescribing behaviour towards preferred drugs \citep{virabhak2009impact}, indicating that preferred placement can affect a firm's exposure to Medicaid. Preferred placement therefore provides states with a source of negotiating leverage. Since preferred status affects access conditions and expected utilisation within a therapeutic class, manufacturers may offer supplemental rebates above the statutory MDRP minimum in order to obtain or retain preferred placement. Additionally, some states also participate in multi-state purchasing alliances, which aggregate Medicaid demand across states and may further strengthen their bargaining position.
+
+Selection into the PDL takes on the form of a two-stage selection mechanism. In the first stage, the state's Pharmacy and Therapeutics committee assesses whether a drug is clinically appropriate for preferred status. This involves the use of clinical evidence from peer-reviewed clinical literature and oncology reports to understand the safety, efficacy and effectiveness of the drug relative to other drugs with the same role. In the second stage, once drugs pass the first stage and are concluded to be therapeutically comparable, states consider the net cost and supplemental rebates when deciding which drugs receive preferred placement. This setting matters as it means that Medicaid procurement does not only depend on clinical value, but also on firms' willingness to offer price concessions. For this reason, an expansion of Medicaid demand may also increase the value of preferred placement and intensify competition over rebates.
+
+Importantly, preferred placement on the PDL is not necessarily limited to a single drug for a given drug role. States may allow for multiple preferred drugs within the same role in order to allow for clinically appropriate choices among patients, such as in the case of route of administration, prior treatment response or clinical needs such as allergies. Furthermore, drugs with non-preferred status are not necessarily excluded from Medicaid coverage, they would instead require authorisation from Medicaid once a physician requests to prescribing them.
+
+Thus, the ACA created a demand shock, but it did so inside a public procurement system with rebates and formulary bargaining. For high-Medicaid therapeutic classes, the reform therefore increased the number of prescriptions likely to be paid for by Medicaid, while also increasing the importance of the rebate and PDL mechanisms that determine the net revenue firms receive from those prescriptions.
+
+This thesis does not utilise the staggered timing of state adoption as the main source of variation. Although that variation is useful for studying outcomes such as insurance coverage, healthcare use, or labour supply, it is less suited towards studying pharmaceutical innovation. Pharmaceutical innovation is a national investment decision, and firms cannot develop a drug for sale in one expansion state alone. Instead, they consider expected sales across the United States. Therefore, this thesis treats the start of the ACA Medicaid expansion in 2014 as the relevant policy shock.
+
+\newpage
+\bibliographystyle{apalike}
+\bibliography{references}
+
+\end{document}

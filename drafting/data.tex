@@ -1,0 +1,320 @@
+\documentclass[12pt]{article}
+\usepackage{geometry}
+\geometry{a4paper, portrait, margin=1in}
+
+% --- Math Packages ---
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+
+% --- Graphics & Diagrams ---
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows, positioning}
+
+% --- Formatting ---
+\usepackage{parskip}
+\usepackage[hidelinks]{hyperref}
+\usepackage{natbib}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\pagestyle{plain}
+
+% --- Word count (requires compiling with --shell-escape) ---
+\newcommand{\wordcount}{%
+  \immediate\write18{texcount -sum -1 \jobname.tex 2>/dev/null | python3 -c "import sys; n=sys.stdin.read().strip(); print(f'{int(n):,}') if n.isdigit() else print('?')" > \jobname.wc}%
+  \input{\jobname.wc}%
+}
+
+\title{MPhil Thesis: Data}
+\author{Mohammad-Shah Karim}
+\date{April 2026}
+
+\begin{document}
+
+\ifdefined\isdraft\else
+\maketitle
+\begin{center}
+  \small Word count: \wordcount
+\end{center}
+\tableofcontents
+\newpage
+\fi
+
+\section{Data}
+
+\subsection{Overview}
+
+The empirical analysis draws on five sources: the Medicaid State Drug Utilisation Data (SDUD); the Drugs@FDA database; patent bulk data files distributed by the USPTO; the Texas Vendor Drug Program formulary; and the National Library of Medicine's RxNorm and RxClass systems. Table~\ref{tab:data_overview} summarises the contribution of each source to the final dataset.
+
+\begin{table}[htbp]
+\centering
+\caption{Data sources and their roles in the analysis}
+\label{tab:data_overview}
+\begin{tabular*}{\textwidth}{p{0.25\textwidth} @{\extracolsep{\fill}} p{0.25\textwidth} p{0.40\textwidth}}
+\toprule
+\multicolumn{1}{c}{Source} & \multicolumn{1}{c}{Identifier} & \multicolumn{1}{c}{Role} \\
+\midrule
+SDUD & NDC, state, year, quarter & Medicaid and non-Medicaid prescription volumes and reimbursement \\
+Drugs@FDA & Application number, sponsor name & FDA drug approval outcomes \\
+USPTO PatentsView & Patent ID, assignee name & Patent counts by therapeutic class \\
+Texas Vendor Drug Program & NDC, effective date & PDL status and prior authorisation indicators \\
+RxNorm / RxClass & RxCUI, ATC code & Therapeutic classification of NDC and active ingredients \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+The final constructed dataset is a balanced panel at the firm $\times$ ATC Level 1 $\times$ year level, spanning from 2005 to 2025. The empirical analysis uses observations from 2010 onwards, providing a four year pre-expansion period, while avoiding reliance on prescription patterns that are distant from the 2014 reform. All datasets are harmonised to the Level 1 Anatomical Therapeutic Chemical (ATC) classification system, which is described in Section~\ref{sec:atc}. Table~\ref{tab:source_descriptives} reports descriptive statistics for each of the four datasets used in the analysis.
+
+It is important to recognise two data limitations. First, the PDL analysis relies primarily on Texas, since it provides historical records in a machine-readable format. Second, most patent assignees are not matched to firms within the Medicaid prescription universe, since many do not have a direct commercial presence. Future work could extend the PDL data to multiple states and draw on proprietary firm linkage data to improve the firm-patent-assignee mapping.
+
+%TC:ignore
+\input{../output/summary_statistics/summary_statistics.tex}
+%TC:endignore
+
+\subsection{Medicaid State Drug Utilisation Data}
+\label{sec:sdud}
+
+The main source for Medicaid prescription demand is the State Drug Utilisation Data (SDUD), which is maintained by the Centers for Medicare and Medicaid Services (CMS). The SDUD was established alongside the Medicaid Drug Rebate Program and records outpatient prescription drugs reimbursed by state Medicaid programmes at the drug $\times$ state $\times$ quarter level. It covers all fifty states, the District of Columbia and Puerto Rico. Each observation is identified by an 11-digit National Drug Code (NDC) and reports prescription counts, units reimbursed, and reimbursement amounts split into Medicaid and non-Medicaid components. Annual files between 2005 and 2024 are downloaded via the Medicaid Data portal API, yielding a raw dataset of 42,031,131 observations.
+
+The SDUD plays two roles in the analysis. First, it is used to construct Medicaid exposure measures at the therapeutic-class, which forms the main treatment variable for the analysis. Secondly, once merged with PDL information from the Texas Vendor Drug Program, the SDUD is used to construct exposure measures to formulary placement and pricing pressure at the firm-level.
+
+\begin{table}[htbp]
+\centering
+\caption{Key variables in the SDUD}
+\begin{tabular*}{\textwidth}{p{0.28\textwidth} @{\extracolsep{\fill}} p{0.62\textwidth}}
+\toprule
+\multicolumn{1}{c}{Variable} & \multicolumn{1}{c}{Description} \\
+\midrule
+NDC & 11-digit code identifying each drug product, split into a 5-digit labeler code, 4-digit product code, and 2-digit package code \\
+Drug name & Proprietary or generic name of the drug \\
+Units reimbursed & Number of units reimbursed by Medicaid in the state-year-quarter cell \\
+Number of prescriptions & Number of prescriptions filled for a given drug in the state-year-quarter cell \\
+Reimbursement amount & Total reimbursement for a given drug, split into Medicaid and non-Medicaid components \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+\subsubsection{National Drug Code}
+
+The NDC is an 11-digit product identifier - this contains a 5-digit labeler code, a 4-digit product code, and a 2-digit package code. The SDUD stores the NDC as an 11-digit string without hyphens. However, some datasets remove hyphens or omit leading zeroes. Consequently, the SDUD format is used to normalise all NDCs to ensure that NDC-based joins do not introduce incorrect matches stemming from formatting differences. 
+
+\subsubsection{Firm identification}
+
+The SDUD does not record firm names, so firms are instead identified through their NDC labeler code. However, pharmaceutical firms commonly operate with the use of multiple labeler codes due to  subsidiaries or acquisition arrangements. As a result, labeler codes alone cannot be treated as a unique firm identifier in this analysis.
+
+A firm mapping is constructed from the FDA NDC directory. Each labeler code is initially linked to its registered labeler name from the FDA's product and package text files. These names are then clustered into firm-level groups using a text similarity procedure. Labeler names are standardised by converting to lowercase, removing punctuation, and stripping trailing whitespace. Unigram tokenisation is then used to construct a term frequency-inverse document frequency (TF-IDF) representation, and pairwise cosine similarity is computed across all cleaned labeler names. Pairs with a cosine similarity score above 0.85 are treated as matches and are grouped into firm clusters, so that labeler codes with sufficiently similar names are assigned to the same firm. Each cluster is assigned the name of its first member as the canonical firm identifier. Merging the resulting firm mapping into the SDUD by labeler code allows for 40,003,656 of 42,031,131 records to match, which corresponds to a match rate of 95.18\%.
+
+\subsubsection{Therapeutic classification}
+
+Each NDC in the SDUD is mapped to an ATC Level 1 class using the RxNorm API. First, each NDC is submitted to the RxNorm NDC status endpoint in order to obtain its RxCUI identifier. This is then used to retrieve ATC codes through the RxNorm ATC lookup endpoint. ATC Level 1 is defined by the first character of the ATC code. This procedure classifies 96.10\% of SDUD records. Records that cannot be classified are excluded from the estimation sample. In cases where a single NDC maps to more than one ATC class, the record is duplicated so that each NDC-class combination appears separately. These duplicated records are then aggregated within class cells in the final panel.
+
+\subsection{Texas Preferred Drug List Data}
+
+\label{sec:texas}
+
+PDL data is taken from the Texas Vendor Drug Program, which publishes machine-readable historical records of Medicaid drug coverage decisions. Texas is selected because it is one of the few states to make its complete formulary history available in a machine-readable format with drug-level effective and end dates. Unlike many other states, whose PDL data are available only as PDFs or current cross-sections, the Texas data allow a time-varying measure of drug-level preferred status to be constructed. The formulary file records the following fields for each listed drug: the NDC, the Medicaid coverage start and end dates, a coverage status indicator, a flag indicating whether PDL-related prior authorisation is required, and a flag indicating whether clinical prior authorisation is required.
+
+Two variables are constructed to separate the clinical and pricing stages of PDL selection. $\text{PT\_Stage\_Pass}$ captures drugs that clear the Pharmacy and Therapeutics clinical review, i.e. these are drugs which are clinically acceptable. $\text{Price\_Stage\_Pass}$ captures drugs that clear the pricing stage, meaning that their net cost after rebates is sufficiently competitive for preferred placement. A drug is therefore classified as being on the PDL when it is covered by Medicaid and clears both the clinical and pricing stages.
+
+\subsubsection{Effective date treatment}
+
+A drug is classed as having active coverage in a given year-quarter if its coverage start date falls prior to the end of the quarter and it either has no coverage end date or the coverage end date is after the start of the quarter. Drugs for which no end date is present, or for which the end date is in 2025 or later, are treated as currently active.
+
+\subsubsection{Linking to the SDUD}
+
+The Texas PDL is merged with the SDUD at the full 11-digit NDC level - it is matched on the labeller, product, and package codes simultaneously. NDC records without a corresponding Texas formulary entry receive missing values for their PDL indicators as opposed to being excluded. Missing PDL values are subsequently set to zero when constructing the firm-level PDL exposure measures - absence from the Texas Drug Vendor Program record likely reflects a drug that has not obtained preferred status rather than a data gap.
+
+\subsubsection{Representativeness}
+
+Since the PDL analysis relies on a single state's formulary, the extent to which the Texas PDL is representative of the Medicaid PDL choices in other states is assessed by computing pairwise overlap rates with comparison states. This representativeness analysis is limited by data availability - the majority of states do not publish machine-readable PDL records with historical coverage dates, so the comparison can only be conducted for the subset of states whose formulary data are available in a structured format. On this basis, New York, California, and Washington are used as comparison states. Overlap is measured in both directions as the share of drugs on one state's PDL that also appear on the other state's PDL, matched at the labeller and product level of the NDC.
+
+\begin{table}[htbp]
+\centering
+\caption{Pairwise overlap of state Preferred Drug Lists}
+\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} l p{0.22\textwidth} p{0.22\textwidth}}
+\toprule
+\multicolumn{1}{c}{State 1} &
+\multicolumn{1}{c}{State 2} &
+\multicolumn{1}{c}{\parbox{0.22\textwidth}{\centering Share of State 1 PDL also on \\ State 2 PDL}} &
+\multicolumn{1}{c}{\parbox{0.22\textwidth}{\centering Share of State 2 PDL also on \\ State 1 PDL}} \\
+\midrule
+New York & Texas & 0.375 & 0.950 \\
+California & Texas & 0.196 & 0.197 \\
+Washington & Texas & 0.223 & 0.812 \\
+California & New York & 0.722 & 0.230 \\
+California & Washington & 0.384 & 0.106 \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+The results indicate that 95.0\% of drugs on the Texas PDL also appear on the New York PDL, and 81.2\% also appear on the Washington PDL. Overlap with California is substantially lower at around 20\% in both directions, reflecting California's distinct formulary structure. The overlap analysis suggests that the Texas PDL shares are somewhat representative of the preferred drug lists of other large states. However, it should not be treated as a direct proxy for every state's formulary decisions, especially given the weaker overlap with California. In this thesis, the Texas PDL is used primarily to capture the two-stage clinical-and-price structure of PDL selection, rather than to measure the exact set of preferred drugs nationwide.
+
+This creates measurement error when PDL exposure in Texas is used as a proxy for firm's exposure to Medicaid across the United States. Since this measurement weakens the link between the constructed PDL variable and a firm's true national exposure, the estimated innovation response is likely to be attenuated towards zero. Therefore regression estimates using PDL exposure should be interpreted as a lower bound on the effect of formulary placement.
+
+Future work could extend this approach by obtaining PDL records from additional states and constructing state-specific firm-class PDL exposure measures. These state-level exposure measures could then be averaged across states to obtain a multi-state measure of firms' exposure to PDL placement. As more state formularies are added, this measure would better approximate a firm's overall exposure to the PDL stages.
+
+\subsection{FDA Approval Data}
+\label{sec:fda}
+
+Approval data for drugs is obtained from the Drugs@FDA database, which records all drug applications submitted to the FDA. The applications, submissions and products files identify sponsor names, application numbers, approval status and the associated active ingredients for approved drugs. The sample is restricted to approvals occurring on or after 1 January 2005 to align with the SDUD coverage window.
+
+\subsubsection{Therapeutic classification}
+
+Therapeutic classification of FDA-approved drugs occurs at the ingredient level. To do this, active ingredients strings are standardised and split to account for multi-ingredient products. Each combination of normalised ingredients are then queried against the NLM's RxClass API. This maps each ingredient to one or more ATC codes. Ingredient-level results are collapsed at the application level so that each application is linked to the union of ATC Level 1 classes associated with its active ingredients. Applications for which no ATC class can be assigned are excluded. This procedure classifies 48,143 of 50,368 application-product observations giving a match rate of 95.58\%.
+
+In cases where an application maps to multiple ATC Level 1 classes, the application is counted once within each applicable class at the aggregation stage. This is analogous to the treatment of multi-class NDCs in the SDUD.
+
+\subsubsection{Firm-NDC matching}
+
+Since the Drugs@FDA database identifies firms by their name as opposed to their NDC labeler code, an additional matching step is required. FDA sponsor names and NDC labeler names are standardised by: conversion to uppercase, removal of non-alphanumeric characters, and stripping of common corporate suffixes such as Inc, Corp, LLC. A three-stage merging procedure is then applied. In the first stage, firms are matched exactly by their cleaned name. In the second stage, unmatched FDA sponsors are linked to NDC labeler names via a root-token match, where the root is the first alphanumeric token which is at least four characters long. Finally, remaining unmatched firms are linked using Jaro-Winkler string similarity at a threshold of 0.90, with the highest-scoring NDC match being used. Under this process, a match rate of 82.26\% is achieved.
+
+\subsection{Patent Data}
+\label{sec:patents}
+
+Patent data is obtained from the USPTO PatentsView data files. PatentsView harmonises patent records and provides disambiguated assignee information. Specifically, for this study, five files are used: the base patent file, which provides grant dates; the current CPC classification file; the disambiguated assignee file; the CPC group title file; and the WIPO technology field classification file.
+
+\subsubsection{Relevant patents}
+
+The universe of patents is filtered in two steps. First, patents are restricted to those classified under the WIPO technology field ``Pharmaceuticals''. Within this set, patents are restricted to those that fall under the ``A61P'' subclass - this allows for the study to focus on patents with a stated therapeutic use. Patents classified under A61P but not assigned to the WIPO Pharmaceuticals field are also included, as some patent-level WIPO assignments may be incomplete. This allows for the study to focus on patents that are most likely to be related to therapeutic drug innovation.
+
+It is important to note that the CPC classifications are not perfect measures of pharmaceutical invention of a patent, since CPC classes are assigned during the patent examination process. Consequently, the A61P restriction may exclude some relevant patents relating to delivery or formulation, while also retaining some patents that are classified as pharmaceutical but less directly related to new therapeutic agents.
+
+\subsubsection{Therapeutic classification}
+
+The A61P subclass is divided into CPC groups corresponding to different therapeutic uses. A manually constructed crosswalk is used to map each A61P group to an ATC Level 1 class, with the crosswalk following the structure of the USPTO's A61P classification. Selected entries from this crosswalk are shown in Table~\ref{tab:a61p_atc_crosswalk}. For example, patents related to cardiovascular activity are classified under A61P9, so these are mapped to ATC class C, while patents related to nervous system activity fall under A61P25, thus they are mapped to ATC class N. In cases where a patent falls under multiple different A61P CPC groups, it is counted once within each applicable class.
+
+\begin{table}[htbp]
+\centering
+\caption{CPC A61P to ATC Level 1 crosswalk (selected entries)}
+\label{tab:a61p_atc_crosswalk}
+\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} l l}
+\toprule
+\multicolumn{1}{c}{CPC Group} & \multicolumn{1}{c}{Therapeutic area} & \multicolumn{1}{c}{ATC Level 1} \\
+\midrule
+A61P1  & Gastrointestinal & A \\
+A61P7  & Blood & B \\
+A61P9  & Cardiovascular & C \\
+A61P17 & Dermatology & D \\
+A61P15 & Genito-urinary and sex hormones & G \\
+A61P5  & Endocrine & H \\
+A61P31 & Anti-infectives & J \\
+A61P35 & Antineoplastics & L \\
+A61P19 & Musculo-skeletal & M \\
+A61P25 & Nervous system & N \\
+A61P33 & Antiparasitic & P \\
+A61P11 & Respiratory & R \\
+A61P27 & Sensory organs & S \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+\subsubsection{Firm-NDC matching}
+
+Patent assignee names are matched to the NDC labeler firm clusters using the same three-stage procedure applied to sponsors in the Drugs@FDA dataset. Cleaned assignee names are first matched to labeler names exactly. The remaining unmatched assignees undergo root-token matching followed by a Jaro-Winkler fuzzy match at a threshold of 0.90.
+
+Out of 28,143 unique assignees, 7,566 were matched to the NDC firm universe, which corresponds to a match rate of 27.1\%, but this understates patent-level coverage, where 46.8\% of patents were matched to a firm. To assess whether the matched and unmatched patent samples differ systematically, Tables \ref{tab:patent_matching_summary} and \ref{tab:patent_matching_atc} compare the therapeutic and temporal composition of the matches. The distribution of patents across ATC Level 1 is similar across the two groups, and the shares of patents before and after 2014 are similar between the matched and unmatched group. This provides support for the patent-firm matching error being non-systematic.
+
+\subsection{ATC Level 1 Classes}
+\label{sec:atc}
+
+Ultimately, all prescription, FDA approval, and patent records are aggregated to ATC Level 1, thus Table~\ref{tab:atc_level1} reports the therapeutic classes under each ATC level. The source-specific mapping procedures have been described in the relevant subsections above.
+
+\begin{table}[htbp]
+\centering
+\caption{ATC Level 1 therapeutic classification}
+\label{tab:atc_level1}
+\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} l}
+\toprule
+\multicolumn{1}{c}{Code} & \multicolumn{1}{c}{Therapeutic area} \\
+\midrule
+A & Alimentary tract and metabolism \\
+B & Blood and blood-forming organs \\
+C & Cardiovascular system \\
+D & Dermatologicals \\
+G & Genito-urinary system and sex hormones \\
+H & Systemic hormonal preparations \\
+J & Anti-infectives for systemic use \\
+L & Antineoplastic and immunomodulating agents \\
+M & Musculo-skeletal system \\
+N & Nervous system \\
+P & Antiparasitic products, insecticides and repellents \\
+R & Respiratory system \\
+S & Sensory organs \\
+V & Various \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+\subsection{Firm Harmonisation}
+\label{sec:firmharm}
+
+The main datasets identify firms using different methods. For example, the SDUD uses NDC labeler codes, which are first grouped into firm clusters and then used as the firm universe for the analysis. The Drugs@FDA instead uses sponsor names to identify firms, while PatentsView identifies firms using their disambiguated assignee names. FDA sponsors and patent assignees are therefore linked back to NDC firm clusters. Table~\ref{tab:matchrates} summarises the match rates across the main linking steps.
+
+\begin{table}[htbp]
+\centering
+\caption{Match rates across data linking steps}
+\label{tab:matchrates}
+\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} rr}
+\toprule
+\multicolumn{1}{c}{Linking step} & \multicolumn{1}{c}{$N$} & \multicolumn{1}{c}{Match rate} \\
+\midrule
+SDUD labeler codes to firm clusters     & 42,031,131 & 95.18\% \\
+SDUD NDC to RxNorm ATC                  & 42,031,131 & 96.10\% \\
+Drugs@FDA applications to ATC           &     50,368 & 95.58\% \\
+Drugs@FDA sponsors to NDC firms         &      1,465 & 82.26\% \\
+Patent assignees to NDC firms           &     28,143 & 27.10\% \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+\subsection{Panel Construction}
+\label{sec:panel}
+
+The final panels are constructed separately for the patent and FDA approval outcomes. The firm-by-class structure is designed to recover variation in innovation incentives within therapeutic areas, consistent with \citeauthor{sutton1998technology}'s (\citeyear{sutton1998technology}) account of pharmaceutical R\&D as heterogeneous across product areas. Both patent counts and FDA approvals are collapsed to the firm $\times$ ATC Level 1 $\times$ year level. The SDUD prescription and reimbursement variables are first aggregated to the firm $\times$ ATC Level 1 $\times$ year level and are then merged with the innovation panels. PDL variables from the Texas Vendor Drug Program are merged at the firm $\times$ ATC Level 1 level - details relating to their exact construction are described in the Methodology section.
+
+Each panel is balanced over the firm-class combinations observed in the data. In cases where no patent or approval observations are recorded for a given firm-class-year, an outcome value of zero is assigned. Summary statistics for each of the balanced panels are reported in Table~\ref{tab:panel_descriptives}. Histograms for variation in constructed PDL exposure variable in the interval $(0,1]$ can be found in Figure~\ref{fig:pdl_histogram}.
+
+%TC:ignore
+\input{../output/summary_statistics/panel_statistics.tex}
+%TC:endignore
+
+\clearpage
+
+\bibliographystyle{apalike}
+\bibliography{references}
+
+\ifdefined\isdraft\else
+
+\clearpage
+\appendix
+
+% -----------------------------------------------------------------------
+\section{Patent Assignee Matching}
+% -----------------------------------------------------------------------
+
+%TC:ignore
+\input{../output/robustness/patent_matching/patent_matching_summary.tex}
+%TC:endignore
+
+%TC:ignore
+\input{../output/robustness/patent_matching/patent_matching_atc.tex}
+%TC:endignore
+
+\clearpage
+
+% -----------------------------------------------------------------------
+\section{PDL Exposure Distribution}
+% -----------------------------------------------------------------------
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{../output/summary_statistics/pdl_exposure_histogram.pdf}
+  \caption{Distribution of PDL exposure in constructed panels}
+  \label{fig:pdl_histogram}
+\end{figure}
+
+\fi
+
+\end{document}
