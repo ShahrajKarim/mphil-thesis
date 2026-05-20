@@ -17,52 +17,11 @@ Contact `mohammad.karim@economics.ox.ac.uk` for access.
 
 ```
 mphil-thesis/
-├── raw_data/               # Source datasets (gitignored)
-│   ├── Drugs@FDA/          #   FDA approval & product files
-│   ├── patents/            #   USPTO patent grant data
-│   ├── state_drug_utilisation_data/  #   CMS SDUD extracts
-│   ├── PDL/                #   State preferred drug lists
-│   ├── clinical_trials/    #   ClinicalTrials.gov data
-│   ├── orange_book/        #   FDA Orange Book
-│   ├── RxNorm/             #   RxNorm concept mappings
-│   └── UMLS/               #   UMLS Metathesaurus files
-│
 ├── aux_data/               # Crosswalks & lookup tables
 │   ├── ndc_atc_mapping.csv
 │   ├── cpc_atc_mapped.csv
 │   ├── ndc_firm_mapping.csv
 │   └── medicaid_expansion_proportion_by_*.csv
-│
-├── scripts/                # Data-processing pipeline (R)
-│   ├── fda_approval_data.r
-│   ├── patent_data.r
-│   ├── state_drug_utilisatation_data.r
-│   ├── pdl_data.r
-│   ├── clinical_trials_data.r
-│   ├── medicaid_expansion_dates.r
-│   ├── rollout_map.r
-│   └── summary_statistics.r
-│
-├── regressions/            # Estimation scripts
-│   ├── RQ1.r               #   Aggregate event-study (fixest)
-│   ├── RQ2.r               #   Medicaid share vs. PDL channel
-│   ├── RQ3.r               #   Heterogeneity analysis
-│   └── pdl_counterfactual_analysis.r
-│
-├── robustness/             # Robustness & sensitivity checks
-│   ├── contdid.r
-│   ├── binned_treatment.r
-│   └── patent_matching.r
-│
-├── theoretical_model/      # Game-theoretic model (Python + LaTeX)
-│
-├── output/                 # Tables (.tex) and figures (.png)
-│   ├── RQ1/ … RQ3/
-│   ├── robustness/
-│   ├── summary_statistics/
-│   └── PDL_counterfactual/
-│
-├── exploration/            # Ad-hoc notebooks & exploratory work
 │
 ├── drafting/               # Thesis chapters (LaTeX, modular)
 │   ├── draft.tex           #   Master document
@@ -76,15 +35,55 @@ mphil-thesis/
 │   ├── conclusion.tex
 │   └── references.bib
 │
-├── submission/             # Final compiled thesis
+├── exploration/            # Ad-hoc notebooks & exploratory work
+├── figures/                # Standalone visualisations
+│
+├── output/                 # Tables (.tex) and figures (.png)
+│   ├── RQ1/ … RQ3/
+│   ├── robustness/
+│   ├── summary_statistics/
+│   └── PDL_counterfactual/
 │
 ├── presentations/          # Quarto slide decks (.qmd → .html)
 │
-├── figures/                # Standalone visualisations
-│
-├── literature/             # Reading tracker (gitignored)
+├── raw_data/               # Source datasets (gitignored)
+│   ├── Drugs@FDA/          #   FDA approval & product files
+│   ├── patents/            #   USPTO patent grant data
+│   ├── state_drug_utilisation_data/  #   CMS SDUD extracts
+│   ├── PDL/                #   State preferred drug lists
+│   ├── clinical_trials/    #   ClinicalTrials.gov data
+│   ├── orange_book/        #   FDA Orange Book
+│   ├── RxNorm/             #   RxNorm concept mappings
+│   └── UMLS/               #   UMLS Metathesaurus files
 │
 ├── references/             # Term-by-term .bib files
+│
+├── regressions/            # Estimation scripts
+│   ├── RQ1.r               #   Aggregate event-study (fixest)
+│   ├── RQ2.r               #   Medicaid share vs. PDL channel
+│   ├── RQ3.r               #   Heterogeneity analysis
+│   └── pdl_counterfactual_analysis.r
+│
+├── renv/                   # renv config (activate.R, settings)
+│
+├── robustness/             # Robustness & sensitivity checks
+│   ├── contdid.r
+│   ├── binned_treatment.r
+│   └── patent_matching.r
+│
+├── submission/             # Final compiled thesis
+│
+├── scripts/                # Data-processing pipeline (R)
+│   ├── fda_approval_data.r
+│   ├── patent_data.r
+│   ├── state_drug_utilisatation_data.r
+│   ├── pdl_data.r
+│   ├── clinical_trials_data.r
+│   ├── medicaid_expansion_dates.r
+│   ├── rollout_map.r
+│   └── summary_statistics.r
+│
+├── theoretical_model/      # Game-theoretic model (Python + LaTeX)
 │
 └── tex_resources/          # Oxford thesis class & assets
 ```
