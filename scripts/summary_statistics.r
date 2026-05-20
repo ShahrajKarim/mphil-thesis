@@ -340,7 +340,7 @@ tbl_panel <- panel_combined |>
     caption = "Balanced panel summary statistics",
     label = "panel_descriptives"
   ) |>
-  kable_styling(latex_options = c("hold_position", "scale_down")) |>
+  kable_styling(latex_options = "hold_position", full_width = TRUE) |>
   pack_rows("SDUD Patents panel", p1, q1, bold = FALSE, italic = TRUE, latex_gap_space = "0.5em", escape = FALSE) |>
   pack_rows("SDUD FDA approvals panel", p2, q2, bold = FALSE, italic = TRUE, latex_gap_space = "0.5em", escape = FALSE)
 
