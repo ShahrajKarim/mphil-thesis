@@ -52,7 +52,7 @@ The empirical analysis draws on five sources: the Medicaid State Drug Utilisatio
 \centering
 \caption{Data sources and their roles in the analysis}
 \label{tab:data_overview}
-\begin{tabular}{p{0.25\textwidth} p{0.25\textwidth} p{0.40\textwidth}}
+\begin{tabular*}{\textwidth}{p{0.25\textwidth} @{\extracolsep{\fill}} p{0.25\textwidth} p{0.40\textwidth}}
 \toprule
 \multicolumn{1}{c}{Source} & \multicolumn{1}{c}{Identifier} & \multicolumn{1}{c}{Role} \\
 \midrule
@@ -62,7 +62,7 @@ USPTO PatentsView & Patent ID, assignee name & Patent counts by therapeutic clas
 Texas Vendor Drug Program & NDC, effective date & PDL status and prior authorisation indicators \\
 RxNorm / RxClass & RxCUI, ATC code & Therapeutic classification of NDC and active ingredients \\
 \bottomrule
-\end{tabular}
+\end{tabular*}
 \end{table}
 
 The final constructed dataset is a balanced panel at the firm $\times$ ATC Level 1 $\times$ year level, spanning from 2005 to 2025. The empirical analysis uses observations from 2010 onwards, providing a four year pre-expansion period, while avoiding reliance on prescription patterns that are distant from the 2014 reform. All datasets are harmonised to the Level 1 Anatomical Therapeutic Chemical (ATC) classification system, which is described in Section~\ref{sec:atc}. Table~\ref{tab:source_descriptives} reports descriptive statistics for each of the four datasets used in the analysis.
@@ -83,7 +83,7 @@ The SDUD plays two roles in the analysis. First, it is used to construct Medicai
 \begin{table}[htbp]
 \centering
 \caption{Key variables in the SDUD}
-\begin{tabular}{p{0.28\textwidth} p{0.62\textwidth}}
+\begin{tabular*}{\textwidth}{p{0.28\textwidth} @{\extracolsep{\fill}} p{0.62\textwidth}}
 \toprule
 \multicolumn{1}{c}{Variable} & \multicolumn{1}{c}{Description} \\
 \midrule
@@ -93,7 +93,7 @@ Units reimbursed & Number of units reimbursed by Medicaid in the state-year-quar
 Number of prescriptions & Number of prescriptions filled for a given drug in the state-year-quarter cell \\
 Reimbursement amount & Total reimbursement for a given drug, split into Medicaid and non-Medicaid components \\
 \bottomrule
-\end{tabular}
+\end{tabular*}
 \end{table}
 
 \subsubsection{National Drug Code}
@@ -133,11 +133,11 @@ Since the PDL analysis relies on a single state's formulary, the extent to which
 \begin{table}[htbp]
 \centering
 \caption{Pairwise overlap of state Preferred Drug Lists}
-\begin{tabular}{llp{0.22\textwidth}p{0.22\textwidth}}
+\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} l p{0.22\textwidth} p{0.22\textwidth}}
 \toprule
-\multicolumn{1}{c}{State 1} & 
-\multicolumn{1}{c}{State 2} & 
-\multicolumn{1}{c}{\parbox{0.22\textwidth}{\centering Share of State 1 PDL also on \\ State 2 PDL}} & 
+\multicolumn{1}{c}{State 1} &
+\multicolumn{1}{c}{State 2} &
+\multicolumn{1}{c}{\parbox{0.22\textwidth}{\centering Share of State 1 PDL also on \\ State 2 PDL}} &
 \multicolumn{1}{c}{\parbox{0.22\textwidth}{\centering Share of State 2 PDL also on \\ State 1 PDL}} \\
 \midrule
 New York & Texas & 0.375 & 0.950 \\
@@ -146,7 +146,7 @@ Washington & Texas & 0.223 & 0.812 \\
 California & New York & 0.722 & 0.230 \\
 California & Washington & 0.384 & 0.106 \\
 \bottomrule
-\end{tabular}
+\end{tabular*}
 \end{table}
 
 The results indicate that 95.0\% of drugs on the Texas PDL also appear on the New York PDL, and 81.2\% also appear on the Washington PDL. Overlap with California is substantially lower at around 20\% in both directions, reflecting California's distinct formulary structure. The overlap analysis suggests that the Texas PDL shares are somewhat representative of the preferred drug lists of other large states. However, it should not be treated as a direct proxy for every state's formulary decisions, especially given the weaker overlap with California. In this thesis, the Texas PDL is used primarily to capture the two-stage clinical-and-price structure of PDL selection, rather than to measure the exact set of preferred drugs nationwide.
@@ -189,7 +189,7 @@ The A61P subclass is divided into CPC groups corresponding to different therapeu
 \centering
 \caption{CPC A61P to ATC Level 1 crosswalk (selected entries)}
 \label{tab:a61p_atc_crosswalk}
-\begin{tabular}{lll}
+\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} l l}
 \toprule
 \multicolumn{1}{c}{CPC Group} & \multicolumn{1}{c}{Therapeutic area} & \multicolumn{1}{c}{ATC Level 1} \\
 \midrule
@@ -207,14 +207,14 @@ A61P33 & Antiparasitic & P \\
 A61P11 & Respiratory & R \\
 A61P27 & Sensory organs & S \\
 \bottomrule
-\end{tabular}
+\end{tabular*}
 \end{table}
 
 \subsubsection{Firm-NDC matching}
 
 Patent assignee names are matched to the NDC labeler firm clusters using the same three-stage procedure applied to sponsors in the Drugs@FDA dataset. Cleaned assignee names are first matched to labeler names exactly. The remaining unmatched assignees undergo root-token matching followed by a Jaro-Winkler fuzzy match at a threshold of 0.90.
 
-Out of 28,143 unique assignees, 7,566 were matched to the NDC firm universe, which corresponds to a match rate of 27.1\%. The patent assignee universe includes academic institutions, research hospitals, individual inventors, and non-pharmaceutical entities that may hold A61P patents but have no commercial presence in the Medicaid drug market. These entities do not have labeler codes within the SDUD. Additionally, pharmaceutical firms may assign patents to research subsidiaries whose names differ from the trading names under which drugs are marketed. As a result, the match rate is substantially lower than the Drugs@FDA match rate. Unmatched patent assignees cannot be linked to the universe of NDC labeler codes and cannot be included in the final patent panel.
+Out of 28,143 unique assignees, 7,566 were matched to the NDC firm universe, which corresponds to a match rate of 27.1\%, but this understates patent-level coverage, where 46.8\% of patents were matched to a firm. To assess whether the matched and unmatched patent samples differ systematically, Tables \ref{tab:patent_matching_summary} and \ref{tab:patent_matching_atc} compare the therapeutic and temporal composition of the matches. The distribution of patents across ATC Level 1 is similar across the two groups, and the shares of patents before and after 2014 are similar between the matched and unmatched group. This provides support for the patent-firm matching error being non-systematic.
 
 \subsection{ATC Level 1 Classes}
 \label{sec:atc}
@@ -225,7 +225,7 @@ Ultimately, all prescription, FDA approval, and patent records are aggregated to
 \centering
 \caption{ATC Level 1 therapeutic classification}
 \label{tab:atc_level1}
-\begin{tabular}{ll}
+\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} l}
 \toprule
 \multicolumn{1}{c}{Code} & \multicolumn{1}{c}{Therapeutic area} \\
 \midrule
@@ -244,7 +244,7 @@ R & Respiratory system \\
 S & Sensory organs \\
 V & Various \\
 \bottomrule
-\end{tabular}
+\end{tabular*}
 \end{table}
 
 \subsection{Firm Harmonisation}
@@ -256,7 +256,7 @@ The main datasets identify firms using different methods. For example, the SDUD 
 \centering
 \caption{Match rates across data linking steps}
 \label{tab:matchrates}
-\begin{tabular}{lrr}
+\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} rr}
 \toprule
 \multicolumn{1}{c}{Linking step} & \multicolumn{1}{c}{$N$} & \multicolumn{1}{c}{Match rate} \\
 \midrule
@@ -266,7 +266,7 @@ Drugs@FDA applications to ATC           &     50,368 & 95.58\% \\
 Drugs@FDA sponsors to NDC firms         &      1,465 & 82.26\% \\
 Patent assignees to NDC firms           &     28,143 & 27.10\% \\
 \bottomrule
-\end{tabular}
+\end{tabular*}
 \end{table}
 
 \subsection{Panel Construction}
@@ -291,5 +291,24 @@ Each panel is balanced over the firm-class combinations observed in the data. In
 
 \bibliographystyle{apalike}
 \bibliography{references}
+
+\ifdefined\isdraft\else
+
+\clearpage
+\appendix
+
+% -----------------------------------------------------------------------
+\section{Patent Assignee Matching}
+% -----------------------------------------------------------------------
+
+%TC:ignore
+\input{../output/robustness/patent_matching/patent_matching_summary.tex}
+%TC:endignore
+
+%TC:ignore
+\input{../output/robustness/patent_matching/patent_matching_atc.tex}
+%TC:endignore
+
+\fi
 
 \end{document}
