@@ -46,13 +46,13 @@
 
 \subsection{Empirical Strategy}
 
-The empirical analysis takes on three stages. First, an event-study specification is utilised to estimate the aggregate innovation response to Medicaid exposure across therapeutic classes. Second, PDL exposure is incorporated to examine whether the innovation response differs depending on firms' exposure to Medicaid procurement mechanisms. Third, the post-expansion innovation response is allowed to vary for each therapeutic area in order to assess heterogeneity in innovation responses. The main outcomes are patent counts and FDA approvals, measured at the firm-therapeutic-class level.
+The empirical analysis proceeds in three stages. First, an event-study specification is utilised to estimate the aggregate innovation response to Medicaid exposure across therapeutic classes. Second, PDL exposure is incorporated to examine whether the innovation response differs depending on firms' exposure to Medicaid procurement mechanisms. Third, the post-expansion innovation response is allowed to vary for each therapeutic area in order to assess heterogeneity in innovation responses. The main outcomes are patent counts and FDA approvals, measured at the firm-therapeutic-class level.
 
 The specifications are motivated by the market-size channel in pharmaceutical innovation, where an increase in expected demand should increase the expected return to R\&D and therefore raise innovation incentives \citep{dubois2015market, finkelstein2004static}. Since the additional demand flows through a public buyer with rebate authority and formulary control, the Medicaid setting complicates this result. For this reason, the empirical analysis first aims to specifically examine whether the innovation response differs with a firm's exposure to the PDL.
 
 \subsection{Identification}
 
-The empirical strategy treats the ACA Medicaid expansion as a national shock to the expected profitability of drugs in therapeutic classes with different levels of pre-existing Medicaid exposure. While the expansion itself was adopted at the state level, innovation in the pharmaceutical industry is not a state-specific decision. Pharmaceutical firms develop drugs for the national markets, and as a result, the expected returns depend on anticipated sales across the United States as opposed to the realised expansion within any single expansion state. For this reason the empirical analysis does not leverage the staggered state adoption policy as the main source of variation.
+The empirical strategy treats the ACA Medicaid expansion as a national shock to the expected profitability of drugs in therapeutic classes with different levels of pre-existing Medicaid exposure. While the expansion itself was adopted at the state level, innovation in the pharmaceutical industry is not a state-specific decision. Pharmaceutical firms develop drugs for the national markets, and as a result, the expected returns depend on anticipated sales across the United States as opposed to the realised expansion within any single expansion state. For this reason, the empirical analysis does not leverage the staggered state adoption policy as the main source of variation.
 
 \citet{NBERw28755} studies anticipatory R\&D responses to Medicaid, where the relevant shock is the announcement of the ACA in 2010. However, a 2012 Supreme Court decision made the expansion of Medicaid voluntary at the state level, which introduced uncertainty over the magnitude of the shift in market size. Consequently, this thesis examines the innovation effects following 2014, as this reflects the time when states could expand Medicaid coverage.
 
@@ -141,7 +141,7 @@ where $Y_{f,c,t}$ is an innovation outcome for firm $f$, therapeutic class $c$, 
 
 This specification is estimated using both fixed-effects ordinary least squares (FEOLS) and fixed-effects Poisson (FE-Poisson) models. The linear FEOLS model provides a baseline and accommodates the event-study structure directly. By plotting the linear interaction coefficients, the FEOLS specification provides a straightforward, visually intuitive assessment of both the parallel trends assumption and the dynamic evolution of the treatment effect over time.
 
-Innovation outcomes, such as patent grants and FDA approvals, are non-negative, and negatively skewed integer counts. Given this underlying data-generating process, the specification is also estimated using a FE Poisson model. The Poisson estimator is suitable in this setting since it can handle count data and zero-valued observations without requiring additional adjustments in functional form, and according to \cite{wooldridge1999distribution} provided the conditional mean is correctly specified, the Poisson estimator provides consistent estimates even if the underlying data exhibits significant overdispersion. Therefore, estimating both linear and Poisson specifications allows the analysis to assess whether the main findings are sensitive to the treatment of the count nature of the outcomes.
+Innovation outcomes, such as patent grants and FDA approvals, are non-negative, and negatively skewed integer counts. Given this underlying data-generating process, the specification is also estimated using a FE Poisson model. The Poisson estimator is suitable in this setting since it can handle count data and zero-valued observations without requiring additional adjustments in functional form. Moreover, provided the conditional mean is correctly specified, the Poisson estimator is consistent even if the underlying data exhibits significant overdispersion \cite{wooldridge1999distribution}. Therefore, estimating both linear and Poisson specifications allows the analysis to assess whether the main findings are sensitive to the treatment of the count nature of the outcomes.
 
 Both ex-ante and ex-post exposure measures are used to measure $\text{MedicaidShare}_{c}$. The ex-ante measure is based on pre-2014 Medicaid prescription shares and captures exposure that is predetermined with respect to the policy change. The ex-post measure instead utilises realised post-expansion demand shifts and is interpreted more cautiously, as it potentially contains the contemporaneous market response induced by the ACA.
 
@@ -179,21 +179,21 @@ where $a$ is a specific ATC within the universe of ATC Level 1 therapeutic areas
 
 \subsubsection{PDL Counterfactual Analysis}
 
-In  order to examine the innovation mechanism more directly, a counterfactual design is estimated by leveraging the two-stage structure of Medicaid Preferred Drug List (PDL) placement. A drug receives preferred status if and only if it clears both a clinical (P\&T) stage, and a pricing stage. Firms whose products pass only one stage provide a useful counterfactual group for examining whether innovation responses differ against firms that either pass both or none of the margins. This is tested for using the following triple-difference specification, which isolates the post-expansion innovation responses associated with passing each stage in from the response associated with securing full PDL placement:
+In order to examine the innovation mechanism more directly, a counterfactual design is estimated by leveraging the two-stage structure of Medicaid Preferred Drug List (PDL) placement. A drug receives preferred status if and only if it clears both a clinical (P\&T) stage and a pricing stage. The following specification separately identifies exposure to each stage and passing both stages jointly:
 
 \begin{equation}
 \begin{aligned}
 Y_{f,c,t} =\;&
 \alpha_{f,c} + \lambda_t + \beta_1\left(\text{PT\_Pass}_{f,c} \times \text{Post}_t\right) \\
 &+ \beta_2\left(\text{Price\_Pass}_{f,c} \times \text{Post}_t\right) \\
-&+ \beta_3\left(\text{PT\_Pass}_{f,c} \times \text{Price\_Pass}_{f,c} \times \text{Post}_t\right) \\
+&+ \beta_3\left(\text{PDL\_Pass}_{f,c} \times \text{Post}_t\right) \\
 &+ \varepsilon_{f,c,t}
 \end{aligned}
 \end{equation}
 
-where $\text{PT\_Pass}_{f,c}$, $\text{Price\_Pass}_{f,c}$ are proportions measuring the share of a firm's drugs that pass the clinical stage and the pricing stage for the PDL. The triple interacted term provides the proportion of a firm's drugs within a class that pass both stages jointly.
+where $\text{PT\_Pass}_{f,c}$, $\text{Price\_Pass}_{f,c}$ are proportions measuring the share of a firm's drugs that pass the clinical stage and the pricing stage for the PDL, $\text{PDL\_Pass}_{f,c}$ measures the share of a firm's drugs securing preferred status by passing both stages.
 
-The coefficient $\beta_1$ captures the post-expansion change in innovation associated with a higher share of a firm's drugs passing the clinical stage but not securing preferred placement. $\beta_2$ measures the post-expansion change in innovation associated with a higher share of a firm's drugs passing the pricing stage but not meeting the clinical criteria for preferred placement. $\beta_3$ captures the additional innovation response associated with a higher share of drugs passing both stages and therefore securing preferred status.
+The coefficients $\beta_1$ and $\beta_2$ capture the post-expansion change in innovation associated with a higher share of a firm's drugs passing the clinical and price stages, respectively. $\beta_3$ captures the additional innovation response associated with a higher share of drugs passing both stages and therefore securing preferred status.
 
 This exercise is not intended to identify the full structural effect of the PDL process. However, it tests whether the innovation response differs across firms depending on their position within the PDL. If firms which pass both stages more often experience more favourable innovation responses, then this would suggest that preferred placement on the PDL affects the profitability of innovation.
 

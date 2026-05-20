@@ -2,14 +2,16 @@
 \usepackage{geometry}
 \geometry{a4paper, portrait, margin=1in}
 
-% --- Flag so sub-files can detect draft compilation ---
+% --- Flag so sub-files can detect draft/master compilation ---
 \newcommand{\isdraft}{}
 
 % --- Math ---
-\usepackage{amsmath}
-\usepackage{amssymb}
 \usepackage{amsfonts}
 \usepackage{amsthm}
+
+% --- Font (Times New Roman, must come after amsthm) ---
+\usepackage{newtxtext}
+\usepackage{newtxmath}
 
 % --- Graphics ---
 \usepackage{graphicx}
@@ -26,10 +28,11 @@
 \usepackage{caption}
 \usepackage{siunitx}
 \usepackage{tabularray}
+\usepackage{pdfpages}
 \UseTblrLibrary{booktabs, siunitx}
 \pagestyle{plain}
 
-% --- Theorem environments (from theoretical_model.tex) ---
+% --- Theorem environments ---
 \newtheorem{proposition}{Proposition}
 \newtheorem{corollary}{Corollary}
 \newtheorem{result}{Result}
@@ -49,51 +52,103 @@
 \renewcommand{\bibliographystyle}[1]{}
 \renewcommand{\bibliography}[1]{}
 
-% --- Suppress \appendix in sub-files (appendix content handled in draft.tex) ---
+% --- Suppress \appendix in sub-files ---
 \renewcommand{\appendix}{}
 
-% --- Word count for title page (requires --shell-escape) ---
+% --- Word count (requires --shell-escape; prints placeholder otherwise) ---
 \newcommand{\totalwordcount}{%
-  \immediate\write18{texcount -sum -1 -inc draft.tex 2>/dev/null | python3 -c "import sys; n=sys.stdin.read().strip(); print(f'{int(n):,}') if n.isdigit() else print('?')" > draft.wc}%
-  \input{draft.wc}%
+  \immediate\write18{texcount -sum -1 -inc thesis.tex 2>/dev/null | python3 -c "import sys; n=sys.stdin.read().strip(); print(f'{int(n):,}') if n.isdigit() else print('?')" > thesis.wc}%
+  \IfFileExists{thesis.wc}{\input{thesis.wc}}{?}%
 }
 
 \begin{document}
 
-% ===== Title Page =====
+% ===== Title Page (Oxford Belt Crest Style) =====
 \begin{titlepage}
   \centering
-  \vspace*{3cm}
-  {\LARGE\bfseries MPhil Thesis\par}
+  \setlength{\parskip}{0pt}
+  \vspace*{1cm}
+  {\LARGE\bfseries Pharmaceutical Innovation \\ under Public Drug Insurance: \\ Evidence from the Affordable Care Act \\ Medicaid Expansion\par}
+  \vspace{1.5cm}
+  {\includegraphics[width=5cm]{../tex_resources/beltcrest.pdf}}\par
   \vspace{1.5cm}
   {\Large Mohammad-Shah Karim\par}
-  \vspace{1cm}
-  {\large May 2026\par}
-  \vspace{2cm}
+  \vspace{0.4cm}
+  {\large Kellogg College\par}
+  \vspace{0.2cm}
+  {\large University of Oxford\par}
+  \vspace{0.4cm}
+  {\large Supervisor: Romuald M\'{e}ango\par}
+  \vspace{0.4cm}
   {\large Word count: \totalwordcount\par}
+  \vspace{1cm}
+  {\large A thesis submitted for the degree of\par}
+  \vspace{0.2cm}
+  {\large\emph{Master of Philosophy in Economics}\par}
+  \vspace{0.4cm}
+  {\large Trinity Term 2026\par}
   \vfill
+  {\small Replication code and data documentation: \url{https://github.com/ShahrajKarim/mphil-thesis}\par}
 \end{titlepage}
+
+% ===== Acknowledgements =====
+%TC:ignore
+\thispagestyle{empty}
+\vspace*{3cm}
+\begin{center}
+  {\Large \underline{Acknowledgements}}
+\end{center}
+\vspace{1cm}
+
+\noindent My sincerest gratitude goes to Professor Romuald M\'{e}ango for his supervision of this project. His genuine engagement with my work, thoughtful guidance, and unwavering support shaped the trajectory of this thesis and left a lasting impression on me. I also thank Professor Howard Smith for his insightful comments and clarifying questions. I am particularly indebted to both for their generous support of this project and of my future path.
+
+\vspace{0.5cm}
+
+\noindent I owe just as much gratitude to my friends in London, Oxford, and abroad. Their companionship made this year brighter, and gave me memories that I will carry as this chapter comes to a close.
+%TC:endignore
+
+\newpage
+
+% ===== Abstract =====
+%TC:ignore
+\thispagestyle{empty}
+\vspace*{3cm}
+\begin{center}
+  {\Large \underline{Abstract}}
+\end{center}
+\vspace{1cm}
+
+\noindent Expansions in health insurance coverage increase the size of pharmaceutical markets and are expected to raise incentives for innovation. Yet, when the resulting demand is channelled through a public buyer that governs pricing and market access, the effect on innovation is less clear. This paper examines that tension through the lens of the 2014 Medicaid expansion under the Affordable Care Act. I construct novel firm-by-therapeutic-class panels linking patent and FDA drug approval records with Medicaid prescription and Preferred Drug List data to examine the roles of demand and Medicaid pricing exposure. Therapeutic classes with greater pre-expansion Medicaid exposure experienced larger declines in patenting after the reform, while evidence for FDA approvals is inconclusive. The patenting decline is stronger among firms more exposed to Medicaid's formulary system and in therapeutic classes where drugs are more substitutable. An illustrative model formalises this mechanism to show how public insurance expansions can reduce innovation incentives when the Medicaid rebate wedge offsets the rents generated by additional sales.
+%TC:endignore
+
+\newpage
 
 % ===== Table of Contents =====
 \mastertoc
 \newpage
 
 % ===== Main Body =====
-\input{introduction}
-\input{literature_review}
-\input{data}
-\input{methodology}
-\input{empirical_results}
-\input{robustness}
-\input{theoretical_model}
-\input{conclusion}
+\input{../drafting/introduction}
+\input{../drafting/literature_review}
+\input{../drafting/data}
+\input{../drafting/methodology}
+\input{../drafting/empirical_results}
+\input{../drafting/robustness}
+
+% --- Restore table float (empirical_results/robustness redefined it as no-op) ---
+\makeatletter
+\renewenvironment{table}[1][tbp]{\@float{table}[#1]}{\end@float}
+\makeatother
+
+\input{../drafting/theoretical_model}
+\input{../drafting/conclusion}
 
 % ===== Bibliography =====
 \clearpage
 \renewcommand{\refname}{\vspace{-1em}}
 \section{References}
 \masterbibliographystyle{apalike}
-\masterbibliography{references}
+\masterbibliography{../drafting/references}
 
 % ===== Appendix =====
 \clearpage
@@ -111,6 +166,8 @@
 \input{../output/robustness/patent_matching/patent_matching_atc.tex}
 \renewenvironment{table}[1][]{}{}
 %TC:endignore
+
+\clearpage
 
 \subsection{PDL Exposure Distribution}
 
@@ -392,5 +449,9 @@ Table~\ref{tab:parameters} reports the baseline parameter values used to generat
 \input{../output/theoretical_model/parameters.tex}
 \renewenvironment{table}[1][]{}{}
 %TC:endignore
+
+% ===== AI Statement =====
+\clearpage
+\includepdf[pages=-]{../tex_resources/AI_statement.pdf}
 
 \end{document}
