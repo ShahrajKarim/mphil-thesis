@@ -2,6 +2,11 @@
 
 This repository contains the full research pipeline my MPhil thesis. The project investigates how the Affordable Care Act’s Medicaid expansion affected incentives to innovate in the pharmaceutical industry, using FDA approval records, patent filings, Medicaid drug utilisation data, and state-level preferred drug lists (PDLs).
 
+## Data availability
+
+Raw data files are not included in this repository due to size constraints.
+Contact `mohammad.karim@economics.ox.ac.uk` for access.
+
 ## Research questions
 
 1. **Aggregate innovation response** — Did the Medicaid expansion change the volume of FDA approvals and patent filings in therapeutic areas with greater Medicaid exposure?
