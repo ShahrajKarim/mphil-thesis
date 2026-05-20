@@ -510,7 +510,7 @@ In `trap-bound' classes, the rebate wedge lowers the value of $V_c^M$, so PDL wi
 
 \subsubsection{Comparative Statics} \label{sec:comp_statics}
 
-To characterise the predictions of the model, equilibrium effort is solved from the FOC's across a range of parameter values. Since no closed-form solution exists for $e_c^*$, the comparative statics are computed using fixed parameters $(\sigma, \bar{a}, \bar{p}, \bar{c}, k)$ and then varying one dimension at a time. Since the functional form of $\tau_c(M_c)$ is unknown, three functional forms are proposed for the simulations: a power specification $\tau_c = \alpha_c M_c^{\beta_c}$, a logarithmic specification $\tau_c = \alpha_c \ln M_c$, and a linear specification $\tau_c = \alpha_c M_c$. $\alpha_c$ measures the scale of each functional form with rebate and is positive, $\beta_c \in (0,1]$ represents the rebate elasticity under the power form. The resulting comparative statics are shown in Figure \ref{fig:comp_statics}.
+To characterise the predictions of the model, equilibrium effort is solved for numerically from the FOC's. Since no closed-form solution exists for $e_c^*$, the comparative statics are computed by varying one parameter and holding all else fixed at baseline values reported in Table \ref{tab:parameters}. Since the functional form of $\tau_c(M_c)$ is unknown, three functional forms are proposed for the simulations: a power specification $\tau_c = \alpha_c M_c^{\beta_c}$, a logarithmic specification $\tau_c = \alpha_c \ln M_c$, and a linear specification $\tau_c = \alpha_c M_c$. $\alpha_c$. The resulting comparative statics are shown in Figure \ref{fig:comp_statics}.
 
 \begin{figure}[H]
     \centering
@@ -538,7 +538,7 @@ e_{c,2}^*(V_c^M) > e_{c,2}^*(V_c^D) > e_{c,2}^*(0)
 This is consistent with the idea that firms securing higher profits in period 1 face lower R\&D costs in period 2 and therefore invest more in subsequent innovation. The effort gap between the three paths widen with market size, showing that the long-run innovation consequences of period 1 procurement outcomes become stronger in larger markets.
 
 \paragraph{Panel 5: Drug substitutability and effort.}
-The fifth panel displays how the relationship between market size and effort changes with drug substitutability. Three cases are shown: low substitutability ($\beta_c = 0.55$, e.g.\ H and S), intermediate substitutability ($\beta_c = 0.75$), and high substitutability ($\beta_c = 1.05$, e.g.\ N).
+The fifth panel displays how the relationship between market size and effort changes with drug substitutability. Three cases are shown: low substitutability (e.g. ATC classes H and S), intermediate substitutability, and high substitutability (ATC class N).
 
 When drug substitutability is low, effort continues to rise with market size and the incentive trap does not bind. However, as more drug substitutes become available, the threshold $M_c^*$ lowers, so the turning point for effort appears for lower Medicaid market sizes. This illustrates Result \ref{res:subs}, where higher drug substitutability lowers $M_c^*$ and makes the incentive trap more likely to bind.
 
@@ -559,14 +559,15 @@ Empirically, the pharmaceutical procurement pipeline is observed through the len
     \item \textbf{Medicaid Market Access:} These are firms clear both the clinical and pricing stages and capture the market $M_c$ by obtaining monopoly status or win the duopoly auction. Specifically, they benefit from both channels of state-dependent innovation: they accumulate regulatory know-how while also realising a strictly positive internal cash flow from the Medicaid market. Consequently, they their future marginal cost of future R\&D effort lowers to either $k(V_c^M)$ or $k(V_c^D)$, thereby allowing them to overcome market disincentives.
 \end{itemize}
 
-\paragraph{Mapping to the Triple-Difference} \label{sec:rq3_mapping}
+\paragraph{Mapping to RQ3} \label{sec:rq3_mapping}
 
-The triple-difference specification estimates class-specific responses to Medicaid expansion:
+The triple-difference specification in RQ3 estimates class-specific responses to Medicaid expansion:
 \begin{equation}
-    Y_{f,c,t} = \alpha_f + \lambda_c + \delta_t + \sum_{c \in \mathcal{C}} \beta_c \cdot \mathbf{1}\{t \geq 2014\} \cdot \text{MedicaidShare}_c \cdot \mathbf{1}\{\text{ATC} = c\} + \varepsilon_{f,c,t}
+Y_{f,c,t} = \alpha_f + \delta_c + \lambda_t +
+\sum_{a \in \mathcal{A}} \theta_a \left(\mathbf{1}\{t \geq 2014\} \times \text{MedicaidShare}_c \times \mathbf{1}\{c = a\}\right) + \varepsilon_{f,c,t}
 \end{equation}
 
-$\beta_c$ specifically estimates the innovation response in class $c$ relative to that class's Medicaid exposure. The sign of $\beta_c$ is split into three categories and is listed in Table \ref{tab:regime_mapping}.
+$\theta_a$ specifically estimates the innovation response in class $a$ relative to that class's Medicaid exposure. The sign of $\theta_c$ is split into three categories as listed in Table \ref{tab:regime_mapping}.
 
 \begin{table}[h]
 \centering
@@ -576,14 +577,14 @@ $\beta_c$ specifically estimates the innovation response in class $c$ relative t
     row{1} = {halign=c}
 }
 \toprule
-Category & Sign of $\beta_c$ & Condition & Prediction \\
+Category & Sign of $\theta_a$ & Condition & Prediction \\
 \midrule
-Volume-dominated & $\beta_c > 0$ & $M_c^{post} < M_c^*$ & $de_c^*/d\Delta M_c > 0$ \\
-Near-threshold   & $\beta_c \approx 0$ & $M_c^{post} \approx M_c^*$ & $de_c^*/d\Delta M_c \approx 0$ \\
-Trap-bound       & $\beta_c < 0$ & $M_c^{post} > M_c^*$ & $de_c^*/d\Delta M_c < 0$ \\
+Volume-dominated & $\theta_a > 0$ & $M_c^{post} < M_c^*$ & $de_c^*/d\Delta M_c > 0$ \\
+Near-threshold   & $\theta_a \approx 0$ & $M_c^{post} \approx M_c^*$ & $de_c^*/d\Delta M_c \approx 0$ \\
+Trap-bound       & $\theta_a < 0$ & $M_c^{post} > M_c^*$ & $de_c^*/d\Delta M_c < 0$ \\
 \bottomrule
 \end{tblr}
-\caption{Mapping between theoretical categories and the DDD coefficient $\beta_c$}
+\caption{Mapping between theoretical categories and the RQ3 coefficient $\theta_a$}
 \label{tab:regime_mapping}
 \end{table}
 
