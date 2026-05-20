@@ -99,6 +99,30 @@
 \clearpage
 \section{Appendix}
 
+% --- From data.tex ---
+
+\subsection{Patent Assignee Matching}
+
+%TC:ignore
+\makeatletter
+\renewenvironment{table}[1][H]{\@float{table}[H]}{\end@float}
+\makeatother
+\input{../output/robustness/patent_matching/patent_matching_summary.tex}
+\input{../output/robustness/patent_matching/patent_matching_atc.tex}
+\renewenvironment{table}[1][]{}{}
+%TC:endignore
+
+\subsection{PDL Exposure Distribution}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{../output/summary_statistics/pdl_exposure_histogram.pdf}
+  \caption{Distribution of PDL exposure in constructed panels}
+  \label{fig:pdl_histogram}
+\end{figure}
+
+\clearpage
+
 % --- From empirical_results.tex ---
 
 \renewenvironment{table}[1][]{}{}
@@ -157,7 +181,7 @@
 
 \clearpage
 
-\subsubsection{RQ1: FE Poisson (Ex-Ante)}
+\subsubsection{RQ1: Ex-Ante FE Poisson}
 
 %TC:ignore
 \footnotesize
@@ -169,7 +193,7 @@
 
 \clearpage
 
-\subsubsection{RQ1: FE Poisson (Ex-Post)}
+\subsubsection{RQ1: Ex-Post FE Poisson}
 
 %TC:ignore
 \footnotesize
