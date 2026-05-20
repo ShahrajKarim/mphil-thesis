@@ -96,22 +96,22 @@ SDUD <- SDUD |>
 # (a) Pooled: does n_c raise rebates conditional on market size?
 
 m2 <- lm(
-  rebate ~ log(market_size) + n_c +
+  rebate ~ log(market_size) + log(n_c) +
            factor(atc) + factor(year),
   data = SDUD
 )
 
 tidy(m2) |>
-  filter(term %in% c("log(market_size)", "n_c"))
+  filter(term %in% c("log(market_size)", "log(n_c)"))
 
-# Coefficient on log(market_size): 4.84
-# Standard error: 0.0528
-# t-statistic: 91.5
+# Coefficient on log(market_size): 4.41
+# Standard error: 0.08
+# t-statistic: 54.1
 # p-value: < 0.001
-# Coefficient on n_c: 0.00130
 
-# Standard error: 0.0000765
-# t-statistic: 17.0
+# Coefficient on log(n_c): 4.65
+# Standard error: 0.309
+# t-statistic: 15.0
 # p-value: < 0.001
 # Interpretation:
 
@@ -124,8 +124,8 @@ tidy(m2) |>
 # --- Export m1 and m2 to tex --- #
 
 rebate_models <- list(
-  "Market size"          = m1,
-  "Market size + NDCs"   = m2
+  "Rebate"          = m1,
+  "Rebate"   = m2
 )
 
 modelsummary(
@@ -133,7 +133,7 @@ modelsummary(
   stars    = c(`*` = 0.05, `**` = 0.01, `***` = 0.001),
   coef_map = c(
     "log(market_size)" = "Log market size",
-    "n_c"              = "NDCs in class"
+    "log(n_c)"              = "Log NDCs in class"
   ),
   gof_map  = tribble(
     ~raw,        ~clean,      ~fmt,
@@ -142,40 +142,6 @@ modelsummary(
   ),
   output = here("output", "rebate_exploration", "rebate_regression.tex")
 )
-
-
-# (b) Two-step: estimate the rebate-market-size slope per (class, state), then
-# regress those slopes on n_c. beta_c is how sensitively rebates in a given
-# class respond to changes in that state's market size over time.
-
-class_n_c <- n_c_table |>
-  group_by(atc, state) |>
-  summarise(n_c = mean(n_c), .groups = "drop")
-
-class_slopes <- SDUD |>
-  filter(!is.na(atc)) |>
-  group_by(atc, state) |>
-  group_modify(~ tidy(lm(rebate ~ log(market_size) + factor(year), data = .x))) |>
-  filter(term == "log(market_size)") |>
-  ungroup() |>
-  select(atc, state, beta_c = estimate, se_c = std.error) |>
-  left_join(class_n_c, by = c("atc", "state"))
-
-m3 <- lm(beta_c ~ n_c + factor(atc), data = class_slopes)
-tidy(m3) |> filter(term == "n_c")
-
-# Coefficient on n_c: 0.0780
-# Standard error: 0.0513
-# t-statistic: 1.52
-# p-value: 0.130
-
-# Interpretation:
-# The coefficient is positive and in the predicted direction but not
-# statistically significant. factor(atc) absorbs cross-class variation in n_c,
-# leaving only within-class variation across states, which is noisy. The
-# pooled result in m2 provides stronger evidence for the substitutability
-# channel.
-
 
 # --- Substitutability ranking by therapeutic class --- #
 # Mean annual n_c per ATC1 class. Annual n_c is the count of distinct NDCs
