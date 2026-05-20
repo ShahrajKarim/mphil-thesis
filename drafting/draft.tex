@@ -179,6 +179,20 @@
 \normalsize
 %TC:endignore
 
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{../output/RQ1/patent_feols_expost.png}
+  \caption{FEOLS event study: patents, ex-post Medicaid exposure}
+  \label{fig:rob_rq1_patent_feols_expost}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{../output/RQ1/fda_feols_expost.png}
+  \caption{FEOLS event study: FDA approvals, ex-post Medicaid exposure}
+  \label{fig:rob_rq1_fda_feols_expost}
+\end{figure}
+
 \clearpage
 
 \subsubsection{RQ1: Ex-Ante FE Poisson}
@@ -190,6 +204,20 @@
 \label{tab:rob_rq1_fepois_exante}
 \normalsize
 %TC:endignore
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{../output/RQ1/patent_poi_exante.png}
+  \caption{FE Poisson event study: patents, ex-ante Medicaid exposure}
+  \label{fig:rob_rq1_patent_poi_exante}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{../output/RQ1/fda_poi_exante.png}
+  \caption{FE Poisson event study: FDA approvals, ex-ante Medicaid exposure}
+  \label{fig:rob_rq1_fda_poi_exante}
+\end{figure}
 
 \clearpage
 
@@ -222,12 +250,50 @@
 \subsubsection{RQ1: Binned Treatment}
 
 %TC:ignore
+\makeatletter
+\renewenvironment{table}[1][H]{\@float{table}[H]}{\end@float}
+\makeatother
+\input{../output/robustness/binned_treatment/atc_bins.tex}
+\renewenvironment{table}[1][]{}{}
+%TC:endignore
+
+%TC:ignore
 \footnotesize
 \input{../output/robustness/binned_treatment/binned_models.tex}
 \captionof{table}{Binned treatment event-study estimates (FEOLS, ex-ante)}
 \label{tab:rob_binned}
 \normalsize
 %TC:endignore
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{../output/robustness/binned_treatment/binned_patent_high_es.png}
+  \caption{Binned event study: patents, high-exposure bin (N, C)}
+  \label{fig:rob_binned_patent_high}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{../output/robustness/binned_treatment/binned_patent_medium_es.png}
+  \caption{Binned event study: patents, medium-exposure bin (J, D)}
+  \label{fig:rob_binned_patent_medium}
+\end{figure}
+
+\clearpage
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{../output/robustness/binned_treatment/binned_fda_high_es.png}
+  \caption{Binned event study: FDA approvals, high-exposure bin (N, C)}
+  \label{fig:rob_binned_fda_high}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{../output/robustness/binned_treatment/binned_fda_medium_es.png}
+  \caption{Binned event study: FDA approvals, medium-exposure bin (J, D)}
+  \label{fig:rob_binned_fda_medium}
+\end{figure}
 
 \clearpage
 
@@ -243,6 +309,20 @@
 \renewenvironment{table}[1][]{}{}
 %TC:endignore
 
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{../output/robustness/contdid/contdid_patent_es.png}
+  \caption{Continuous DiD event study: patents}
+  \label{fig:rob_contdid_patent}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{../output/robustness/contdid/contdid_fda_es.png}
+  \caption{Continuous DiD event study: FDA approvals}
+  \label{fig:rob_contdid_fda}
+\end{figure}
+
 \clearpage
 
 \subsubsection{RQ2: Ex-Post FEOLS}
@@ -254,6 +334,36 @@
 \label{tab:rob_rq2_feols_expost}
 \normalsize
 %TC:endignore
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{../output/RQ2/patent_feols_expost_medicaid.png}
+  \caption{FEOLS event study: patents, Medicaid exposure (ex-post)}
+  \label{fig:rob_rq2_patent_expost_medicaid}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{../output/RQ2/patent_feols_expost_pdl.png}
+  \caption{FEOLS event study: patents, PDL exposure (ex-post)}
+  \label{fig:rob_rq2_patent_expost_pdl}
+\end{figure}
+
+\clearpage
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{../output/RQ2/fda_feols_expost_medicaid.png}
+  \caption{FEOLS event study: FDA approvals, Medicaid exposure (ex-post)}
+  \label{fig:rob_rq2_fda_expost_medicaid}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\linewidth]{../output/RQ2/fda_feols_expost_pdl.png}
+  \caption{FEOLS event study: FDA approvals, PDL exposure (ex-post)}
+  \label{fig:rob_rq2_fda_expost_pdl}
+\end{figure}
 
 \clearpage
 
