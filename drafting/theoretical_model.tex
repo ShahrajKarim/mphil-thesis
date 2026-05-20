@@ -154,12 +154,12 @@ Firms that pass Stage 2 compete for PDL preferred status within their respective
 \begin{enumerate}[label=(\roman*)]
     \item A Medicaid market size $M_c$, which increased by $\Delta M_c \geq 0$ following the Medicaid expansion. Classes with higher Medicaid market shares experience greater shocks.
     
-    \item A rebate function $\tau_c(M_c)$ with $\tau_c' > 0$. This determines how aggressive supplemental rebates from Medicaid are. The rebate function is at a  per-unit rebate the state extracts per Medicaid prescription in dollars.
+    \item A rebate function $\tau_c(M_c)$ with $\tau_c' > 0$. This determines how aggressive supplemental rebates from Medicaid are at a per-prescription level.
     
     \item A measure of therapeutic substitutability $n_c \geq 1$. Formally, this is defined as the number of clinically interchangeable drugs available within class $c$.
 \end{enumerate}
 
-The model does not impose a function form on $\tau_c$ - the only requirement is that $\tau_c' > 0$. Additionally, the steepness of the rebate schedule is linked to the degree of therapeutic substitutability, that is:
+The model does not impose a functional form on $\tau_c$ - the only requirement is that $\tau_c' > 0$. Additionally, the steepness of the rebate schedule is linked to the degree of therapeutic substitutability, that is:
 
 \begin{equation} \label{eq:tau_steepness}
 \frac{\partial \tau_c(M_c, n_c)}{\partial n_c} > 0
@@ -336,7 +336,7 @@ Totally differentiating this with respect to $e_{j,c}$ yields:
     {\frac{\partial^2 \Psi_{i,c}}{\partial e_{i,c}^2}}
 \end{align}
 
-Since the denomninator is the SOC (which is known to be strictly negative), the sign of the best response derivative depends purely on the sign of the cross-partial derivative:
+Since the denomininator is the SOC (which is known to be strictly negative), the sign of the best response derivative depends purely on the sign of the cross-partial derivative:
 
 \begin{equation}
     \frac{\partial^2 \Psi_{i,c}}{\partial e_{i,c} \partial e_{j,c}} = Q_c'(e_{i,c}) \left[ -Q_c'(e_{j,c}) V_c^M + Q_c'(e_{j,c}) V_c^D \right] = Q_c'(e_{i,c}) Q_c'(e_{j,c}) [V_c^D - V_c^M]
@@ -378,7 +378,7 @@ The incentive trap binds within class $c$ if and only if the post-expansion mark
 Since the rebate function $\tau_c$ reflects the competitive structure of a therapeutic drug class, the threshold market-size $M_c$ is class-specific.
 
 \begin{result}[Substitutability lowers the threshold $M^*_c$] \label{res:subs}
-Based on \ref{eq:tau_steepness} $\tau_c'(M_c)$ is increasing in $n_c$, so classes with more substitutes have a lower threshold $M_c^*$. Therefore, classes with more interchangeable drugs are likelier to meet the threshold market size and become trap-bound.
+Based on Equation \ref{eq:tau_steepness} $\tau_c'(M_c)$ is increasing in $n_c$, so classes with more substitutes have a lower threshold $M_c^*$. Therefore, classes with more interchangeable drugs are likelier to meet the threshold market size and become trap-bound.
 \end{result}
 
 \begin{proof}
@@ -398,7 +398,7 @@ Therefore, at any given market size $M_c$, higher substitutability makes rebate 
 Classes with higher pre-expansion Medicaid market share experience larger increases in market size $\Delta M_c$ following the ACA expansion. This makes it likelier for these markets to cross the threshold: $M_c^{post} > M_c^*$.
 \end{result}
 
-Therefore, Results \ref{res:subs} and \ref{res:shock} imply that the decline in innovation should be concentrated in classes with high Medicaid exposure and high levels of substitutability. Specifically, high levels of Medicaid exposure raise $M_c^{post}$, while high substitutability lower $M_c^*$ by making the rebate schedule steeper. 
+Therefore, Results \ref{res:subs} and \ref{res:shock} imply that the decline in innovation should be concentrated in classes with high Medicaid exposure and high levels of substitutability. Specifically, high levels of Medicaid exposure raise $M_c^{post}$, while high substitutability lowers $M_c^*$ by making the rebate schedule steeper. 
 
 \paragraph{Classification of therapeutic classes}
 The FOC (\ref{eq:FOC_final}) implies that equilibrium effort depends on the expected payoff contingent on passing the P\&T stage
@@ -495,7 +495,7 @@ By construction, the cost parameter is strictly decreasing in period 1 profits, 
 \end{equation}
 
 \paragraph{Implications for the Incentive Trap}
-This two-period structure now strengthens the main result of the model. If the Medicaid expansion raises rebate extraction and lowers $V_c^M$, then it reduces both current and future innovation incentives in class $c$. The expansion effects outcomes at the time of the policy by lowering the payoff to successful innovation, while weaker internal cash flows raise the cost of future R\&D efforts. Consequently, lower current rents can lead to lower innovation in later periods, with the severity of this effect varying across classes.
+This two-period structure now strengthens the main result of the model. If the Medicaid expansion raises rebate extraction and lowers $V_c^M$, then it reduces both current and future innovation incentives in class $c$. The expansion affects outcomes at the time of the policy by lowering the payoff to successful innovation, while weaker internal cash flows raise the cost of future R\&D efforts. Consequently, lower current rents can lead to lower innovation in later periods, with the severity of this effect varying across classes.
 
 \begin{result}[PDL winners gain less in trap-bound classes] \label{res:dynamic}
 The advantage of PDL winners is weaker in trap-bound classes than in volume-dominated classes. To see this, consider two classes $c$ and $c'$, where $M_c^{post} > M_c^*$ and $M_{c'}^{post} < M_{c'}^*$:
@@ -504,13 +504,13 @@ e_{c,2}^*(V_c^M) - e_{c,2}^*(0) < e_{c',2}^*(V_{c'}^M) - e_{c',2}^*(0)
 \]
 \end{result}
 
-In `trap-bound' classes, the rebate wedge lowers the value of $V_c^M$, so PDL winners receive a smaller payoff advantage over firms that fail to gain preferred status. While the cost parameter ranking $k(V_c^M) < k(V_c^D) < k(0)$ still holds, the gaps between these cost parameters narrows. Therefore, PDL winners still invest more than non-winners, but the difference in future effort is smaller. However, classes which are volume-dominated classes have a larger relative monopoly value $V_c^M$, so preferred firms retain a greater cost advantage and therefore invest more relative to their rivals.
+In `trap-bound' classes, the rebate wedge lowers the value of $V_c^M$, so PDL winners receive a smaller payoff advantage over firms that fail to gain preferred status. While the cost parameter ranking $k(V_c^M) < k(V_c^D) < k(0)$ still holds, the gaps between these cost parameters narrow. Therefore, PDL winners still invest more than non-winners, but the difference in future effort is smaller. However, classes which are volume-dominated classes have a larger relative monopoly value $V_c^M$, so preferred firms retain a greater cost advantage and therefore invest more relative to their rivals.
 
 \subsection{Model Predictions and Empirical Mapping}
 
 \subsubsection{Comparative Statics} \label{sec:comp_statics}
 
-To characterise the predictions of the model, equilibrium effort is solved for numerically from the FOC's. Since no closed-form solution exists for $e_c^*$, the comparative statics are computed by varying one parameter and holding all else fixed at baseline values reported in Table \ref{tab:parameters}. Since the functional form of $\tau_c(M_c)$ is unknown, three functional forms are proposed for the simulations: a power specification $\tau_c = \alpha_c M_c^{\beta_c}$, a logarithmic specification $\tau_c = \alpha_c \ln M_c$, and a linear specification $\tau_c = \alpha_c M_c$. $\alpha_c$. The resulting comparative statics are shown in Figure \ref{fig:comp_statics}.
+To characterise the predictions of the model, equilibrium effort is solved for numerically from the FOCs. Since no closed-form solution exists for $e_c^*$, the comparative statics are computed by varying one parameter and holding all else fixed at baseline values reported in Table \ref{tab:parameters}. Since the functional form of $\tau_c(M_c)$ is unknown, three functional forms are proposed for the simulations: a power specification $\tau_c = \alpha_c M_c^{\beta_c}$, a logarithmic specification $\tau_c = \alpha_c \ln M_c$, and a linear specification $\tau_c = \alpha_c M_c$. The resulting comparative statics are shown in Figure \ref{fig:comp_statics}.
 
 \begin{figure}[H]
     \centering
@@ -556,7 +556,7 @@ Empirically, the pharmaceutical procurement pipeline is observed through the len
 \begin{itemize}
     \item \textbf{Partial Success:} This represents firms that exert sufficient effort to clear the clinical stage ($a_{i,c} \ge \bar{a}$) but enter the duopoly bidding stage and lose due to presenting a higher price than the opposing firm. Clearing the clinical threshold provides these firms with some regulatory know-how, but failing to capture the market means that they do not receive any internal cash flows to alleviate capital market frictions. Therefore, their cost parameter remains strictly higher than that of the PDL winners and falls within the interval $k \in \left( k(V_c^D), k(0)\right)$. Once combined with rebate disincentives, this relative cost disadvantage inhibits future innovation.
 
-    \item \textbf{Medicaid Market Access:} These are firms clear both the clinical and pricing stages and capture the market $M_c$ by obtaining monopoly status or win the duopoly auction. Specifically, they benefit from both channels of state-dependent innovation: they accumulate regulatory know-how while also realising a strictly positive internal cash flow from the Medicaid market. Consequently, they their future marginal cost of future R\&D effort lowers to either $k(V_c^M)$ or $k(V_c^D)$, thereby allowing them to overcome market disincentives.
+    \item \textbf{Medicaid Market Access:} These are firms that clear both the clinical and pricing stages and capture the market $M_c$ by obtaining monopoly status or win the duopoly auction. Specifically, they benefit from both channels of state-dependent innovation: they accumulate regulatory know-how while also realising a strictly positive internal cash flow from the Medicaid market. Consequently, their future marginal cost of future R\&D effort lowers to either $k(V_c^M)$ or $k(V_c^D)$, thereby allowing them to overcome market disincentives.
 \end{itemize}
 
 \paragraph{Mapping to RQ3} \label{sec:rq3_mapping}
@@ -592,7 +592,7 @@ Positive coefficients are consistent with the standard market-size effect, negat
 
 \section{Policy Implications}
 
-The model and empirical results identify a key trade-off in public pharmaceutical procurement. Expanding the Medicaid market strengthens states bargaining position, allowing them to negotiate deeper supplemental rebates and reduce per-prescription drug expenditure. However, when rebate extraction lowers profits in the monopoly state sufficiently, the returns to successful innovation fall and incentives to invest in R\&D decline. The model formalises this through the rebate function $\tau_c(M_c)$ and the resulting effect on $V_c^M$. Importantly, this does not imply that public demand expansion inherently harms innovation. \citet{lakdawalla2009innovation} show that government premium subsidies can raise innovator profits under expansions of insured demand, due to profit margins being unaffected. The Medicaid setting is institutionally different - the expected rise in revenues generated by eligibility expansions are extracted through statutory rebates, supplemental rebate negotiations, and bargaining on the PDL, compressing the net price received by innovators rather than preserving it. When rebate extraction is sufficiently steep, expanding Medicaid's market size lowers the value of the monopoly state, resulting in a failure of the standard market-size prediction in this setting.
+The model and empirical results identify a key trade-off in public pharmaceutical procurement. Expanding the Medicaid market strengthens states' bargaining position, allowing them to negotiate deeper supplemental rebates and reduce per-prescription drug expenditure. However, when rebate extraction lowers profits in the monopoly state sufficiently, the returns to successful innovation fall and incentives to invest in R\&D decline. The model formalises this through the rebate function $\tau_c(M_c)$ and the resulting effect on $V_c^M$. Importantly, this does not imply that public demand expansion inherently harms innovation. \citet{lakdawalla2009innovation} show that government premium subsidies can raise innovator profits under expansions of insured demand, due to profit margins being unaffected. The Medicaid setting is institutionally different - the expected rise in revenues generated by eligibility expansions are extracted through statutory rebates, supplemental rebate negotiations, and bargaining on the PDL, compressing the net price received by innovators rather than preserving it. When rebate extraction is sufficiently steep, expanding Medicaid's market size lowers the value of the monopoly state, resulting in a failure of the standard market-size prediction in this setting.
 
 This trade-off is concentrated in a subset of therapeutic areas rather than uniformly applying across the pharmaceutical industry. In most therapeutic classes, the volume effect either dominates or offsets the monopsony effect, so that the net innovation response to the ACA Medicaid expansion is positive or negligible. Importantly, the incentive trap only binds in classes where the post-expansion market size exceeds the class-specific threshold $M_c^*$. The model predicts this condition is most likely to be met in classes with high drug substitutability, which lowers $M_c^*$ by steepening the rebate schedule (Results~\ref{res:subs}), and high Medicaid exposure which raises $M_c^{post}$ (Result~\ref{res:shock}) - consistent with the empirical findings. Consequently, a blanket policy response - such as uniform supplemental rebate caps across all drug classes - would be poorly targeted. It would reduce fiscal savings in classes where innovation has not been discouraged, while it may not necessarily address stalled innovation in classes where the rent gap has been most compressed.
 
@@ -600,7 +600,7 @@ Based on the comparative statics, the lowering of the rent gap $\Delta V_c = V_c
 
 The model points towards two routes by which policy could mitigate this trade-off. First, policies that limit the rate at which rebates grow with market size, or that treat novel drugs differently from incumbent substitutes, can raise the threshold $M_c^*$, making the incentive trap less likely to bind, while at the cost of reducing Medicaid's fiscal savings from procurement. Second, R\&D subsidies or other instruments lowering the effective cost of innovation $k$ can maintain incentives in affected classes even while rebate pressure is strong. The balance between these routes therefore varies by class, depending on how far $M_c^{post}$ exceeds $M^*_c$, and how narrow the rent gap has become.
 
-The model moves beyond treating the savings-innovation trade-off as an industry-wide tension by identifying the rent gap $\Delta V_c$ and the market size threshold $M_c^*$ as objects determining whether Medicaid's purchasing power discourages innovation within a given therapeutic area. This speaks to the broader policy debate, where \citet{garthwaite2023drug} argue that the central challenge of U.S. drug pricing reforms is balancing current affordability against the incentives driving investment into new therapies, and formalised by \citet{woods2024achieving} in terms of dynamic efficiency. The results of this thesis suggest that this balance cannot be evaluated at the industry level, instead it must be assessed through the lens of the rent gap and market size threshold on a class by class basis.
+The model moves beyond treating the savings-innovation trade-off as an industry-wide tension by identifying the rent gap $\Delta V_c$ and the market size threshold $M_c^*$ as objects determining whether Medicaid's purchasing power discourages innovation within a given therapeutic area. This speaks to the broader policy debate, where \citet{garthwaite2023drug} argue that the central challenge of U.S. drug pricing reforms is balancing current affordability against the incentives driving investment into new therapies, and as discussed by \citet{woods2024achieving} in terms of dynamic efficiency. The results of this thesis suggest that this balance cannot be evaluated at the industry level, instead it must be assessed through the lens of the rent gap and market size threshold on a class by class basis.
 
 \newpage
 
