@@ -318,9 +318,6 @@ patent_firm_ndc_firm_map <- bind_rows(final_map_list) |>
 total_patents <- nrow(patent_firms)
 matches <- nrow(patent_firm_ndc_firm_map)
 
-# Calculate final merge rate
-final_merge_rate_percent <- (num_total_unique_matches_final / num_patent_firms_unique) * 100
-
 # Merge diagnostics
 message("Total patent firms: ", total_patents) # 48,143
 message("Matched rows: ", matches) # 7,556
